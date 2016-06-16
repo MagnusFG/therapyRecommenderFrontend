@@ -1,39 +1,137 @@
 <?php
 
 function show_therapien_erfolgt() {
+
+    // Daten Patient
+    $patient = $_SESSION['idPatient'];
     ?>
 
-<form class="questionblock" action="" method="post">
+    <form class="questionblock" action="" method="post">
 
-                <div class="container">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                            <th>Id</th>
-                            <th>Komorbidität</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                        $results = mysql_query("SELECT * FROM tblKomorbiditaeten LIMIT 10");
-                        while ($row = mysql_fetch_array($results)) {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Therapie</th>
+                    <th>Typ</th>
+                    <th>Dosierung</th>
+                    <th>Maßeinheit</th>
+                    <th>Verabreichung</th>
+                    <th>Wirksamkeit</th>
+                    <th>UAW</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $therapie = mysql_query("SELECT * FROM tblTherapieJemals WHERE Patient = $patient");
+                while ($row = mysql_fetch_array($therapie)) {
 //                            print_r($row);
-                            ?>
-                            <tr>
-                                <td><?php echo $row['IDKomorbiditaeten'] ?></td>
-                                <td><?php echo $row['txtName'] ?></td>
-                            </tr>
+                    $val = '';
+                    if (isset($row['Therapie'])) {
+                        $tmp = $row['Therapie'];
+                        $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $tmp");
+                        $rowTmp = mysql_fetch_array($results);
+                        $val = $rowTmp['txtName'];
+                        $typ = $rowTmp['ingTyp'];
 
-                            <?php
+//                        echo "<tr style=\"background-color:#b3e6ff;\">";
+
+                        if ($typ == 1) {
+                            echo "<tr style=\"background-color:#b3e6ff;\">";
                         }
-                        ?>
-                        </tbody>
-                    </table>
-                </div>
 
-            </form>
+                        if ($typ == 2) {
+                            echo "<tr style=\"background-color:#99ffcc;\">";
+                        }
 
-<?php
+                        if ($typ == 3) {
+                            echo "<tr style=\"background-color:#ffd9b3;\">";
+                        }
+                    }
+                    ?>
+                <td><b><?php echo $val ?></b></td>
 
+                <?php
+                $val = '';
+                if (isset($typ)) {
+                    $results = mysql_query("SELECT * FROM tblTherapieTyp WHERE IDTherapieTyp = $typ");
+                    $rowTmp = mysql_fetch_array($results);
+                    $val = $rowTmp['txtTyp'];
+                }
+                ?>                
+                <td><?php echo $val ?></td>
+
+                <?php
+                echo "<td>";
+                echo $row['Dosierung'];
+                $val = '';
+                if (isset($row['DosierungKombi'])) {
+                    $tmp = $row['DosierungKombi'];
+                    echo " / ";
+                    echo $tmp;
+                }
+                echo "</td>";
+                ?>
+
+                <?php
+                echo "<td>";
+                $val = '';
+                if (isset($row['Masseinheit'])) {
+                    $tmp = $row['Masseinheit'];
+                    $results = mysql_query("SELECT * FROM tblTherapieMasseinheit WHERE IDMaßeinheit = $tmp");
+                    $rowTmp = mysql_fetch_array($results);
+                    $val = $rowTmp['Maßeinheit'];
+                    echo $val;
+                }
+                if (isset($row['DosierungKombi'])) {
+                    $tmp = $row['DosierungKombi'];
+                    $results = mysql_query("SELECT * FROM tblTherapieMasseinheit WHERE IDMaßeinheit = $tmp");
+                    $rowTmp = mysql_fetch_array($results);
+                    $val = $rowTmp['Maßeinheit'];
+                    echo " / ";
+                    echo $val;
+                }
+                echo "</td>";
+                ?>
+
+                <?php
+                $val = '';
+                if (isset($row['VerabreichungTyp'])) {
+                    $tmp = $row['VerabreichungTyp'];
+                    $results = mysql_query("SELECT * FROM tblTherapieVerabreichung WHERE IDTherapieVerabreichung = $tmp");
+                    $rowTmp = mysql_fetch_array($results);
+                    $val = $rowTmp['txtTherapieVerabreichung'];
+                }
+                ?>
+                <td><?php echo $val ?></td>
+
+                <?php
+                $val = '';
+                if (isset($row['Wirksamkeit'])) {
+                    $tmp = $row['Wirksamkeit'];
+                    $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
+                    $rowTmp = mysql_fetch_array($results);
+                    $val = $rowTmp['txtTherapieWirksamkeit'];
+                }
+                ?>
+                <td><?php echo $val ?></td>                             
+
+                <?php
+                if ($row['UAWJa'] == 1) {
+                    echo "<td>ja</td>";
+                } else {
+                    echo "<td></td>";
+                }
+                ?>
+                </tr>
+
+                <?php
+            }
+            ?>
+            </tbody>
+        </table>
+
+    </form>
+
+    <?php
 }
-    ?>
+?>

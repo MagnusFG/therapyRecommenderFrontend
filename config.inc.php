@@ -9,6 +9,7 @@ function connect_database() {
         $dbase = "psoriasis_database_100";           // Name der Datenbank
 
     $connection = mysql_connect($host, $user, $pass) OR DIE("Keine Verbindung zu der Datenbank moeglich.");
+    mysql_query("SET NAMES 'utf8'");
     $db = mysql_select_db($dbase, $connection) OR DIE("Auswahl der Datenbank nicht moeglich.");
     
     return $connection;

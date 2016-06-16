@@ -20,7 +20,7 @@ session_start();
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
         <!-- Title -->
-        <title>OnlineDelphi</title>
+        <title>Therapieempfehlungssystem</title>
 
         <!-- Bootstrap Core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -59,24 +59,56 @@ session_start();
                 ?>
 
                 <?php
-                // process input
-                if (isset($_POST['selVisite'])) {
-                    $_SESSION['idVisite'] = $_POST['selVisite'];
+                // fill patienten array
+                $patienten = array();
+                $results = mysql_query("SELECT * FROM tblVisite100");
+                while ($row = mysql_fetch_array($results)) {
+                    $patienten[] = $row['Patient'];
                 }
                 ?>
 
                 <?php
-                $visiten = array();
-                $results = mysql_query("SELECT * FROM tblVisite LIMIT 100");
-                while ($row = mysql_fetch_array($results)) {
-                    $visiten[$row['IDVisite']] = $row['Patient'];
+                // input visite
+                if (isset($_POST['selVisite']) && isset($_SESSION['visiten'])) {
+                    $visiten = $_SESSION['visiten'];
+//                    print_r($visiten);
+                    $idVisite = $_POST['selVisite'];
+                    $_SESSION['idVisite'] = $visiten[$idVisite];
+//                    print($_SESSION['idVisite']);
                 }
-                ?> 
+                
+                // input patient
+                $visiten = array();
+                if (isset($_POST['selPatient'])) {
+                    // set idPatient
+                    $patient = $_POST['selPatient'];
+                    $_SESSION['idPatient'] = $patient;
+
+                    // fill visiten array
+                    $results = mysql_query("SELECT * FROM tblVisite100 WHERE Patient = $patient ORDER BY NumVisite DESC LIMIT 1");
+                    while ($row = mysql_fetch_array($results)) {
+                        $numVisite100 = $row['NumVisite'];
+                    }
+//                    print($numVisite100);
+                    $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $patient AND NumVisite <= $numVisite100 ORDER BY NumVisite ASC");
+                    while ($row = mysql_fetch_array($results)) {
+                        $visiten[$row['NumVisite']] = $row['IDVisite'];
+                    }
+//                    print_r($visiten);
+                    $_SESSION['visiten'] = $visiten;
+                    unset($_SESSION['idVisite']);                    
+                }
+
+                // set experte TODO
+                $_SESSION['idExperte'] = 1;
+                ?>
+
+                <h2>Therapieempfehlungssystem</h2>
+                <p>Herzlich Wilkommen, Sie sind angemeldet mit der Experten ID <?php echo $_SESSION['idExperte'] ?></p>
+
+                </br>
 
                 <form class="" action="" method="post">
-                    <h2>Therapieempfehlungssystem</h2>
-                    <p>Visite Auswählen</p>
-
                     <div class = "container" style="width:300px">
 
                         <div class="row">
@@ -88,11 +120,12 @@ session_start();
                                         <!--<option disabled selected value></option>-->
                                         <option></option>
                                         <?php
-                                        foreach ($visiten as $idVisite => $patient) {
+                                        $visiten =   $_SESSION['visiten'];
+                                        foreach ($visiten as $numVisite => $idVisite) {
                                             if ($_SESSION['idVisite'] == $idVisite) {
-                                                echo "<option selected>$idVisite</option>";
+                                                echo "<option selected>$numVisite</option>";
                                             } else {
-                                                echo "<option>$idVisite</option>";
+                                                echo "<option>$numVisite</option>";
                                             }
                                         }
                                         ?> 
@@ -100,41 +133,38 @@ session_start();
                                 </div>
                             </div><!-- /input-group -->
                         </div><!-- /.row -->  
+                </form> 
 
-                        </br>
+                </br>
 
-                        <div class="row">
-                            <div class="input-group">
-                                <span class="input-group-addon" id="basic-addon1">Patient:</span>
-                                <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
-                                        <option disabled selected value></option>
-                                        <?php
-                                        foreach ($visiten as $idVisite => $patient) {
-                                            if ($_SESSION['idVisite'] == $idVisite) {
-                                                echo "<option selected>$patient</option>";
-                                                $_SESSION['idPatient'] = $patient;
-                                            } else {
-                                                echo "<option>$patient</option>";
-                                            }
+                <form class="" action="" method="post">
+                    <div class="row">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">Patient:</span>
+                            <div class="form-group">
+                                <select onchange="this.form.submit()" class="form-control" name="selPatient" id="sel2">
+                                    <option></option>
+                                    <?php
+                                    foreach ($patienten as $idPatient) {
+                                        if ($_SESSION['idPatient'] == $idPatient) {
+                                            echo "<option selected>$idPatient</option>";
+                                        } else {
+                                            echo "<option>$idPatient</option>";
                                         }
-                                        ?> 
-                                    </select>
-                                </div>
-                            </div><!-- /input-group -->
-                        </div><!-- /.row -->
+                                    }
+                                    ?> 
+                                </select>
+                            </div>
+                        </div><!-- /input-group -->
+                    </div><!-- /.row -->
 
-                        </br>
-
-                        <!--<input type="submit" class="btn btn-primary" name="load_visite" value="Visite Laden">-->
-
+                    </br>
                 </form>      
 
                 </br>
 
             </div>
 
-            </br>
             </br>
 
             <ul class="nav nav-tabs">

@@ -15,7 +15,9 @@ function show_patientendaten() {
     $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
     $row = mysql_fetch_array($results);
     $gewicht = $row['Gewicht'];
-    $groesse = $row['Groesse'];
+    $groesse = $row['Größe'];
+    $familienstandJa = $row['FamilienstandJa'];
+    $familienstandNein = $row['FamilienstandNein'];
 
     if (isset($row['Berufsstand'])) {
         $tmp = $row['Berufsstand'];
@@ -134,7 +136,7 @@ function show_patientendaten() {
                             }
                             ?> 
                         </select>
-                    </div>                                                        <!--<input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">-->
+                    </div>    
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
             <div class="col-lg-6">
@@ -146,7 +148,7 @@ function show_patientendaten() {
                             echo "<option selected>$kinderwunsch</option>";
                             ?>
                         </select>
-                    </div>                                                        <!--<input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">-->
+                    </div> 
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
         </div><!-- /.row -->
@@ -164,7 +166,7 @@ function show_patientendaten() {
                             echo "<option selected>$bildungsstand</option>";
                             ?>
                         </select>
-                    </div>                                                        <!--<input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">-->
+                    </div> 
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
             <div class="col-lg-6">
@@ -176,7 +178,7 @@ function show_patientendaten() {
                             echo "<option selected>$berufsstand</option>";
                             ?>
                         </select>
-                    </div>                                                        <!--<input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">-->
+                    </div>
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
         </div><!-- /.row -->
