@@ -2,11 +2,42 @@
 
 function show_therapien_erfolgt() {
 
-    // Daten Patient
+    // Parameter
     $patient = $_SESSION['idPatient'];
+    $select = 0;
+
+    // Therapien
+    $results = mysql_query("SELECT * FROM tblTherapieName WHERE ingTyp = 2");
+    $therapies = array();
+    while ($row = mysql_fetch_array($results)) {
+        $therapies[$row['IDTherapie']] = $row['txtName'];
+    }
+
+    // Wirksamkeit
+    $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit");
+    $wirksamkeit = array();
+    while ($row = mysql_fetch_array($results)) {
+        $wirksamkeiten[$row['IDTherapieWirksamkeit']] = $row['txtTherapieWirksamkeit'];
+    }
+
+    // Verabreichung
+    $results = mysql_query("SELECT * FROM tblTherapieVerabreichung");
+    $wirksamkeit = array();
+    while ($row = mysql_fetch_array($results)) {
+        $verabreichungen[$row['IDTherapieVerabreichung']] = $row['txtTherapieVerabreichung'];
+    }
+
+    // Maßeinheit
+    $results = mysql_query("SELECT * FROM tblTherapieMasseinheit");
+    $wirksamkeit = array();
+    while ($row = mysql_fetch_array($results)) {
+        $masseinheiten[$row['IDMaßeinheit']] = $row['Maßeinheit'];
+    }
     ?>
 
-    <form class="questionblock" action="" method="post">
+    <div class="panel panel-primary">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Jemals angewendete Therapien:</div>
 
         <table class="table table-striped">
             <thead>
@@ -18,6 +49,7 @@ function show_therapien_erfolgt() {
                     <th>Verabreichung</th>
                     <th>Wirksamkeit</th>
                     <th>UAW</th>
+                    <th>Löschen</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,23 +64,9 @@ function show_therapien_erfolgt() {
                         $rowTmp = mysql_fetch_array($results);
                         $val = $rowTmp['txtName'];
                         $typ = $rowTmp['ingTyp'];
-
-//                        echo "<tr style=\"background-color:#b3e6ff;\">";
-
-                        if ($typ == 1) {
-                            echo "<tr style=\"background-color:#b3e6ff;\">";
-                        }
-
-                        if ($typ == 2) {
-                            echo "<tr style=\"background-color:#99ffcc;\">";
-                        }
-
-                        if ($typ == 3) {
-                            echo "<tr style=\"background-color:#ffd9b3;\">";
-                        }
                     }
                     ?>
-                <td><b><?php echo $val ?></b></td>
+                <td><?php echo $val ?></td>
 
                 <?php
                 $val = '';
@@ -122,6 +140,13 @@ function show_therapien_erfolgt() {
                     echo "<td></td>";
                 }
                 ?>
+
+                <td style="text-align: right;">
+                    <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapieExperte'] ?>]" value="x">
+                        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                    </button>
+                </td>
+
                 </tr>
 
                 <?php
@@ -129,8 +154,126 @@ function show_therapien_erfolgt() {
             ?>
             </tbody>
         </table>
+    </div>
 
-    </form>
+    <?php
+// Therapie eingeben
+    if ($select == 0) {
+        ?>
+        <div class="panel panel-primary">
+
+            <form class="questionblock" action="" method="post">
+                <!--<form action="" method="post">-->
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group" style="margin: 5px">
+                            <span class="input-group-addon" id="basic-addon1">Therapie:</span>
+                            <div class="form-group">
+                                <select class="form-control" id="sel1" name="therapie">
+                                    <option selected></option>
+                                    <?php
+                                    foreach ($therapies as $i => $val) {
+                                        echo "<option value=\"$i\">$val</option>";
+                                    }
+                                    ?> 
+                                </select>
+                            </div>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->    
+
+                </br>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group" style="margin: 5px">
+                            <span class="input-group-addon" id="basic-addon1">Art der Verabreichung:</span>
+                            <div class="form-group">
+                                <select class="form-control" id="sel1" name="verabreichung">
+                                    <option selected></option>
+                                    <?php
+                                    foreach ($verabreichungen as $i => $val) {
+                                        echo "<option value=\"$i\">$val</option>";
+                                    }
+                                    ?> 
+                                </select>
+                            </div>    
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+
+                </br>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group" style="margin: 5px">
+                            <span class="input-group-addon" id="basic-addon1">Dosierung:</span>
+                            <input type="number" value="" min="0" max="100000" class="form-control" placeholder="" aria-describedby="basic-addon1" name="dosierung">
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                    <div class="col-lg-6">
+                        <div class="input-group" style="margin: 5px">
+                            <span class="input-group-addon" id="basic-addon1">Maßeinheit:</span>
+                            <div class="form-group">
+                                <select class="form-control" id="sel1" name="masseinheit">
+                                    <option selected></option>
+                                    <?php
+                                    foreach ($masseinheiten as $i => $val) {
+                                        echo "<option value=\"$i\">$val</option>";
+                                    }
+                                    ?> 
+                                </select>
+                            </div>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group" style="margin: 5px">
+                            <span class="input-group-addon" id="basic-addon1">Dosierung Kombi:</span>
+                            <input type="number" value="" min="0" max="100000" class="form-control" placeholder="" aria-describedby="basic-addon1" name="dosierungkombi">
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                    <div class="col-lg-6">
+                        <div class="input-group" style="margin: 5px">
+                            <span class="input-group-addon" id="basic-addon1">Maßeinheit Kombi:</span>
+                            <div class="form-group">
+                                <select class="form-control" id="sel1" name="masseinheitkombi">
+                                    <option selected></option>
+                                    <?php
+                                    foreach ($masseinheiten as $i => $val) {
+                                        echo "<option value=\"$i\">$val</option>";
+                                    }
+                                    ?> 
+                                </select>
+                                </select>
+                            </div>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->  
+
+                <div class="row">
+                    <div class="col-lg-6" style="text-align: right;">
+                    </div><!-- /.col-lg-6 -->
+                    <div class="col-lg-6" style="text-align: right;">
+
+                        <a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
+
+                        <button type="submit" class="btn btn-success btn-lg" name="speichern" value="Therapieempfehlung speichern">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </button>
+
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+
+            </form>
+        </div>
+
+        <?php
+    }
+    ?>
 
     <?php
 }

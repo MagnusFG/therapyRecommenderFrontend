@@ -6,6 +6,7 @@ include('schwere_patient.php');
 include('dlqi.php');
 include('therapien_erfolgt.php');
 include('therapien_empfohlen.php');
+include('therapien_rs.php');
 include('config.inc.php');
 
 session_start();
@@ -41,16 +42,6 @@ session_start();
         }
         ?>
 
-        <!--Header--> 
-        <section>
-            <div class="intro-umfrage"> 
-            </div>
-        </section>
-
-        <!-- umfrage laden -->
-
-        <!--<div class="header-content">-->
-        <!--<section class="questionblock">-->
         <section class="container">
             <div class="mainblock">
 
@@ -61,159 +52,194 @@ session_start();
                 <?php
                 // fill patienten array
                 $patienten = array();
-                $results = mysql_query("SELECT * FROM tblVisite100");
+                $results = mysql_query("SELECT * FROM tblPatient");
                 while ($row = mysql_fetch_array($results)) {
-                    $patienten[] = $row['Patient'];
+                    $patienten[] = $row['IDPatient'];
                 }
                 ?>
 
                 <?php
-                // input visite
-                if (isset($_POST['selVisite']) && isset($_SESSION['visiten'])) {
-                    $visiten = $_SESSION['visiten'];
-//                    print_r($visiten);
-                    $idVisite = $_POST['selVisite'];
-                    $_SESSION['idVisite'] = $visiten[$idVisite];
-//                    print($_SESSION['idVisite']);
-                }
                 
-                // input patient
+// input selected patient
                 $visiten = array();
+                $patient = '';
+                $results = '';
                 if (isset($_POST['selPatient'])) {
-                    // set idPatient
-                    $patient = $_POST['selPatient'];
-                    $_SESSION['idPatient'] = $patient;
+                    if ($_POST['selPatient'] != '') {
+                        // set idPatient
+                        $patient = $patienten[$_POST['selPatient']];
+                        // fill visiten array
+                        $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $patient ORDER BY NumVisite ASC");
+                        while ($row = mysql_fetch_array($results)) {
+                            $visiten[$row['NumVisite']] = $row['IDVisite'];
+                        }
+                        // set global variables
+                        $_SESSION['idPatient'] = $patient;
+                        $_SESSION['visiten'] = $visiten;
 
-                    // fill visiten array
-                    $results = mysql_query("SELECT * FROM tblVisite100 WHERE Patient = $patient ORDER BY NumVisite DESC LIMIT 1");
-                    while ($row = mysql_fetch_array($results)) {
-                        $numVisite100 = $row['NumVisite'];
+//                        unset($_SESSION['idVisite']);
+                        $_SESSION['idVisite'] = '';
+                        // unset selected visite
+//                        unset($_POST['selVisite']);
+//                        unset($_POST['selPatient']);
+                    } else {
+                        // unset global variables
+                        unset($_SESSION['idPatient']);
+                        unset($_SESSION['idVisite']);
+                        unset($_SESSION['visiten']);
                     }
-//                    print($numVisite100);
-                    $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $patient AND NumVisite <= $numVisite100 ORDER BY NumVisite ASC");
-                    while ($row = mysql_fetch_array($results)) {
-                        $visiten[$row['NumVisite']] = $row['IDVisite'];
-                    }
-//                    print_r($visiten);
-                    $_SESSION['visiten'] = $visiten;
-                    unset($_SESSION['idVisite']);                    
                 }
 
-                // set experte TODO
-                $_SESSION['idExperte'] = 1;
+                // input selected visite
+                $visiten = array();
+                $idVisite = '';
+                if (isset($_POST['selVisite'])) {
+//                    if (isset($_SESSION['idPatient']) && isset($_POST['selVisite']) && isset($_SESSION['visiten']) && $_POST['selVisite'] >= 0) {
+                    if ($_POST['selVisite'] != '') {
+                        // set visite
+                        $idVisite = $_POST['selVisite'];
+                        // set global variables
+                        $visiten = $_SESSION['visiten'];
+                        $_SESSION['idVisite'] = $visiten[$idVisite];
+
+                        // unset selected patient
+//                        unset($_POST['selVisite']);
+//                    print($_SESSION['idVisite']);
+                    } else {
+                        // unset global variables
+                        unset($_SESSION['idVisite']);
+                    }
+                }
                 ?>
 
                 <h2>Therapieempfehlungssystem</h2>
-                <p>Herzlich Wilkommen, Sie sind angemeldet mit der Experten ID <?php echo $_SESSION['idExperte'] ?></p>
+                <p>Herzlich Wilkommen</p>
 
                 </br>
 
-                <form class="" action="" method="post">
-                    <div class = "container" style="width:300px">
-
-                        <div class="row">
-                            <div class="input-group">
-                                <span class="input-group-addon" id="basic-addon1">Visite:</span>
-                                <div class="form-group">
-                                    <select onchange="this.form.submit()" class="form-control" name="selVisite" id="sel1">
-                                    <!--<select class="form-control" name = "selVisite" id="sel1">-->
-                                        <!--<option disabled selected value></option>-->
-                                        <option></option>
-                                        <?php
-                                        $visiten =   $_SESSION['visiten'];
-                                        foreach ($visiten as $numVisite => $idVisite) {
-                                            if ($_SESSION['idVisite'] == $idVisite) {
-                                                echo "<option selected>$numVisite</option>";
-                                            } else {
-                                                echo "<option>$numVisite</option>";
-                                            }
-                                        }
-                                        ?> 
-                                    </select>
+                <div class="panel panel-default">                    
+                    <div class="panel-body">                        
+                        <form class="" action="" method="post">                            
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <span class="input-group-addon" id="basic-addon1">Patient:</span>
+                                        <div class="form-group">
+                                            <select onchange="this.form.submit()" class="form-control" name="selPatient" id="sel2">
+                                                <option></option>
+                                                <?php
+                                                foreach ($patienten as $idPatient) {
+                                                    if ($_SESSION['idPatient'] == $idPatient) {
+                                                        echo "<option selected>$idPatient</option>";
+                                                    } else {
+                                                        echo "<option>$idPatient</option>";
+                                                    }
+                                                }
+                                                ?> 
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div><!-- /input-group -->
-                        </div><!-- /.row -->  
-                </form> 
 
-                </br>
-
-                <form class="" action="" method="post">
-                    <div class="row">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="basic-addon1">Patient:</span>
-                            <div class="form-group">
-                                <select onchange="this.form.submit()" class="form-control" name="selPatient" id="sel2">
-                                    <option></option>
-                                    <?php
-                                    foreach ($patienten as $idPatient) {
-                                        if ($_SESSION['idPatient'] == $idPatient) {
-                                            echo "<option selected>$idPatient</option>";
-                                        } else {
-                                            echo "<option>$idPatient</option>";
-                                        }
-                                    }
-                                    ?> 
-                                </select>
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <span class="input-group-addon" id="basic-addon1">Visite:</span>
+                                        <div class="form-group">
+                                            <select onchange="this.form.submit()" class="form-control" name="selVisite" id="sel1">
+                                            <!--<select class="form-control" name = "selVisite" id="sel1">-->
+                                                <!--<option disabled selected value></option>-->
+                                                <option></option>
+                                                <?php
+                                                $visiten = $_SESSION['visiten'];
+                                                foreach ($visiten as $numVisite => $idVisite) {
+                                                    if ($_SESSION['idVisite'] == $idVisite) {
+                                                        echo "<option selected>$numVisite</option>";
+                                                    } else {
+                                                        echo "<option>$numVisite</option>";
+                                                    }
+                                                }
+                                                ?> 
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div><!-- /input-group -->
-                    </div><!-- /.row -->
 
-                    </br>
-                </form>      
+                            <div class="row">                                
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                            <div class="btn-group" role="group">
+                                                <button type="submit" class="btn btn-default" name="submit_speichern">Patient Neu</button>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div><!-- /input-group -->
+
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                            <div class="btn-group" role="group">
+                                                <button type="submit" class="btn btn-default" name="submit_speichern">Visite Neu</button>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </form> 
+                    </div>
+                </div>
 
                 </br>
+
+                <ul class="nav nav-tabs">
+                    <li role="presentation" <?php if ($_GET['action'] == 'patientendaten') echo " class=\"active\""; ?>><a href="index.php?action=patientendaten">Patientendaten</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'komorbiditaeten') echo " class=\"active\""; ?>><a href="index.php?action=komorbiditaeten">Komorbiditäten</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'schwere_pasi') echo " class=\"active\""; ?>><a href="index.php?action=schwere_pasi">PASI</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'schwere_patient') echo " class=\"active\""; ?>><a href="index.php?action=schwere_patient">Patienteneinschätzung</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'dlqi') echo " class=\"active\""; ?>><a href="index.php?action=dlqi">DLQI</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_erfolgt') echo " class=\"active\""; ?>><a href="index.php?action=therapien_erfolgt">Erfolgte Therapien</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_empfohlen') echo " class=\"active\""; ?>><a href="index.php?action=therapien_empfohlen">Aktuelle Therapie</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_rs') echo " class=\"active\""; ?>><a href="index.php?action=therapien_rs">Empfohlene Therapie</a></li>
+                </ul>
 
             </div>
 
-            </br>
+            <div class="questionblock">
 
-            <ul class="nav nav-tabs">
-                <li role="presentation" <?php if ($_GET['action'] == 'patientendaten') echo " class=\"active\""; ?>><a href="index.php?action=patientendaten">Patientendaten</a></li>
-                <li role="presentation" <?php if ($_GET['action'] == 'komorbiditaeten') echo " class=\"active\""; ?>><a href="index.php?action=komorbiditaeten">Komorbiditäten</a></li>
-                <li role="presentation" <?php if ($_GET['action'] == 'schwere_pasi') echo " class=\"active\""; ?>><a href="index.php?action=schwere_pasi">PASI</a></li>
-                <li role="presentation" <?php if ($_GET['action'] == 'schwere_patient') echo " class=\"active\""; ?>><a href="index.php?action=schwere_patient">Patienteneinschätzung</a></li>
-                <li role="presentation" <?php if ($_GET['action'] == 'dlqi') echo " class=\"active\""; ?>><a href="index.php?action=dlqi">DLQI</a></li>
-                <li role="presentation" <?php if ($_GET['action'] == 'therapien_erfolgt') echo " class=\"active\""; ?>><a href="index.php?action=therapien_erfolgt">Erfolgte Therapien</a></li>
-                <li role="presentation" <?php if ($_GET['action'] == 'therapien_empfohlen') echo " class=\"active\""; ?>><a href="index.php?action=therapien_empfohlen">Empfohlene Therapie</a></li>
-            </ul>
+                <?php
+                if (isset($_SESSION['idVisite']) && $_SESSION['idVisite'] != '') {
+                    if ($_GET['action'] == 'patientendaten') {
+                        show_patientendaten();
+                    } else if ($_GET['action'] == 'komorbiditaeten') {
+                        show_komorbiditaeten();
+                    } else if ($_GET['action'] == 'schwere_pasi') {
+                        show_schwere_pasi();
+                    } else if ($_GET['action'] == 'schwere_patient') {
+                        show_schwere_patient();
+                    } else if ($_GET['action'] == 'dlqi') {
+                        show_dlqi();
+                    } else if ($_GET['action'] == 'therapien_erfolgt') {
+                        show_therapien_erfolgt();
+                    } else if ($_GET['action'] == 'therapien_empfohlen') {
+                        show_therapien_empfohlen();
+                    } else if ($_GET['action'] == 'therapien_rs') {
+                        show_therapien_rs();
+                    }
+                } else {
+                    echo "<div class=\"alert alert-warning\" role=\"alert\">";
+                    echo "<strong>Kein Visite.</strong> ";
+                    echo "Bitte Visite auswählen.";
+                    echo "</div>";
+                }
+                ?>
 
-        </div>
-
-        <div class="questionblock">
+            </div>
 
             <?php
-            if (isset($_SESSION['idVisite']) && $_SESSION['idVisite'] != '') {
-                if ($_GET['action'] == 'patientendaten') {
-                    show_patientendaten();
-                } else if ($_GET['action'] == 'komorbiditaeten') {
-                    show_komorbiditaeten();
-                } else if ($_GET['action'] == 'schwere_pasi') {
-                    show_schwere_pasi();
-                } else if ($_GET['action'] == 'schwere_patient') {
-                    show_schwere_patient();
-                } else if ($_GET['action'] == 'dlqi') {
-                    show_dlqi();
-                } else if ($_GET['action'] == 'therapien_erfolgt') {
-                    show_therapien_erfolgt();
-                } else if ($_GET['action'] == 'therapien_empfohlen') {
-                    show_therapien_empfohlen();
-                }
-            } else {
-                echo "<div class=\"alert alert-warning\" role=\"alert\">";
-                echo "<strong>Kein Visite.</strong> ";
-                echo "Bitte Visite auswählen.";
-                echo "</div>";
-            }
+            disconnect_database($connection);
             ?>
 
-        </div>
-
-        <?php
-        disconnect_database($connection);
-        ?>
-
-    </section>
-    <!--</div>-->
-
-</body>
+        </section>
+    </body>
 </html>

@@ -6,7 +6,7 @@ function connect_database() {
         $host = "localhost";   // Adresse des Datenbankservers, fast immer localhost
         $user = "root";            // Dein MySQL Benutzername
         $pass = "";            // Dein MySQL Passwort
-        $dbase = "psoriasis_database_100";           // Name der Datenbank
+        $dbase = "psoriasis_database_praxis";           // Name der Datenbank
 
     $connection = mysql_connect($host, $user, $pass) OR DIE("Keine Verbindung zu der Datenbank moeglich.");
     mysql_query("SET NAMES 'utf8'");
