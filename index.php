@@ -84,9 +84,9 @@ session_start();
 //                        unset($_POST['selPatient']);
                     } else {
                         // unset global variables
-                        unset($_SESSION['idPatient']);
-                        unset($_SESSION['idVisite']);
-                        unset($_SESSION['visiten']);
+//                        unset($_SESSION['idPatient']);
+//                        unset($_SESSION['idVisite']);
+//                        unset($_SESSION['visiten']);
                     }
                 }
 
@@ -107,7 +107,7 @@ session_start();
 //                    print($_SESSION['idVisite']);
                     } else {
                         // unset global variables
-                        unset($_SESSION['idVisite']);
+//                        unset($_SESSION['idVisite']);
                     }
                 }
                 ?>
