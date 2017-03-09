@@ -1,15 +1,69 @@
 <?php
 include('patientendaten.php');
-include('komorbiditaeten.php');
-include('schwere_pasi.php');
+include('schwere_arzt.php');
 include('schwere_patient.php');
-include('dlqi.php');
 include('therapien_erfolgt.php');
 include('therapien_empfohlen.php');
 include('therapien_rs.php');
 include('config.inc.php');
 
 session_start();
+
+$_SESSION['idExperte'] = 12;
+$patienten = array(); // liste mit allen patienten im system
+$visiten = array(); // liste mit allen visiten für einen ausgewählten patienten
+$idPatient = ''; // ausgewählter patient id
+$idPatientPrev = ''; // neuer patient ausgewählt?
+$idVisite = ''; // ausgewählte visite id
+$numVisite = ''; // ausgewählte visite number
+//$cmd = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\main.exe"';
+//$outputfile = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\out.log"';
+//$pidfile = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\pid.log"';
+//pclose(popen("start /B ". $cmd, "r"));
+//pclose(popen("start /B ". $cmd, "r"));
+//$out = '';
+//$return_var = '';
+//exec($cmd);
+//$handle = popen($cmd,"r");
+//$handle = popen($cmd, "r");$outputfile
+//$outputfile = ''; 
+//exec(sprintf("%s > %s 2>&1 & echo $! >> %s", $cmd, $outputfile, $pidfile));
+//echo sprintf("%s > %s 2>&1", $cmd, $outputfile);
+//exec(sprintf("%s > %s 2>&1", $cmd, $outputfile));
+//$output = shell_exec($cmd);
+//echo "<pre>$output</pre>";
+//$descriptorspec = array(
+//   0 => array("pipe", "r"),  // STDIN ist eine Pipe, von der das Child liest
+////   1 => array("pipe", "w"),  // STDOUT ist eine Pipe, in die das Child schreibt
+////   2 => array("file", $outputfile, "a") // STDERR ist eine Datei,
+////   0 => array("file", "error-output.txt", "r"), // STDOUT ist eine Datei,
+//   1 => array("file", "output.txt", "w"), // STDOUT ist eine Datei,
+//   2 => array("file", "error-output.txt", "w") // STDERR ist eine Datei,
+//                                                    // in die geschrieben wird
+//);
+//
+////$cwd = '/tmp';
+//$env = array('some_option' => 'aeiou');
+//$process = proc_open('php', $descriptorspec, $pipes, $cwd, $env);
+//$process = proc_open("start /b \"\" " .$cmd, $descriptorspec, $pipes);
+//pclose(popen("start /B \"\" " . $cmd, "a"));  // mode = "a" since I had some logs to edit
+//pclose(popen($cmd, "r"));
+//start /b "" "c:\Program Files\Wireshark\tshark.exe" -i 1 -w file1.pcap
+//if (!isset($_SESSION['process']) || is_resource($_SESSION['process'])) {
+//    $_SESSION['process'] = proc_open("start /b \"\" " .$cmd, $descriptorspec, $pipes);
+// $pipes sieht nun so aus:
+// 0 => Schreibhandle, das auf das Child STDIN verbunden ist
+// 1 => Lesehandle, das auf das Child STDOUT verbunden ist
+// Jedwede Fehlerausgaben werden an /tmp/error-output.txt angefügt
+//    fwrite($pipes[0], 0);
+//    fclose($pipes[0]);
+//    echo stream_get_contents($pipes[1]);
+//    fclose($pipes[1]);
+// Es ist wichtig, dass Sie alle Pipes schließen bevor Sie
+// proc_close aufrufen, um Deadlocks zu vermeiden
+//    $return_value = proc_close($process);
+//    echo "Rückgabewert des Kommandos: $return_value\n";
+//}
 ?>
 
 <html lang="en">
@@ -24,10 +78,10 @@ session_start();
         <title>Therapieempfehlungssystem</title>
 
         <!-- Bootstrap Core CSS -->
-        <link href="css/bootstrap.css" rel="stylesheet">
+        <!--<link href="css/bootstrap.css" rel="stylesheet">-->
 
         <!-- Custom CSS -->
-        <link href="css/custom.css" rel="stylesheet">
+        <!--<link href="css/custom.css" rel="stylesheet">-->
 
         <!-- Custom Fonts from Google -->
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
@@ -35,6 +89,11 @@ session_start();
     </head>
 
     <body>
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="js/bootstrap.min.js"></script>
 
         <?php
         if (!isset($_GET['action'])) {
@@ -50,8 +109,7 @@ session_start();
                 ?>
 
                 <?php
-                // fill patienten array
-                $patienten = array();
+// fill patienten array
                 $results = mysql_query("SELECT * FROM tblPatient");
                 while ($row = mysql_fetch_array($results)) {
                     $patienten[] = $row['IDPatient'];
@@ -59,58 +117,68 @@ session_start();
                 ?>
 
                 <?php
+                if (isset($_SESSION['idPatient'])) {
+                    $idPatientPrev = $_SESSION['idPatient'];
+                }
                 
-// input selected patient
-                $visiten = array();
-                $patient = '';
-                $results = '';
                 if (isset($_POST['selPatient'])) {
                     if ($_POST['selPatient'] != '') {
+
                         // set idPatient
-                        $patient = $patienten[$_POST['selPatient']];
+                        $idPatient = $_POST['selPatient'];
+
                         // fill visiten array
-                        $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $patient ORDER BY NumVisite ASC");
+                        $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
                         while ($row = mysql_fetch_array($results)) {
                             $visiten[$row['NumVisite']] = $row['IDVisite'];
                         }
                         // set global variables
-                        $_SESSION['idPatient'] = $patient;
+                        $_SESSION['idPatient'] = $idPatient;
                         $_SESSION['visiten'] = $visiten;
 
-//                        unset($_SESSION['idVisite']);
-                        $_SESSION['idVisite'] = '';
-                        // unset selected visite
-//                        unset($_POST['selVisite']);
-//                        unset($_POST['selPatient']);
                     } else {
                         // unset global variables
-//                        unset($_SESSION['idPatient']);
+                        unset($_SESSION['idPatient']);
 //                        unset($_SESSION['idVisite']);
-//                        unset($_SESSION['visiten']);
+                        unset($_SESSION['visiten']);
+                    }
+                    
+                    // reset selected visite if new patient selected
+                    if ($idPatientPrev != $idPatient) {
+                        unset($_POST['selVisite']);
+                        unset($_SESSION['idVisite']);
                     }
                 }
 
-                // input selected visite
-                $visiten = array();
-                $idVisite = '';
+//        // input selected visite
                 if (isset($_POST['selVisite'])) {
-//                    if (isset($_SESSION['idPatient']) && isset($_POST['selVisite']) && isset($_SESSION['visiten']) && $_POST['selVisite'] >= 0) {
                     if ($_POST['selVisite'] != '') {
-                        // set visite
-                        $idVisite = $_POST['selVisite'];
-                        // set global variables
+                        
+                        // set numVisite
+                        $numVisite = $_POST['selVisite'];
+    
+                       // set global variables
                         $visiten = $_SESSION['visiten'];
-                        $_SESSION['idVisite'] = $visiten[$idVisite];
+                        $_SESSION['idVisite'] = $visiten[$numVisite];
 
-                        // unset selected patient
-//                        unset($_POST['selVisite']);
-//                    print($_SESSION['idVisite']);
                     } else {
+                        
                         // unset global variables
-//                        unset($_SESSION['idVisite']);
+                        unset($_SESSION['idVisite']);
                     }
                 }
+
+//        // write IDPatient and selVisite to input table
+//        if (isset($_POST['selVisite'])) {
+//            if ($_POST['selVisite'] != '') {
+//                // write IDPatient and selVisite to input file
+//                $patient = $_SESSION['idPatient'];
+//                $idVisite = $_SESSION['idVisite'];
+//                $results = mysql_query("INSERT INTO tblinput (Patient, NumVisite) VALUES ($patient, $idVisite)");
+//            }
+//        }
                 ?>
+
 
                 <h2>Therapieempfehlungssystem</h2>
                 <p>Herzlich Wilkommen</p>
@@ -148,11 +216,12 @@ session_start();
                                             <select onchange="this.form.submit()" class="form-control" name="selVisite" id="sel1">
                                             <!--<select class="form-control" name = "selVisite" id="sel1">-->
                                                 <!--<option disabled selected value></option>-->
+
                                                 <option></option>
                                                 <?php
                                                 $visiten = $_SESSION['visiten'];
-                                                foreach ($visiten as $numVisite => $idVisite) {
-                                                    if ($_SESSION['idVisite'] == $idVisite) {
+                                                foreach ($visiten as $numVisite => $visite) {
+                                                    if ($_SESSION['idVisite'] == $visite) {
                                                         echo "<option selected>$numVisite</option>";
                                                     } else {
                                                         echo "<option>$numVisite</option>";
@@ -194,13 +263,11 @@ session_start();
 
                 <ul class="nav nav-tabs">
                     <li role="presentation" <?php if ($_GET['action'] == 'patientendaten') echo " class=\"active\""; ?>><a href="index.php?action=patientendaten">Patientendaten</a></li>
-                    <li role="presentation" <?php if ($_GET['action'] == 'komorbiditaeten') echo " class=\"active\""; ?>><a href="index.php?action=komorbiditaeten">Komorbiditäten</a></li>
-                    <li role="presentation" <?php if ($_GET['action'] == 'schwere_pasi') echo " class=\"active\""; ?>><a href="index.php?action=schwere_pasi">PASI</a></li>
-                    <li role="presentation" <?php if ($_GET['action'] == 'schwere_patient') echo " class=\"active\""; ?>><a href="index.php?action=schwere_patient">Patienteneinschätzung</a></li>
-                    <li role="presentation" <?php if ($_GET['action'] == 'dlqi') echo " class=\"active\""; ?>><a href="index.php?action=dlqi">DLQI</a></li>
-                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_erfolgt') echo " class=\"active\""; ?>><a href="index.php?action=therapien_erfolgt">Erfolgte Therapien</a></li>
-                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_empfohlen') echo " class=\"active\""; ?>><a href="index.php?action=therapien_empfohlen">Aktuelle Therapie</a></li>
-                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_rs') echo " class=\"active\""; ?>><a href="index.php?action=therapien_rs">Empfohlene Therapie</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'schwere_arzt') echo " class=\"active\""; ?>><a href="index.php?action=schwere_arzt">Einschätzung Arzt</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'schwere_patient') echo " class=\"active\""; ?>><a href="index.php?action=schwere_patient">Einschätzung Patient</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_erfolgt') echo " class=\"active\""; ?>><a href="index.php?action=therapien_erfolgt">Therapien Erfolgt</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_empfohlen') echo " class=\"active\""; ?>><a href="index.php?action=therapien_empfohlen">Therapieempfehlung Arzt</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_rs') echo " class=\"active\""; ?>><a href="index.php?action=therapien_rs">Therapieempfehlung System</a></li>
                 </ul>
 
             </div>
@@ -211,14 +278,10 @@ session_start();
                 if (isset($_SESSION['idVisite']) && $_SESSION['idVisite'] != '') {
                     if ($_GET['action'] == 'patientendaten') {
                         show_patientendaten();
-                    } else if ($_GET['action'] == 'komorbiditaeten') {
-                        show_komorbiditaeten();
-                    } else if ($_GET['action'] == 'schwere_pasi') {
-                        show_schwere_pasi();
+                    } else if ($_GET['action'] == 'schwere_arzt') {
+                        show_schwere_arzt();
                     } else if ($_GET['action'] == 'schwere_patient') {
                         show_schwere_patient();
-                    } else if ($_GET['action'] == 'dlqi') {
-                        show_dlqi();
                     } else if ($_GET['action'] == 'therapien_erfolgt') {
                         show_therapien_erfolgt();
                     } else if ($_GET['action'] == 'therapien_empfohlen') {
