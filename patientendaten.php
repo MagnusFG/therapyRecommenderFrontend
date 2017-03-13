@@ -1,8 +1,9 @@
 <?php
 
-function show_patientendaten() {
+function show_patientendaten($disabled) {
 
     $select = 0;
+    
 
 // Daten Patient
     $patient = $_SESSION['idPatient'];
@@ -83,14 +84,14 @@ function show_patientendaten() {
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Geburtsjahr:</span>
-                        <input type="number" disabled value="<?php echo $geburtJahr; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
+                        <input type="number" <?php echo $disabled; ?> value="<?php echo $geburtJahr; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Geschlecht:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 if ($geschlecht == 1) {
                                     echo "<option selected>männlich</option>";
@@ -108,13 +109,13 @@ function show_patientendaten() {
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Gewicht (kg):</span>
-                        <input type="number" disabled value="<?php echo $gewicht; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
+                        <input type="number" <?php echo $disabled; ?> value="<?php echo $gewicht; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Größe (cm):</span>
-                        <input type="number" disabled value="<?php echo $groesse; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
+                        <input type="number" <?php echo $disabled; ?> value="<?php echo $groesse; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
             </div><!-- /.row -->
@@ -126,7 +127,7 @@ function show_patientendaten() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">In Partnerschaft lebend:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 if ($familienstandJa == 1) {
                                     echo "<option selected>ja</option>";
@@ -144,7 +145,7 @@ function show_patientendaten() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Kinderwunsch</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$kinderwunsch</option>";
                                 ?>
@@ -161,7 +162,7 @@ function show_patientendaten() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Bildungsstand:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$bildungsstand</option>";
                                 ?>
@@ -173,7 +174,7 @@ function show_patientendaten() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Berufsstand:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$berufsstand</option>";
                                 ?>
@@ -195,14 +196,14 @@ function show_patientendaten() {
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Erstdiagnose:</span>
-                        <input type="number" disabled value="<?php echo $erstdiagnoseJahr; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">                                                      <!--<input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">-->
+                        <input type="number" <?php echo $disabled; ?> value="<?php echo $erstdiagnoseJahr; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">                                                      <!--<input type="text" class="form-control" placeholder="" aria-describedby="basic-addon1">-->
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Familienanamnese</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$familienanamnese</option>";
                                 ?>
@@ -219,7 +220,7 @@ function show_patientendaten() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Psoriasistyp 1:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$psoriasistyp1</option>";
                                 ?>
@@ -234,7 +235,7 @@ function show_patientendaten() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Psoriasistyp 2:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$psoriasistyp2</option>";
                                 ?>
@@ -249,7 +250,7 @@ function show_patientendaten() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Psoriasistyp 3:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$psoriasistyp3</option>";
                                 ?>
@@ -292,7 +293,7 @@ function show_patientendaten() {
                     <form class="questionblock" action="" method="post">
 
                         <td style="text-align: right;">
-                            <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapieExperte'] ?>]" value="x">
+                            <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapieExperte'] ?>]" value="x" <?php echo $disabled; ?>>
                                 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                             </button>
                         </td>
@@ -313,7 +314,7 @@ function show_patientendaten() {
         <form class="questionblock" action="" method="post">
 
             <p>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsePasiCalculator" aria-expanded="false" aria-controls="collapsePasiCalculator">
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsePasiCalculator" aria-expanded="false" aria-controls="collapsePasiCalculator" <?php echo $disabled; ?>>
                     Komorbiditäten hinzufügen
                 </button>
             </p>
@@ -396,7 +397,7 @@ function show_patientendaten() {
 
                                     <a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
 
-                                    <button type="submit" class="btn btn-success btn-lg" name="speichern" value="Therapieempfehlung speichern">
+                                    <button type="submit" class="btn btn-success btn-lg" name="speichern" value="Komorbidität speichern">
                                         <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                                     </button>
 

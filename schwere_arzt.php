@@ -1,6 +1,6 @@
 <?php
 
-function show_schwere_arzt() {
+function show_schwere_arzt($disabled) {
 
     // Daten Visite
     $visite = $_SESSION['idVisite'];
@@ -19,7 +19,7 @@ function show_schwere_arzt() {
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">PASI Score:</span>
-                        <input type="number" disabled value="<?php echo $pasi; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
+                        <input type="number" <?php echo $disabled; ?> value="<?php echo $pasi; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->                    
             </div><!-- /.row -->     
@@ -28,7 +28,7 @@ function show_schwere_arzt() {
             </br>
 
             <p>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsePasiCalculator" aria-expanded="false" aria-controls="collapsePasiCalculator">
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsePasiCalculator" aria-expanded="false" aria-controls="collapsePasiCalculator" <?php echo $disabled; ?>>
                     PASI Score Detail
                 </button>
             </p>
@@ -45,7 +45,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Rötung:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['HalsRötung'];
                                         echo "<option selected>$val</option>";
@@ -58,7 +58,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Infiltration:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['HalsInfiltration'];
                                         echo "<option selected>$val</option>";
@@ -74,7 +74,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Schuppung:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['HalsSchuppung'];
                                         echo "<option selected>$val</option>";
@@ -87,7 +87,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Fläche:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['HalsFlaeche'];
                                         echo "<option selected>$val</option>";
@@ -107,7 +107,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Rötung:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['StammRötung'];
                                         echo "<option selected>$val</option>";
@@ -120,7 +120,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Infiltration:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['StammInfiltration'];
                                         echo "<option selected>$val</option>";
@@ -136,7 +136,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Schuppung:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['StammSchuppung'];
                                         echo "<option selected>$val</option>";
@@ -149,7 +149,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Fläche:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['StammFlaeche'];
                                         echo "<option selected>$val</option>";
@@ -169,7 +169,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Rötung:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['ArmeRötung'];
                                         echo "<option selected>$val</option>";
@@ -182,7 +182,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Infiltration:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['ArmeInfiltration'];
                                         echo "<option selected>$val</option>";
@@ -198,7 +198,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Schuppung:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['ArmeSchuppung'];
                                         echo "<option selected>$val</option>";
@@ -211,7 +211,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Fläche:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['ArmeFlaeche'];
                                         echo "<option selected>$val</option>";
@@ -231,7 +231,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Rötung:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['BeineRötung'];
                                         echo "<option selected>$val</option>";
@@ -244,7 +244,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Infiltration:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['BeineInfiltration'];
                                         echo "<option selected>$val</option>";
@@ -260,7 +260,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Schuppung:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['BeineSchuppung'];
                                         echo "<option selected>$val</option>";
@@ -273,7 +273,7 @@ function show_schwere_arzt() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Fläche:</span>
                                 <div class="form-group">
-                                    <select disabled class="form-control" id="sel1">
+                                    <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $val = $row['BeineFlaeche'];
                                         echo "<option selected>$val</option>";

@@ -9,6 +9,9 @@ include('config.inc.php');
 
 session_start();
 
+$disabled = "disabled";
+//$disabled = '';
+
 $_SESSION['idExperte'] = 12;
 $patienten = array(); // liste mit allen patienten im system
 $visiten = array(); // liste mit allen visiten für einen ausgewählten patienten
@@ -314,15 +317,15 @@ $disabledButtonPatient = ''; // disable buttons
                 <?php
                 if (isset($_SESSION['idVisite']) && $_SESSION['idVisite'] != '') {
                     if ($_GET['action'] == 'patientendaten') {
-                        show_patientendaten();
+                        show_patientendaten($disabled);
                     } else if ($_GET['action'] == 'schwere_arzt') {
-                        show_schwere_arzt();
+                        show_schwere_arzt($disabled);
                     } else if ($_GET['action'] == 'schwere_patient') {
-                        show_schwere_patient();
+                        show_schwere_patient($disabled);
                     } else if ($_GET['action'] == 'therapien_erfolgt') {
-                        show_therapien_erfolgt();
+                        show_therapien_erfolgt($disabled);
                     } else if ($_GET['action'] == 'therapien_empfohlen') {
-                        show_therapien_empfohlen();
+                        show_therapien_empfohlen($disabled);
                     } else if ($_GET['action'] == 'therapien_rs') {
                         show_therapien_rs();
                     }
