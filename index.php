@@ -9,6 +9,9 @@ include('config.inc.php');
 
 session_start();
 
+$disabled = "disabled";
+//$disabled = '';
+
 $_SESSION['idExperte'] = 12;
 $patienten = array(); // liste mit allen patienten im system
 $visiten = array(); // liste mit allen visiten für einen ausgewählten patienten
@@ -78,10 +81,10 @@ $numVisite = ''; // ausgewählte visite number
         <title>Therapieempfehlungssystem</title>
 
         <!-- Bootstrap Core CSS -->
-        <!--<link href="css/bootstrap.css" rel="stylesheet">-->
+        <link href="css/bootstrap.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <!--<link href="css/custom.css" rel="stylesheet">-->
+        <link href="css/custom.css" rel="stylesheet">
 
         <!-- Custom Fonts from Google -->
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
@@ -277,15 +280,15 @@ $numVisite = ''; // ausgewählte visite number
                 <?php
                 if (isset($_SESSION['idVisite']) && $_SESSION['idVisite'] != '') {
                     if ($_GET['action'] == 'patientendaten') {
-                        show_patientendaten();
+                        show_patientendaten($disabled);
                     } else if ($_GET['action'] == 'schwere_arzt') {
-                        show_schwere_arzt();
+                        show_schwere_arzt($disabled);
                     } else if ($_GET['action'] == 'schwere_patient') {
-                        show_schwere_patient();
+                        show_schwere_patient($disabled);
                     } else if ($_GET['action'] == 'therapien_erfolgt') {
-                        show_therapien_erfolgt();
+                        show_therapien_erfolgt($disabled);
                     } else if ($_GET['action'] == 'therapien_empfohlen') {
-                        show_therapien_empfohlen();
+                        show_therapien_empfohlen($disabled);
                     } else if ($_GET['action'] == 'therapien_rs') {
                         show_therapien_rs();
                     }

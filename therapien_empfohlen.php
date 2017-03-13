@@ -1,6 +1,6 @@
 <?php
 
-function show_therapien_empfohlen() {
+function show_therapien_empfohlen($disabled) {
 
 // Daten Patient
     $patient = $_SESSION['idPatient'];
@@ -82,10 +82,12 @@ function show_therapien_empfohlen() {
             <thead>
                 <tr>
                     <th>Therapie</th>
-                    <th>Typ</th>                    
+                    <th>Typ</th>
                     <th>Dosierung</th>
-                    <th>Maßeinheit</th>                  
+                    <th>Maßeinheit</th>
                     <th>Verabreichung</th>
+                    <th>Wirksamkeit</th>
+                    <th>UAW</th>
                     <th>Löschen</th>
                 </tr>
             </thead>
@@ -175,9 +177,27 @@ function show_therapien_empfohlen() {
                 }
                 ?>
                 <td><?php echo $val ?></td>                
+                <?php
+                $val = '';
+                if (isset($row['Wirksamkeit'])) {
+                    $tmp = $row['Wirksamkeit'];
+                    $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
+                    $rowTmp = mysql_fetch_array($results);
+                    $val = $rowTmp['TherapieWirksamkeit'];
+                }
+                ?>
+                <td><?php echo $val ?></td>                             
+
+                <?php
+                if ($row['UAWja'] == 1) {
+                    echo "<td>ja</td>";
+                } else {
+                    echo "<td></td>";
+                }
+                ?>
 
                 <td style="text-align: right;">
-                    <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapieExperte'] ?>]" value="x">
+                    <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapieExperte'] ?>]" value="x"<?php echo $disabled; ?>>
                         <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                     </button>
                 </td>
@@ -189,13 +209,13 @@ function show_therapien_empfohlen() {
             ?>
             </tbody>
         </table>
-        
+
         </br>
         </br>
 
         <form class="questionblock" action="" method="post">
             <p>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseTherapieArztNeu" aria-expanded="false" aria-controls="collapseTherapieArztNeu">
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseTherapieArztNeu" aria-expanded="false" aria-controls="collapseTherapieArztNeu" <?php echo $disabled; ?>>
                     Therapien hinzufügen
                 </button>
             </p>

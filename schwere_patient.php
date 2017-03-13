@@ -1,6 +1,6 @@
 <?php
 
-function show_schwere_patient() {
+function show_schwere_patient($disabled) {
 
     // Daten Visite
     $visite = $_SESSION['idVisite'];
@@ -71,7 +71,7 @@ function show_schwere_patient() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Behandlung umgesetzt?</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$behandlung</option>";
                                 ?>
@@ -90,7 +90,7 @@ function show_schwere_patient() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">geschätze Schwere: </span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$schwere</option>";
                                 ?>
@@ -109,7 +109,7 @@ function show_schwere_patient() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Gesicht:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$veraenderungGesicht</option>";
                                 ?>
@@ -124,7 +124,7 @@ function show_schwere_patient() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Füße:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$veraenderungFuesse</option>";
                                 ?>
@@ -139,7 +139,7 @@ function show_schwere_patient() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Nägel:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$veraenderungNaegel</option>";
                                 ?>
@@ -154,7 +154,7 @@ function show_schwere_patient() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Hände:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$veraenderungHaende</option>";
                                 ?>
@@ -169,7 +169,7 @@ function show_schwere_patient() {
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">Genital:</span>
                         <div class="form-group">
-                            <select disabled class="form-control" id="sel1">
+                            <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 echo "<option selected>$veraenderungGenital</option>";
                                 ?>
@@ -192,7 +192,7 @@ function show_schwere_patient() {
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">DLQI Score:</span>
-                        <input type="number" disabled value="<?php echo $dlqi; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
+                        <input type="number" <?php echo $disabled; ?> value="<?php echo $dlqi; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->                    
             </div><!-- /.row -->     
@@ -201,7 +201,7 @@ function show_schwere_patient() {
             </br>
 
             <p>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsePasiCalculator" aria-expanded="false" aria-controls="collapsePasiCalculator">
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsePasiCalculator" aria-expanded="false" aria-controls="collapsePasiCalculator" <?php echo $disabled; ?>>
                     DLQI Score Detail
                 </button>
             </p>
@@ -227,7 +227,7 @@ function show_schwere_patient() {
                             <div class = "input-group">
                                 <span class = "input-group-addon" id = "basic-addon1">Bewertung:</span>
                                 <div class = "form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -255,7 +255,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -283,7 +283,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -294,7 +294,7 @@ function show_schwere_patient() {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" disabled aria-label="...">
+                                    <input type="checkbox" <?php echo $disabled; ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -319,7 +319,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -330,7 +330,7 @@ function show_schwere_patient() {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" disabled aria-label="...">
+                                    <input type="checkbox" <?php echo $disabled; ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -355,7 +355,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -366,7 +366,7 @@ function show_schwere_patient() {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" disabled aria-label="...">
+                                    <input type="checkbox" <?php echo $disabled; ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -391,7 +391,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -402,7 +402,7 @@ function show_schwere_patient() {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" disabled aria-label="...">
+                                    <input type="checkbox" <?php echo $disabled; ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -427,7 +427,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -438,7 +438,7 @@ function show_schwere_patient() {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" disabled aria-label="...">
+                                    <input type="checkbox" <?php echo $disabled; ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -463,7 +463,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -474,7 +474,7 @@ function show_schwere_patient() {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" disabled aria-label="...">
+                                    <input type="checkbox" <?php echo $disabled; ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -499,7 +499,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -510,7 +510,7 @@ function show_schwere_patient() {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" disabled aria-label="...">
+                                    <input type="checkbox" <?php echo $disabled; ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -535,7 +535,7 @@ function show_schwere_patient() {
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon" id="basic-addon1">Bewertung:</span>
                                 <div class="form-group">
-                                    <select disabled class = "form-control" id = "sel1">
+                                    <select <?php echo $disabled; ?> class = "form-control" id = "sel1">
                                         <?php
                                         echo "<option selected>$val</option>";
                                         ?>
@@ -546,7 +546,7 @@ function show_schwere_patient() {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" disabled aria-label="...">
+                                    <input type="checkbox" <?php echo $disabled; ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
