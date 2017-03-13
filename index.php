@@ -16,6 +16,10 @@ $idPatient = ''; // ausgewählter patient id
 $idPatientPrev = ''; // neuer patient ausgewählt?
 $idVisite = ''; // ausgewählte visite id
 $numVisite = ''; // ausgewählte visite number
+$disabled = 'disabled'; // disbable intput / output element
+$disabledSelect = ''; // disable select patient / visite
+$disabledButtonVisite = ''; // disable buttons
+$disabledButtonPatient = ''; // disable buttons
 //$cmd = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\main.exe"';
 //$outputfile = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\out.log"';
 //$pidfile = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\pid.log"';
@@ -78,10 +82,10 @@ $numVisite = ''; // ausgewählte visite number
         <title>Therapieempfehlungssystem</title>
 
         <!-- Bootstrap Core CSS -->
-        <!--<link href="css/bootstrap.css" rel="stylesheet">-->
+        <link href="css/bootstrap.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <!--<link href="css/custom.css" rel="stylesheet">-->
+        <link href="css/custom.css" rel="stylesheet">
 
         <!-- Custom Fonts from Google -->
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
@@ -167,6 +171,29 @@ $numVisite = ''; // ausgewählte visite number
                         unset($_SESSION['idVisite']);
                     }
                 }
+                
+                // Button Visite Neu verarbeiten
+        if (isset($_POST['visite_neu'])) { // wenn visite neu gedrueckt, ...
+// ... aktiviere Eingaben
+            $disabled = '';
+// ... disable Auswahl Patient und Visite
+            $disabledSelect = 'disabled';
+            $disabledButtonPatient = 'disabled';
+// ... finde letzte Visite
+            // find last element $visiten
+            // $numVisite = last element + 1;
+            // insert and load
+            // $_SESSION['idVisite'] = $visiten[$numVisite];
+        }
+        
+                // Button Patient Neu verarbeiten
+        if (isset($_POST['patient_neu'])) { // wenn visite neu gedrueckt, ...
+// ... aktiviere Eingaben
+            $disabled = '';
+// ... disable Auswahl Patient und Visite
+            $disabledSelect = 'disabled';
+            $disabledButtonVisite = 'disabled';
+        }        
 
 //        // write IDPatient and selVisite to input table
 //        if (isset($_POST['selVisite'])) {
@@ -193,14 +220,14 @@ $numVisite = ''; // ausgewählte visite number
                                     <div class="input-group" style="margin: 5px">
                                         <span class="input-group-addon" id="basic-addon1">Patient:</span>
                                         <div class="form-group">
-                                            <select onchange="this.form.submit()" class="form-control" name="selPatient" id="sel2">
+                                            <select <?php echo "$disabledSelect" ?> onchange="this.form.submit()" class="form-control" name="selPatient" id="sel2">
                                                 <option></option>
                                                 <?php
                                                 foreach ($patienten as $idPatient) {
                                                     if ($_SESSION['idPatient'] == $idPatient) {
                                                         echo "<option selected>$idPatient</option>";
                                                     } else {
-                                                        echo "<option>$idPatient</option>";
+                                                        echo "<option >$idPatient</option>";
                                                     }
                                                 }
                                                 ?> 
@@ -213,7 +240,7 @@ $numVisite = ''; // ausgewählte visite number
                                     <div class="input-group" style="margin: 5px">
                                         <span class="input-group-addon" id="basic-addon1">Visite:</span>
                                         <div class="form-group">
-                                            <select onchange="this.form.submit()" class="form-control" name="selVisite" id="sel1">
+                                            <select <?php echo "$disabledSelect" ?> onchange="this.form.submit()" class="form-control" name="selVisite" id="sel1">
                                             <!--<select class="form-control" name = "selVisite" id="sel1">-->
                                                 <!--<option disabled selected value></option>-->
 
@@ -239,7 +266,12 @@ $numVisite = ''; // ausgewählte visite number
                                     <div class="input-group" style="margin: 5px">
                                         <div class="btn-group btn-group-justified" role="group" aria-label="...">
                                             <div class="btn-group" role="group">
-                                                <button type="submit" class="btn btn-default" name="submit_speichern">Patient Neu</button>
+                                                <?php if ($disabledButtonVisite == '') {
+                                                    echo "<button $disabledButtonPatient type=\"submit\" class=\"btn btn-default\" name=\"patient_neu\">Patient Neu</button>";
+                                                } else {
+                                                    echo "<button $disabledButtonPatient type=\"submit\" class=\"btn btn-default\" name=\"fertig\">Fertig</button>";
+                                                }
+                                                ?>                                                
                                             </div>
                                         </div>
                                     </div> 
@@ -249,7 +281,12 @@ $numVisite = ''; // ausgewählte visite number
                                     <div class="input-group" style="margin: 5px">
                                         <div class="btn-group btn-group-justified" role="group" aria-label="...">
                                             <div class="btn-group" role="group">
-                                                <button type="submit" class="btn btn-default" name="submit_speichern">Visite Neu</button>
+                                                <?php if ($disabledButtonPatient == '') {
+                                                    echo "<button $disabledButtonVisite type=\"submit\" class=\"btn btn-default\" name=\"visite_neu\">Visite Neu</button>";
+                                                } else {
+                                                    echo "<button $disabledButtonVisite type=\"submit\" class=\"btn btn-default\" name=\"fertig\">Fertig</button>";
+                                                }
+                                                ?>
                                             </div>
                                         </div>
                                     </div> 
