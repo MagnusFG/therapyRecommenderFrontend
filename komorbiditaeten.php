@@ -33,7 +33,7 @@ function show_komorbiditaeten() {
                         <td><?php echo $row['ErkrankungsfreiSeit'] ?></td>
 
                         <td style="text-align: right;">
-                            <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapieExperte'] ?>]" value="x">
+                            <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDKomorbiditaet'] ?>]" value="x">
                                 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                             </button>
                         </td>

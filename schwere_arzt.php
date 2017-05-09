@@ -47,8 +47,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['HalsRötung'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -60,8 +66,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['HalsInfiltration'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -76,8 +88,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['HalsSchuppung'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -88,9 +106,15 @@ function show_schwere_arzt($disabled) {
                                 <span class="input-group-addon" id="basic-addon1">Fläche:</span>
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
-                                        <?php
-                                        $val = $row['HalsFlaeche'];
-                                        echo "<option selected>$val</option>";
+                                         <?php
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiFläche'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -109,8 +133,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['StammRötung'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -122,8 +152,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['StammInfiltration'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -138,8 +174,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['StammSchuppung'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -151,8 +193,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['StammFlaeche'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiFläche'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -171,8 +219,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['ArmeRötung'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -184,8 +238,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['ArmeInfiltration'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -200,9 +260,15 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['ArmeSchuppung'];
-                                        echo "<option selected>$val</option>";
-                                        ?>
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
+                                        ?>>
                                     </select>
                                 </div>
                             </div><!-- /input-group -->
@@ -213,8 +279,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['ArmeFlaeche'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiFläche'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -233,8 +305,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['BeineRötung'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -245,9 +323,15 @@ function show_schwere_arzt($disabled) {
                                 <span class="input-group-addon" id="basic-addon1">Infiltration:</span>
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
-                                        <?php
-                                        $val = $row['BeineInfiltration'];
-                                        echo "<option selected>$val</option>";
+                                         <?php
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -262,8 +346,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['BeineSchuppung'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiIndikator'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>
@@ -275,8 +365,14 @@ function show_schwere_arzt($disabled) {
                                 <div class="form-group">
                                     <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
-                                        $val = $row['BeineFlaeche'];
-                                        echo "<option selected>$val</option>";
+                                        $selected = '';
+                                        $results = mysql_query("SELECT * FROM tblPasiScore");
+                                        echo "<option disabled selected value></option>";
+                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                            $valTmp = $rowTmp['intPasiScore'];
+                                            $nameTmp = $rowTmp['txtPasiFläche'];
+                                            echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                        }
                                         ?>
                                     </select>
                                 </div>

@@ -56,7 +56,7 @@ function show_therapien_erfolgt($disabled) {
                 <?php
                 $therapie = mysql_query("SELECT * FROM tblTherapieJemals WHERE Patient = $patient");
                 while ($row = mysql_fetch_array($therapie)) {
-//                            print_r($row);
+                    echo "<tr>";
                     $val = '';
                     if (isset($row['Therapie'])) {
                         $tmp = $row['Therapie'];
@@ -142,7 +142,7 @@ function show_therapien_erfolgt($disabled) {
                 ?>
 
                 <td style="text-align: right;">
-                    <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapieExperte'] ?>]" value="x"<?php echo $disabled; ?>>
+                    <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapie'] ?>]" value="x"<?php echo $disabled; ?>>
                         <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                     </button>
                 </td>
@@ -183,10 +183,15 @@ function show_therapien_erfolgt($disabled) {
                                             <select class="form-control" id="sel1" name="therapie">
                                                 <option selected></option>
                                                 <?php
-                                                foreach ($therapies as $i => $val) {
-                                                    echo "<option value=\"$i\">$val</option>";
+                                                $selected = '';
+                                                $results = mysql_query("SELECT * FROM tbltherapiename WHERE Typ = 2");
+                                                echo "<option disabled selected value></option>";
+                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                    $valTmp = $rowTmp['IDTherapie'];
+                                                    $nameTmp = $rowTmp['Name'];
+                                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                                 }
-                                                ?> 
+                                                ?>
                                             </select>
                                         </div>
                                     </div><!-- /input-group -->
@@ -203,10 +208,15 @@ function show_therapien_erfolgt($disabled) {
                                             <select class="form-control" id="sel1" name="verabreichung">
                                                 <option selected></option>
                                                 <?php
-                                                foreach ($verabreichungen as $i => $val) {
-                                                    echo "<option value=\"$i\">$val</option>";
+                                                $selected = '';
+                                                $results = mysql_query("SELECT * FROM tbltherapieverabreichung");
+                                                echo "<option disabled selected value></option>";
+                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                    $valTmp = $rowTmp['IDTherapieVerabreichung'];
+                                                    $nameTmp = $rowTmp['TherapieVerabreichung'];
+                                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                                 }
-                                                ?> 
+                                                ?>
                                             </select>
                                         </div>    
                                     </div><!-- /input-group -->
@@ -229,8 +239,13 @@ function show_therapien_erfolgt($disabled) {
                                             <select class="form-control" id="sel1" name="masseinheit">
                                                 <option selected></option>
                                                 <?php
-                                                foreach ($masseinheiten as $i => $val) {
-                                                    echo "<option value=\"$i\">$val</option>";
+                                                $selected = '';
+                                                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit");
+                                                echo "<option disabled selected value></option>";
+                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                    $valTmp = $rowTmp['IDMaßeinheit'];
+                                                    $nameTmp = $rowTmp['Maßeinheit'];
+                                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                                 }
                                                 ?> 
                                             </select>
@@ -253,8 +268,13 @@ function show_therapien_erfolgt($disabled) {
                                             <select class="form-control" id="sel1" name="masseinheitkombi">
                                                 <option selected></option>
                                                 <?php
-                                                foreach ($masseinheiten as $i => $val) {
-                                                    echo "<option value=\"$i\">$val</option>";
+                                                $selected = '';
+                                                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit");
+                                                echo "<option disabled selected value></option>";
+                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                    $valTmp = $rowTmp['IDMaßeinheit'];
+                                                    $nameTmp = $rowTmp['Maßeinheit'];
+                                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                                 }
                                                 ?> 
                                             </select>
@@ -285,9 +305,6 @@ function show_therapien_erfolgt($disabled) {
             </div>
         </form>
     </div>
-
-
-
     <?php
 }
 ?>

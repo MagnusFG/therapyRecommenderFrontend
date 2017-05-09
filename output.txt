@@ -1,0 +1,34 @@
+executing gpml startup script...
+Warning: Name is nonexistent or not a directory: C:\Users\FELIXG~1\AppData\Local\Temp\Felix Gräßer\mcrCache8.4\main_72\daten\Promotion TUD\Arbeit\Metric Learning\mlcircus-lmnn-5b49cafaeb9a\lmnn3\lmnncore\gpml\cov
+[> In path at 109
+  In addpath at 86
+  In startup at 16] 
+Warning: Name is nonexistent or not a directory: C:\Users\FELIXG~1\AppData\Local\Temp\Felix Gräßer\mcrCache8.4\main_72\daten\Promotion TUD\Arbeit\Metric Learning\mlcircus-lmnn-5b49cafaeb9a\lmnn3\lmnncore\gpml\doc
+[> In path at 109
+  In addpath at 86
+  In startup at 17] 
+Warning: Name is nonexistent or not a directory: C:\Users\FELIXG~1\AppData\Local\Temp\Felix Gräßer\mcrCache8.4\main_72\daten\Promotion TUD\Arbeit\Metric Learning\mlcircus-lmnn-5b49cafaeb9a\lmnn3\lmnncore\gpml\inf
+[> In path at 109
+  In addpath at 86
+  In startup at 18] 
+Warning: Name is nonexistent or not a directory: C:\Users\FELIXG~1\AppData\Local\Temp\Felix Gräßer\mcrCache8.4\main_72\daten\Promotion TUD\Arbeit\Metric Learning\mlcircus-lmnn-5b49cafaeb9a\lmnn3\lmnncore\gpml\lik
+[> In path at 109
+  In addpath at 86
+  In startup at 19] 
+Warning: Name is nonexistent or not a directory: C:\Users\FELIXG~1\AppData\Local\Temp\Felix Gräßer\mcrCache8.4\main_72\daten\Promotion TUD\Arbeit\Metric Learning\mlcircus-lmnn-5b49cafaeb9a\lmnn3\lmnncore\gpml\mean
+[> In path at 109
+  In addpath at 86
+  In startup at 20] 
+Warning: Name is nonexistent or not a directory: C:\Users\FELIXG~1\AppData\Local\Temp\Felix Gräßer\mcrCache8.4\main_72\daten\Promotion TUD\Arbeit\Metric Learning\mlcircus-lmnn-5b49cafaeb9a\lmnn3\lmnncore\gpml\prior
+[> In path at 109
+  In addpath at 86
+  In startup at 21] 
+Warning: Name is nonexistent or not a directory: C:\Users\FELIXG~1\AppData\Local\Temp\Felix Gräßer\mcrCache8.4\main_72\daten\Promotion TUD\Arbeit\Metric Learning\mlcircus-lmnn-5b49cafaeb9a\lmnn3\lmnncore\gpml\util
+[> In path at 109
+  In addpath at 86
+  In startup at 22] 
+25-Jan-2017 18:32:26 process patient 7 num visite 2
+25-Jan-2017 18:32:51 process patient 8 num visite 3
+25-Jan-2017 18:33:10 process patient 9 num visite 4
+25-Jan-2017 18:33:13 process patient 10 num visite 1
+25-Jan-2017 18:34:05 process patient 15 num visite 1

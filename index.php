@@ -9,7 +9,7 @@ include('config.inc.php');
 
 session_start();
 
-$disabled = "disabled";
+//$disabled = "disabled";
 //$disabled = '';
 
 $_SESSION['idExperte'] = 12;
@@ -19,7 +19,7 @@ $idPatient = ''; // ausgewählter patient id
 $idPatientPrev = ''; // neuer patient ausgewählt?
 $idVisite = ''; // ausgewählte visite id
 $numVisite = ''; // ausgewählte visite number
-$disabled = 'disabled'; // disbable intput / output element
+$disabled = ''; //disabled'; // disbable intput / output element
 $disabledSelect = ''; // disable select patient / visite
 $disabledButtonVisite = ''; // disable buttons
 $disabledButtonPatient = ''; // disable buttons
@@ -105,6 +105,9 @@ $disabledButtonPatient = ''; // disable buttons
         <?php
         if (!isset($_GET['action'])) {
             $_GET['action'] = 'patientendaten';
+        } else {
+            // save input
+            
         }
         ?>
 

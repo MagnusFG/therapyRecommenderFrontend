@@ -4,58 +4,70 @@ function show_schwere_patient($disabled) {
 
     // Daten Visite
     $visite = $_SESSION['idVisite'];
+
     $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVisite WHERE Visite = $visite");
     $row = mysql_fetch_array($results);
     $zufriedenheit = $row['BehandlungZufriedenheit'];
 
     if (isset($row['BehandlungUmgesetzt'])) {
         $tmp = $row['BehandlungUmgesetzt'];
-        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungBehandlung WHERE IDPatienteneinschaetzungBehandlung = $tmp");
-        $rowTmp = mysql_fetch_array($results);
-        $behandlung = $rowTmp['txtPatienteneinschaetzungBehandlung'];
+//        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungBehandlung WHERE IDPatienteneinschaetzungBehandlung = $tmp");
+//        $rowTmp = mysql_fetch_array($results);
+//        $behandlung = $rowTmp['txtPatienteneinschaetzungBehandlung'];
+        $behandlung = $tmp;
     }
 
     if (isset($row['SchwereGeschaetzt'])) {
         $tmp = $row['SchwereGeschaetzt'];
-        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungSchwere WHERE IDPatienteneinschaetzungSchwere = $tmp");
-        $rowTmp = mysql_fetch_array($results);
-        $schwere = $rowTmp['txtPatienteneinschaetzungSchwere'];
+//        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungSchwere WHERE IDPatienteneinschaetzungSchwere = $tmp");
+//        $rowTmp = mysql_fetch_array($results);
+//        $schwere = $rowTmp['txtPatienteneinschaetzungSchwere'];
+        $schwere = $tmp;
     }
 
     if (isset($row['HautveraenderungenGesicht'])) {
         $tmp = $row['HautveraenderungenGesicht'];
-        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
-        $rowTmp = mysql_fetch_array($results);
-        $veraenderungGesicht = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+//        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
+//        $rowTmp = mysql_fetch_array($results);
+//        $veraenderungGesicht = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+        $veraenderungGesicht = $tmp;
     }
 
     if (isset($row['HautveraenderungenFuesse'])) {
         $tmp = $row['HautveraenderungenFuesse'];
-        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
-        $rowTmp = mysql_fetch_array($results);
-        $veraenderungFuesse = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+//        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
+//        $rowTmp = mysql_fetch_array($results);
+//        $veraenderungFuesse = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+        $veraenderungFuesse = $tmp;
     }
 
     if (isset($row['HautveraenderungenNaegel'])) {
         $tmp = $row['HautveraenderungenNaegel'];
-        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
-        $rowTmp = mysql_fetch_array($results);
-        $veraenderungNaegel = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+//        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
+//        $rowTmp = mysql_fetch_array($results);
+//        $veraenderungNaegel = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+        $veraenderungNaegel = $tmp;
     }
 
     if (isset($row['HautveraenderungenHaende'])) {
         $tmp = $row['HautveraenderungenHaende'];
-        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
-        $rowTmp = mysql_fetch_array($results);
-        $veraenderungHaende = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+//        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
+//        $rowTmp = mysql_fetch_array($results);
+//        $veraenderungHaende = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+        $veraenderungHaende = $tmp;
     }
 
     if (isset($row['HautveraenderungenGenital'])) {
         $tmp = $row['HautveraenderungenGenital'];
-        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
-        $rowTmp = mysql_fetch_array($results);
-        $veraenderungGenital = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+//        $results = mysql_query("SELECT * FROM tblPatienteneinschaetzungVeraenderung WHERE IDPatienteneinschaetzungVeraenderung = $tmp");
+//        $rowTmp = mysql_fetch_array($results);
+//        $veraenderungGenital = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+        $veraenderungGenital = $tmp;
     }
+
+    $results = mysql_query("SELECT * FROM tbldlqivisite WHERE Visite = $visite");
+    $row = mysql_fetch_array($results);
+    $dlqi = $row['DlqiScore'];
     ?>
 
     <div class="panel panel-primary">
@@ -73,7 +85,19 @@ function show_schwere_patient($disabled) {
                         <div class="form-group">
                             <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
-                                echo "<option selected>$behandlung</option>";
+                                $selected = '';
+                                $results = mysql_query("SELECT * FROM tblpatienteneinschaetzungbehandlung");
+                                echo "<option disabled selected value></option>";
+                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                    $valTmp = $rowTmp['IDPatienteneinschaetzungBehandlung'];
+                                    $nameTmp = $rowTmp['txtPatienteneinschaetzungBehandlung'];
+                                    if ($behandlung == $valTmp) {
+                                        $selected = "selected";
+                                    } else {
+                                        $selected = "";
+                                    }                                    
+                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                }
                                 ?>
                             </select>
                         </div>
@@ -92,7 +116,19 @@ function show_schwere_patient($disabled) {
                         <div class="form-group">
                             <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
-                                echo "<option selected>$schwere</option>";
+                                $selected = '';
+                                $results = mysql_query("SELECT * FROM tblpatienteneinschaetzungschwere");
+                                echo "<option disabled selected value></option>";
+                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                    $valTmp = $rowTmp['IDPatienteneinschaetzungSchwere'];
+                                    $nameTmp = $rowTmp['txtPatienteneinschaetzungSchwere'];
+                                    if ($schwere == $valTmp) {
+                                        $selected = "selected";
+                                    } else {
+                                        $selected = "";
+                                    }                                     
+                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                }
                                 ?>
                             </select>
                         </div>
@@ -111,7 +147,19 @@ function show_schwere_patient($disabled) {
                         <div class="form-group">
                             <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
-                                echo "<option selected>$veraenderungGesicht</option>";
+                                $selected = '';
+                                $results = mysql_query("SELECT * FROM tblpatienteneinschaetzungveraenderung");
+                                echo "<option disabled selected value></option>";
+                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                    $valTmp = $rowTmp['IDPatienteneinschaetzungVeraenderung'];
+                                    $nameTmp = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+                                    if ($veraenderungGesicht == $valTmp) {
+                                        $selected = "selected";
+                                    } else {
+                                        $selected = "";
+                                    }                                     
+                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                }
                                 ?>
                             </select>
                         </div>
@@ -126,7 +174,19 @@ function show_schwere_patient($disabled) {
                         <div class="form-group">
                             <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
-                                echo "<option selected>$veraenderungFuesse</option>";
+                                $selected = '';
+                                $results = mysql_query("SELECT * FROM tblpatienteneinschaetzungveraenderung");
+                                echo "<option disabled selected value></option>";
+                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                    $valTmp = $rowTmp['IDPatienteneinschaetzungVeraenderung'];
+                                    $nameTmp = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+                                    if ($veraenderungFuesse == $valTmp) {
+                                        $selected = "selected";
+                                    } else {
+                                        $selected = "";
+                                    }                                      
+                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                }
                                 ?>
                             </select>
                         </div>
@@ -141,7 +201,19 @@ function show_schwere_patient($disabled) {
                         <div class="form-group">
                             <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
-                                echo "<option selected>$veraenderungNaegel</option>";
+                                $selected = '';
+                                $results = mysql_query("SELECT * FROM tblpatienteneinschaetzungveraenderung");
+                                echo "<option disabled selected value></option>";
+                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                    $valTmp = $rowTmp['IDPatienteneinschaetzungVeraenderung'];
+                                    $nameTmp = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+                                    if ($veraenderungNaegel == $valTmp) {
+                                        $selected = "selected";
+                                    } else {
+                                        $selected = "";
+                                    }                                     
+                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                }
                                 ?>
                             </select>
                         </div>
@@ -156,7 +228,19 @@ function show_schwere_patient($disabled) {
                         <div class="form-group">
                             <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
-                                echo "<option selected>$veraenderungHaende</option>";
+                                $selected = '';
+                                $results = mysql_query("SELECT * FROM tblpatienteneinschaetzungveraenderung");
+                                echo "<option disabled selected value></option>";
+                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                    $valTmp = $rowTmp['IDPatienteneinschaetzungVeraenderung'];
+                                    $nameTmp = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+                                    if ($veraenderungHaende == $valTmp) {
+                                        $selected = "selected";
+                                    } else {
+                                        $selected = "";
+                                    }                                     
+                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                }
                                 ?>
                             </select>
                         </div>
@@ -171,7 +255,19 @@ function show_schwere_patient($disabled) {
                         <div class="form-group">
                             <select <?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
-                                echo "<option selected>$veraenderungGenital</option>";
+                                $selected = '';
+                                $results = mysql_query("SELECT * FROM tblpatienteneinschaetzungveraenderung");
+                                echo "<option disabled selected value></option>";
+                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                    $valTmp = $rowTmp['IDPatienteneinschaetzungVeraenderung'];
+                                    $nameTmp = $rowTmp['txtPatienteneinschaetzungVeraenderung'];
+                                    if ($veraenderungGenital == $valTmp) {
+                                        $selected = "selected";
+                                    } else {
+                                        $selected = "";
+                                    }                                     
+                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                }
                                 ?>
                             </select>
                         </div>
@@ -196,7 +292,7 @@ function show_schwere_patient($disabled) {
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->                    
             </div><!-- /.row -->     
-            
+
             </br>
             </br>
 
