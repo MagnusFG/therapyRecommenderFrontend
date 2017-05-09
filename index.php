@@ -1,15 +1,76 @@
 <?php
 include('patientendaten.php');
-include('komorbiditaeten.php');
-include('schwere_pasi.php');
+include('schwere_arzt.php');
 include('schwere_patient.php');
-include('dlqi.php');
 include('therapien_erfolgt.php');
 include('therapien_empfohlen.php');
 include('therapien_rs.php');
 include('config.inc.php');
 
 session_start();
+
+$disabled = "disabled";
+//$disabled = '';
+
+$_SESSION['idExperte'] = 12;
+$patienten = array(); // liste mit allen patienten im system
+$visiten = array(); // liste mit allen visiten für einen ausgewählten patienten
+$idPatient = ''; // ausgewählter patient id
+$idPatientPrev = ''; // neuer patient ausgewählt?
+$idVisite = ''; // ausgewählte visite id
+$numVisite = ''; // ausgewählte visite number
+$disabled = 'disabled'; // disbable intput / output element
+$disabledSelect = ''; // disable select patient / visite
+$disabledButtonVisite = ''; // disable buttons
+$disabledButtonPatient = ''; // disable buttons
+//$cmd = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\main.exe"';
+//$outputfile = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\out.log"';
+//$pidfile = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\pid.log"';
+//pclose(popen("start /B ". $cmd, "r"));
+//pclose(popen("start /B ". $cmd, "r"));
+//$out = '';
+//$return_var = '';
+//exec($cmd);
+//$handle = popen($cmd,"r");
+//$handle = popen($cmd, "r");$outputfile
+//$outputfile = ''; 
+//exec(sprintf("%s > %s 2>&1 & echo $! >> %s", $cmd, $outputfile, $pidfile));
+//echo sprintf("%s > %s 2>&1", $cmd, $outputfile);
+//exec(sprintf("%s > %s 2>&1", $cmd, $outputfile));
+//$output = shell_exec($cmd);
+//echo "<pre>$output</pre>";
+//$descriptorspec = array(
+//   0 => array("pipe", "r"),  // STDIN ist eine Pipe, von der das Child liest
+////   1 => array("pipe", "w"),  // STDOUT ist eine Pipe, in die das Child schreibt
+////   2 => array("file", $outputfile, "a") // STDERR ist eine Datei,
+////   0 => array("file", "error-output.txt", "r"), // STDOUT ist eine Datei,
+//   1 => array("file", "output.txt", "w"), // STDOUT ist eine Datei,
+//   2 => array("file", "error-output.txt", "w") // STDERR ist eine Datei,
+//                                                    // in die geschrieben wird
+//);
+//
+////$cwd = '/tmp';
+//$env = array('some_option' => 'aeiou');
+//$process = proc_open('php', $descriptorspec, $pipes, $cwd, $env);
+//$process = proc_open("start /b \"\" " .$cmd, $descriptorspec, $pipes);
+//pclose(popen("start /B \"\" " . $cmd, "a"));  // mode = "a" since I had some logs to edit
+//pclose(popen($cmd, "r"));
+//start /b "" "c:\Program Files\Wireshark\tshark.exe" -i 1 -w file1.pcap
+//if (!isset($_SESSION['process']) || is_resource($_SESSION['process'])) {
+//    $_SESSION['process'] = proc_open("start /b \"\" " .$cmd, $descriptorspec, $pipes);
+// $pipes sieht nun so aus:
+// 0 => Schreibhandle, das auf das Child STDIN verbunden ist
+// 1 => Lesehandle, das auf das Child STDOUT verbunden ist
+// Jedwede Fehlerausgaben werden an /tmp/error-output.txt angefügt
+//    fwrite($pipes[0], 0);
+//    fclose($pipes[0]);
+//    echo stream_get_contents($pipes[1]);
+//    fclose($pipes[1]);
+// Es ist wichtig, dass Sie alle Pipes schließen bevor Sie
+// proc_close aufrufen, um Deadlocks zu vermeiden
+//    $return_value = proc_close($process);
+//    echo "Rückgabewert des Kommandos: $return_value\n";
+//}
 ?>
 
 <html lang="en">
@@ -36,22 +97,17 @@ session_start();
 
     <body>
 
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="js/bootstrap.min.js"></script>
+
         <?php
         if (!isset($_GET['action'])) {
             $_GET['action'] = 'patientendaten';
         }
         ?>
 
-        <!--Header--> 
-        <section>
-            <div class="intro-umfrage"> 
-            </div>
-        </section>
-
-        <!-- umfrage laden -->
-
-        <!--<div class="header-content">-->
-        <!--<section class="questionblock">-->
         <section class="container">
             <div class="mainblock">
 
@@ -69,21 +125,12 @@ session_start();
                 ?>
 
                 <?php
-                // input visite
-                if (isset($_POST['selVisite']) && isset($_SESSION['visiten'])) {
-                    $visiten = $_SESSION['visiten'];
-//                    print_r($visiten);
-                    $idVisite = $_POST['selVisite'];
-                    $_SESSION['idVisite'] = $visiten[$idVisite];
-//                    print($_SESSION['idVisite']);
+                if (isset($_SESSION['idPatient'])) {
+                    $idPatientPrev = $_SESSION['idPatient'];
                 }
                 
-                // input patient
-                $visiten = array();
                 if (isset($_POST['selPatient'])) {
-                    // set idPatient
-                    $patient = $_POST['selPatient'];
-                    $_SESSION['idPatient'] = $patient;
+                    if ($_POST['selPatient'] != '') {
 
                     // fill visiten array
                     $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $patient ORDER BY NumVisite DESC LIMIT 1");
@@ -95,78 +142,164 @@ session_start();
                     while ($row = mysql_fetch_array($results)) {
                         $visiten[$row['NumVisite']] = $row['IDVisite'];
                     }
-//                    print_r($visiten);
-                    $_SESSION['visiten'] = $visiten;
-                    unset($_SESSION['idVisite']);                    
                 }
 
-                // set experte TODO
-                $_SESSION['idExperte'] = 1;
+//        // input selected visite
+                if (isset($_POST['selVisite'])) {
+                    if ($_POST['selVisite'] != '') {
+                        
+                        // set numVisite
+                        $numVisite = $_POST['selVisite'];
+    
+                       // set global variables
+                        $visiten = $_SESSION['visiten'];
+                        $_SESSION['idVisite'] = $visiten[$numVisite];
+
+                    } else {
+                        
+                        // unset global variables
+                        unset($_SESSION['idVisite']);
+                    }
+                }
+                
+                // Button Visite Neu verarbeiten
+        if (isset($_POST['visite_neu'])) { // wenn visite neu gedrueckt, ...
+// ... aktiviere Eingaben
+            $disabled = '';
+// ... disable Auswahl Patient und Visite
+            $disabledSelect = 'disabled';
+            $disabledButtonPatient = 'disabled';
+// ... finde letzte Visite
+            // find last element $visiten
+            // $numVisite = last element + 1;
+            // insert and load
+            // $_SESSION['idVisite'] = $visiten[$numVisite];
+        }
+        
+                // Button Patient Neu verarbeiten
+        if (isset($_POST['patient_neu'])) { // wenn visite neu gedrueckt, ...
+// ... aktiviere Eingaben
+            $disabled = '';
+// ... disable Auswahl Patient und Visite
+            $disabledSelect = 'disabled';
+            $disabledButtonVisite = 'disabled';
+        }        
+
+//        // write IDPatient and selVisite to input table
+//        if (isset($_POST['selVisite'])) {
+//            if ($_POST['selVisite'] != '') {
+//                // write IDPatient and selVisite to input file
+//                $patient = $_SESSION['idPatient'];
+//                $idVisite = $_SESSION['idVisite'];
+//                $results = mysql_query("INSERT INTO tblinput (Patient, NumVisite) VALUES ($patient, $idVisite)");
+//            }
+//        }
                 ?>
 
+
                 <h2>Therapieempfehlungssystem</h2>
-                <p>Herzlich Wilkommen, Sie sind angemeldet mit der Experten ID <?php echo $_SESSION['idExperte'] ?></p>
+                <p>Herzlich Wilkommen</p>
 
                 </br>
 
-                <form class="" action="" method="post">
-                    <div class = "container" style="width:300px">
-
-                        <div class="row">
-                            <div class="input-group">
-                                <span class="input-group-addon" id="basic-addon1">Visite:</span>
-                                <div class="form-group">
-                                    <select onchange="this.form.submit()" class="form-control" name="selVisite" id="sel1">
-                                    <!--<select class="form-control" name = "selVisite" id="sel1">-->
-                                        <!--<option disabled selected value></option>-->
-                                        <option></option>
-                                        <?php
-                                        $visiten =   $_SESSION['visiten'];
-                                        foreach ($visiten as $numVisite => $idVisite) {
-                                            if ($_SESSION['idVisite'] == $idVisite) {
-                                                echo "<option selected>$numVisite</option>";
-                                            } else {
-                                                echo "<option>$numVisite</option>";
-                                            }
-                                        }
-                                        ?> 
-                                    </select>
+                <div class="panel panel-default">                    
+                    <div class="panel-body">                        
+                        <form class="" action="" method="post">                            
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <span class="input-group-addon" id="basic-addon1">Patient:</span>
+                                        <div class="form-group">
+                                            <select <?php echo "$disabledSelect" ?> onchange="this.form.submit()" class="form-control" name="selPatient" id="sel2">
+                                                <option></option>
+                                                <?php
+                                                foreach ($patienten as $idPatient) {
+                                                    if ($_SESSION['idPatient'] == $idPatient) {
+                                                        echo "<option selected>$idPatient</option>";
+                                                    } else {
+                                                        echo "<option >$idPatient</option>";
+                                                    }
+                                                }
+                                                ?> 
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div><!-- /input-group -->
-                        </div><!-- /.row -->  
-                </form> 
 
-                </br>
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <span class="input-group-addon" id="basic-addon1">Visite:</span>
+                                        <div class="form-group">
+                                            <select <?php echo "$disabledSelect" ?> onchange="this.form.submit()" class="form-control" name="selVisite" id="sel1">
+                                            <!--<select class="form-control" name = "selVisite" id="sel1">-->
+                                                <!--<option disabled selected value></option>-->
 
-                <form class="" action="" method="post">
-                    <div class="row">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="basic-addon1">Patient:</span>
-                            <div class="form-group">
-                                <select onchange="this.form.submit()" class="form-control" name="selPatient" id="sel2">
-                                    <option></option>
-                                    <?php
-                                    foreach ($patienten as $idPatient) {
-                                        if ($_SESSION['idPatient'] == $idPatient) {
-                                            echo "<option selected>$idPatient</option>";
-                                        } else {
-                                            echo "<option>$idPatient</option>";
-                                        }
-                                    }
-                                    ?> 
-                                </select>
+                                                <option></option>
+                                                <?php
+                                                $visiten = $_SESSION['visiten'];
+                                                foreach ($visiten as $numVisite => $visite) {
+                                                    if ($_SESSION['idVisite'] == $visite) {
+                                                        echo "<option selected>$numVisite</option>";
+                                                    } else {
+                                                        echo "<option>$numVisite</option>";
+                                                    }
+                                                }
+                                                ?> 
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div><!-- /input-group -->
-                    </div><!-- /.row -->
 
-                    </br>
-                </form>      
+                            <div class="row">                                
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                            <div class="btn-group" role="group">
+                                                <?php if ($disabledButtonVisite == '') {
+                                                    echo "<button $disabledButtonPatient type=\"submit\" class=\"btn btn-default\" name=\"patient_neu\">Patient Neu</button>";
+                                                } else {
+                                                    echo "<button $disabledButtonPatient type=\"submit\" class=\"btn btn-default\" name=\"fertig\">Fertig</button>";
+                                                }
+                                                ?>                                                
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div><!-- /input-group -->
+
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                            <div class="btn-group" role="group">
+                                                <?php if ($disabledButtonPatient == '') {
+                                                    echo "<button $disabledButtonVisite type=\"submit\" class=\"btn btn-default\" name=\"visite_neu\">Visite Neu</button>";
+                                                } else {
+                                                    echo "<button $disabledButtonVisite type=\"submit\" class=\"btn btn-default\" name=\"fertig\">Fertig</button>";
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </form> 
+                    </div>
+                </div>
 
                 </br>
+
+                <ul class="nav nav-tabs">
+                    <li role="presentation" <?php if ($_GET['action'] == 'patientendaten') echo " class=\"active\""; ?>><a href="index.php?action=patientendaten">Patientendaten</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'schwere_arzt') echo " class=\"active\""; ?>><a href="index.php?action=schwere_arzt">Einschätzung Arzt</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'schwere_patient') echo " class=\"active\""; ?>><a href="index.php?action=schwere_patient">Einschätzung Patient</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_erfolgt') echo " class=\"active\""; ?>><a href="index.php?action=therapien_erfolgt">Therapien Erfolgt</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_empfohlen') echo " class=\"active\""; ?>><a href="index.php?action=therapien_empfohlen">Therapieempfehlung Arzt</a></li>
+                    <li role="presentation" <?php if ($_GET['action'] == 'therapien_rs') echo " class=\"active\""; ?>><a href="index.php?action=therapien_rs">Therapieempfehlung System</a></li>
+                </ul>
 
             </div>
 
-            </br>
+            <div class="questionblock">
 
             <ul class="nav nav-tabs">
                 <li role="presentation" <?php if ($_GET['action'] == 'patientendaten') echo " class=\"active\""; ?>><a href="index.php?action=patientendaten">Patientendaten</a></li>
@@ -179,9 +312,7 @@ session_start();
                 <li role="presentation" <?php if ($_GET['action'] == 'therapien_rs') echo " class=\"active\""; ?>><a href="index.php?action=therapien_rs">Recommender</a></li>
             </ul>
 
-        </div>
-
-        <div class="questionblock">
+            </div>
 
             <?php
             if (isset($_SESSION['idVisite']) && $_SESSION['idVisite'] != '') {
@@ -210,14 +341,6 @@ session_start();
             }
             ?>
 
-        </div>
-
-        <?php
-        disconnect_database($connection);
-        ?>
-
-    </section>
-    <!--</div>-->
-
-</body>
+        </section>
+    </body>
 </html>
