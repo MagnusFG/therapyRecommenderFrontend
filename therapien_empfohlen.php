@@ -11,7 +11,7 @@ function show_therapien_empfohlen() {
     $geschlecht = $row['Geschlecht'];
 
     // Therapien
-    $results = mysql_query("SELECT * FROM tblTherapieName");
+    $results = mysql_query("SELECT * FROM tblTherapieName WHERE ingTyp = 2");
     $therapies = array();
     while ($row = mysql_fetch_array($results)) {
         $therapies[$row['IDTherapie']] = $row['txtName'];

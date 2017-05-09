@@ -6,6 +6,7 @@ include('schwere_patient.php');
 include('dlqi.php');
 include('therapien_erfolgt.php');
 include('therapien_empfohlen.php');
+include('therapien_rs.php');
 include('config.inc.php');
 
 session_start();
@@ -61,9 +62,9 @@ session_start();
                 <?php
                 // fill patienten array
                 $patienten = array();
-                $results = mysql_query("SELECT * FROM tblVisite100");
+                $results = mysql_query("SELECT * FROM tblPatient");
                 while ($row = mysql_fetch_array($results)) {
-                    $patienten[] = $row['Patient'];
+                    $patienten[] = $row['IDPatient'];
                 }
                 ?>
 
@@ -85,12 +86,12 @@ session_start();
                     $_SESSION['idPatient'] = $patient;
 
                     // fill visiten array
-                    $results = mysql_query("SELECT * FROM tblVisite100 WHERE Patient = $patient ORDER BY NumVisite DESC LIMIT 1");
+                    $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $patient ORDER BY NumVisite DESC LIMIT 1");
                     while ($row = mysql_fetch_array($results)) {
-                        $numVisite100 = $row['NumVisite'];
+                        $numVisite = $row['NumVisite'];
                     }
 //                    print($numVisite100);
-                    $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $patient AND NumVisite <= $numVisite100 ORDER BY NumVisite ASC");
+                    $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $patient AND NumVisite <= $numVisite ORDER BY NumVisite ASC");
                     while ($row = mysql_fetch_array($results)) {
                         $visiten[$row['NumVisite']] = $row['IDVisite'];
                     }
@@ -175,6 +176,7 @@ session_start();
                 <li role="presentation" <?php if ($_GET['action'] == 'dlqi') echo " class=\"active\""; ?>><a href="index.php?action=dlqi">DLQI</a></li>
                 <li role="presentation" <?php if ($_GET['action'] == 'therapien_erfolgt') echo " class=\"active\""; ?>><a href="index.php?action=therapien_erfolgt">Erfolgte Therapien</a></li>
                 <li role="presentation" <?php if ($_GET['action'] == 'therapien_empfohlen') echo " class=\"active\""; ?>><a href="index.php?action=therapien_empfohlen">Empfohlene Therapie</a></li>
+                <li role="presentation" <?php if ($_GET['action'] == 'therapien_rs') echo " class=\"active\""; ?>><a href="index.php?action=therapien_rs">Recommender</a></li>
             </ul>
 
         </div>
@@ -197,6 +199,8 @@ session_start();
                     show_therapien_erfolgt();
                 } else if ($_GET['action'] == 'therapien_empfohlen') {
                     show_therapien_empfohlen();
+                } else if ($_GET['action'] == 'therapien_rs') {
+                    show_therapien_rs();                    
                 }
             } else {
                 echo "<div class=\"alert alert-warning\" role=\"alert\">";
