@@ -2,18 +2,17 @@
 
 function show_therapien_rs() {
 
-// aktuelle Visite
-    $visite = $_SESSION['idVisite'];
-    echo $visite;
+// Daten Patient
+    $patient = $_SESSION['idPatient'];
 
 // Therapien
-//    $results = mysql_query("SELECT * FROM tbltherapievisitesystlist WHERE Visite = 18 ORDER BY Score DESC LIMIT 1");
-    $results = mysql_query("SELECT * FROM tbltherapiesvisitesystlist WHERE Visite = $visite ORDER BY Score DESC");
+    $results = mysql_query("SELECT * FROM tbltherapierecom WHERE ingTyp = 2 ORDER BY Indicator DESC");
     $therapies = array();
     while ($row = mysql_fetch_array($results)) {
-        $indicator[$row['Therapie']] = $row['Score'];
-        $therapies[$row['Therapie']] = $row['Therapie'];
-        $info[$row['Therapie']] = $row['Therapie'];
+        $indicator[$row['IDTherapie']] = $row['Indicator'];
+        $therapies[$row['IDTherapie']] = $row['txtName'];
+        $info[$row['IDTherapie']] = $row['Information'];
+        $infoTyp[$row['IDTherapie']] = $row['InfoTyp'];
     }
 //    print_r($indicator);
 //    print_r($therapies);  
@@ -94,7 +93,7 @@ function show_therapien_rs() {
     } else {
         echo "<div class=\"alert alert-warning\" role=\"alert\">";
         echo "<strong>Kein Therapieempfehlung.</strong> ";
-        echo "FÃ¼r diese Visite keine Therapieempfehlung vorhanden.";
+        echo "Für diese Visite keine Therapieempfehlung vorhanden.";
         echo "</div>";
     }
     ?>

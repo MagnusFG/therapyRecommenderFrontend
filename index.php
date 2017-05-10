@@ -130,7 +130,8 @@ $disabledButtonPatient = ''; // disable buttons
                 ?>
 
                 <?php
-// fill patienten array
+                // fill patienten array
+                $patienten = array();
                 $results = mysql_query("SELECT * FROM tblPatient");
                 while ($row = mysql_fetch_array($results)) {
                     $patienten[] = $row['IDPatient'];
