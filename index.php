@@ -103,12 +103,23 @@ $disabledButtonPatient = ''; // disable buttons
         <script src="js/bootstrap.min.js"></script>
 
         <?php
+//        if (!isset($_GET['action'])) {
+//            $_GET['action'] = 'patientendaten';
+//        } else {
+//            // save input
+//            
+//        }
+
+        if (!isset($_SESSION['action'])) {
+            $_SESSION['action'] = 'patientendaten';
+        }
+
         if (!isset($_GET['action'])) {
-            $_GET['action'] = 'patientendaten';
+            $_GET['action'] = $_SESSION['action'];
         } else {
             // save input
-            
         }
+        $_SESSION['action'] = $_GET['action'];
         ?>
 
         <section class="container">
@@ -130,7 +141,7 @@ $disabledButtonPatient = ''; // disable buttons
                 if (isset($_SESSION['idPatient'])) {
                     $idPatientPrev = $_SESSION['idPatient'];
                 }
-                
+
                 if (isset($_POST['selPatient'])) {
                     if ($_POST['selPatient'] != '') {
 
@@ -145,14 +156,13 @@ $disabledButtonPatient = ''; // disable buttons
                         // set global variables
                         $_SESSION['idPatient'] = $idPatient;
                         $_SESSION['visiten'] = $visiten;
-
                     } else {
                         // unset global variables
                         unset($_SESSION['idPatient']);
 //                        unset($_SESSION['idVisite']);
                         unset($_SESSION['visiten']);
                     }
-                    
+
                     // reset selected visite if new patient selected
                     if ($idPatientPrev != $idPatient) {
                         unset($_POST['selVisite']);
@@ -163,43 +173,95 @@ $disabledButtonPatient = ''; // disable buttons
 //        // input selected visite
                 if (isset($_POST['selVisite'])) {
                     if ($_POST['selVisite'] != '') {
-                        
+
                         // set numVisite
                         $numVisite = $_POST['selVisite'];
-    
-                       // set global variables
+
+                        // set global variables
                         $visiten = $_SESSION['visiten'];
                         $_SESSION['idVisite'] = $visiten[$numVisite];
-
                     } else {
-                        
+
                         // unset global variables
                         unset($_SESSION['idVisite']);
                     }
                 }
-                
+
                 // Button Visite Neu verarbeiten
-        if (isset($_POST['visite_neu'])) { // wenn visite neu gedrueckt, ...
+                if (isset($_POST['visite_neu'])) { // wenn visite neu gedrueckt, ...
 // ... aktiviere Eingaben
-            $disabled = '';
+                    $disabled = '';
 // ... disable Auswahl Patient und Visite
-            $disabledSelect = 'disabled';
-            $disabledButtonPatient = 'disabled';
+//                    $disabledSelect = 'disabled';
+//                    $disabledButtonPatient = 'disabled';
 // ... finde letzte Visite
-            // find last element $visiten
-            // $numVisite = last element + 1;
-            // insert and load
-            // $_SESSION['idVisite'] = $visiten[$numVisite];
-        }
-        
+                    $idPatient = $_SESSION['idPatient'];
+                    $sql = mysql_query("SELECT * FROM tblVisite WHERE Patient = $idPatient ORDER BY NumVisite DESC");
+                    $row = mysql_fetch_array($sql);
+                    if (!$row['NumVisite']) {
+                        $numVisite = 0;
+                    } else {
+                        $numVisite = $row['NumVisite'] + 1;
+                    }
+
+// ... apppend Visite
+                    $sql = mysql_query("INSERT INTO tblVisite (Patient,NumVisite) VALUE ($idPatient,$numVisite)");
+                    $retval = mysql_query($sql, $connection);
+//               
+                    // ... update visiten array
+                    $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
+                    while ($row = mysql_fetch_array($results)) {
+                        $visiten[$row['NumVisite']] = $row['IDVisite'];
+                    }
+
+//                    $numVisite = $_POST['selVisite'];
+                    // set global variables
+                    $_SESSION['idVisite'] = $visiten[$numVisite];
+                    $_SESSION['visiten'] = $visiten;
+
+                    // find last element $visiten
+                    // $numVisite = last element + 1;
+                    // insert and load
+                    // $_SESSION['idVisite'] = $visiten[$numVisite];
+                }
+
                 // Button Patient Neu verarbeiten
-        if (isset($_POST['patient_neu'])) { // wenn visite neu gedrueckt, ...
+                if (isset($_POST['patient_neu'])) { // wenn visite neu gedrueckt, ...
 // ... aktiviere Eingaben
-            $disabled = '';
+                    $disabled = '';
 // ... disable Auswahl Patient und Visite
-            $disabledSelect = 'disabled';
-            $disabledButtonVisite = 'disabled';
-        }        
+//                    $disabledSelect = 'disabled';
+//                    $disabledButtonVisite = 'disabled';
+                    // ... insert new patient
+//                    $sql = mysql_query("INSERT INTO tblpatient");
+//                    $retval = mysql_query($sql, $connection);
+// ... apppend patient
+                    $dat = NULL;
+                    $sql = mysql_query("INSERT INTO tblpatient (Geschlecht) VALUE (1)");
+                    $retval = mysql_query($sql, $connection);
+
+//                        $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
+//    $row = mysql_fetch_array($results);
+                    // ... find last patient
+                    $sql = mysql_query("SELECT * FROM tblpatient ORDER BY IDPatient DESC");
+                    $row = mysql_fetch_array($sql);
+                    $idPatient = $row['IDPatient'];
+
+                    // update patient list
+                    $results = mysql_query("SELECT * FROM tblPatient");
+                    while ($row = mysql_fetch_array($results)) {
+                        $patienten[] = $row['IDPatient'];
+                    }
+
+//                  // set global variables
+                    $_SESSION['idPatient'] = $idPatient;
+                    $_SESSION['visiten'] = $visiten;
+
+                    // reset selected visite if new patient selected
+                    unset($_POST['selVisite']);
+                    unset($_SESSION['idVisite']);
+                }
+
 
 //        // write IDPatient and selVisite to input table
 //        if (isset($_POST['selVisite'])) {
@@ -272,7 +334,8 @@ $disabledButtonPatient = ''; // disable buttons
                                     <div class="input-group" style="margin: 5px">
                                         <div class="btn-group btn-group-justified" role="group" aria-label="...">
                                             <div class="btn-group" role="group">
-                                                <?php if ($disabledButtonVisite == '') {
+                                                <?php
+                                                if ($disabledButtonVisite == '') {
                                                     echo "<button $disabledButtonPatient type=\"submit\" class=\"btn btn-default\" name=\"patient_neu\">Patient Neu</button>";
                                                 } else {
                                                     echo "<button $disabledButtonPatient type=\"submit\" class=\"btn btn-default\" name=\"fertig\">Fertig</button>";
@@ -287,7 +350,8 @@ $disabledButtonPatient = ''; // disable buttons
                                     <div class="input-group" style="margin: 5px">
                                         <div class="btn-group btn-group-justified" role="group" aria-label="...">
                                             <div class="btn-group" role="group">
-                                                <?php if ($disabledButtonPatient == '') {
+                                                <?php
+                                                if ($disabledButtonPatient == '') {
                                                     echo "<button $disabledButtonVisite type=\"submit\" class=\"btn btn-default\" name=\"visite_neu\">Visite Neu</button>";
                                                 } else {
                                                     echo "<button $disabledButtonVisite type=\"submit\" class=\"btn btn-default\" name=\"fertig\">Fertig</button>";
@@ -320,15 +384,15 @@ $disabledButtonPatient = ''; // disable buttons
                 <?php
                 if (isset($_SESSION['idVisite']) && $_SESSION['idVisite'] != '') {
                     if ($_GET['action'] == 'patientendaten') {
-                        show_patientendaten($disabled);
+                        show_patientendaten($disabled, $connection);
                     } else if ($_GET['action'] == 'schwere_arzt') {
-                        show_schwere_arzt($disabled);
+                        show_schwere_arzt($disabled, $connection);
                     } else if ($_GET['action'] == 'schwere_patient') {
-                        show_schwere_patient($disabled);
+                        show_schwere_patient($disabled, $connection);
                     } else if ($_GET['action'] == 'therapien_erfolgt') {
-                        show_therapien_erfolgt($disabled);
+                        show_therapien_erfolgt($disabled, $connection);
                     } else if ($_GET['action'] == 'therapien_empfohlen') {
-                        show_therapien_empfohlen($disabled);
+                        show_therapien_empfohlen($disabled, $connection);
                     } else if ($_GET['action'] == 'therapien_rs') {
                         show_therapien_rs();
                     }

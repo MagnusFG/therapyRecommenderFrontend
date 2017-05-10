@@ -16,7 +16,7 @@ function show_therapien_rs() {
         $info[$row['Therapie']] = $row['Therapie'];
     }
 //    print_r($indicator);
-//    print_r($therapies);
+//    print_r($therapies);  
 //    print_r($info);
     // select between input and show therapie?
     $select = 1;
@@ -31,7 +31,7 @@ function show_therapien_rs() {
 
             <div class="panel panel-primary">
                 <!-- Default panel contents -->
-                <div class="panel-heading">Jemals angewendete Therapien:</div>
+                <div class="panel-heading">Vom Therapieempfehlungssystem empfohlene Therapie:</div>
 
 
                 <table class="table table-striped">

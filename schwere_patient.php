@@ -70,13 +70,17 @@ function show_schwere_patient($disabled) {
     $dlqi = $row['DlqiScore'];
     ?>
 
-    <div class="panel panel-primary">
-        <!-- Default panel contents -->
-        <div class="panel-heading">Patienteneinschätzung:</div>
+    <form class="questionblock" method="post" id="section_einschaetzungpatient" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#section_einschaetzungpatient">
 
-        <form class="questionblock" action="" method="post">
+        <div class="panel panel-primary">
 
-            <p>Haben Sie die empfohlene Behandlung umgesetzt?</p>               
+            <div style="float: right; margin: 5px">
+                <button type="submit" class="btn btn-success btn-md" name="speichern_patienteneinschaetzung" value="speichern_patienteneinschaetzung"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></button>
+            </div> 
+
+            <div class="panel-heading">Patienteneinschätzung:</div>
+
+            <p style="margin: 5px">Haben Sie die empfohlene Behandlung umgesetzt?</p>               
 
             <div class="row">
                 <div class="col-lg-6">
@@ -95,7 +99,7 @@ function show_schwere_patient($disabled) {
                                         $selected = "selected";
                                     } else {
                                         $selected = "";
-                                    }                                    
+                                    }
                                     echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                 }
                                 ?>
@@ -107,7 +111,7 @@ function show_schwere_patient($disabled) {
 
             </br>
 
-            <p>Wie schwer schätzen sie derzeit ihre Schuppenflechte?</p>
+            <p style="margin: 5px">Wie schwer schätzen sie derzeit ihre Schuppenflechte?</p>
 
             <div class="row">
                 <div class="col-lg-6">
@@ -126,7 +130,7 @@ function show_schwere_patient($disabled) {
                                         $selected = "selected";
                                     } else {
                                         $selected = "";
-                                    }                                     
+                                    }
                                     echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                 }
                                 ?>
@@ -138,7 +142,7 @@ function show_schwere_patient($disabled) {
 
             </br>
 
-            <p>Psoriatische Hautveränderungen an sensiblen Körperstellen:</p> 
+            <p style="margin: 5px">Psoriatische Hautveränderungen an sensiblen Körperstellen:</p> 
 
             <div class="row">
                 <div class="col-lg-6">
@@ -157,7 +161,7 @@ function show_schwere_patient($disabled) {
                                         $selected = "selected";
                                     } else {
                                         $selected = "";
-                                    }                                     
+                                    }
                                     echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                 }
                                 ?>
@@ -184,7 +188,7 @@ function show_schwere_patient($disabled) {
                                         $selected = "selected";
                                     } else {
                                         $selected = "";
-                                    }                                      
+                                    }
                                     echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                 }
                                 ?>
@@ -211,7 +215,7 @@ function show_schwere_patient($disabled) {
                                         $selected = "selected";
                                     } else {
                                         $selected = "";
-                                    }                                     
+                                    }
                                     echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                 }
                                 ?>
@@ -238,7 +242,7 @@ function show_schwere_patient($disabled) {
                                         $selected = "selected";
                                     } else {
                                         $selected = "";
-                                    }                                     
+                                    }
                                     echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                 }
                                 ?>
@@ -265,7 +269,7 @@ function show_schwere_patient($disabled) {
                                         $selected = "selected";
                                     } else {
                                         $selected = "";
-                                    }                                     
+                                    }
                                     echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
                                 }
                                 ?>
@@ -274,15 +278,18 @@ function show_schwere_patient($disabled) {
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->          
             </div><!-- /.row --> 
+        </div>
+    </form>
 
-        </form>
-    </div>
 
-    <div class="panel panel-primary">
-        <!-- Default panel contents -->
-        <div class="panel-heading">Dermatology Life Quality Index (DLQI):</div>
+    <form class="questionblock" method="post" id="section_dlqi" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#section_dlqi">
 
-        <form class="questionblock" action="" method="post">
+        <div class="panel panel-primary">
+            <div style="float: right; margin: 5px">
+                <button type="submit" class="btn btn-success btn-md" name="speichern_dlqi" value="speichern_dlqi"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></button>
+            </div> 
+
+            <div class="panel-heading">Dermatology Life Quality Index (DLQI):</div>
 
             <div class="row">
                 <div class="col-lg-6">
@@ -296,7 +303,7 @@ function show_schwere_patient($disabled) {
             </br>
             </br>
 
-            <p>
+            <p style="margin: 5px">
                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsePasiCalculator" aria-expanded="false" aria-controls="collapsePasiCalculator" <?php echo $disabled; ?>>
                     DLQI Score Detail
                 </button>
@@ -307,7 +314,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>1. Wie sehr hat Ihre Haut in den vergangenen 7 Tagen gejuckt, war wund, hat geschmerzt oder gebrannt?</p>
+                    <p style="margin: 5px">1. Wie sehr hat Ihre Haut in den vergangenen 7 Tagen gejuckt, war wund, hat geschmerzt oder gebrannt?</p>
 
                     <?php
                     if (isset($row['DLQIgejuckt_1'])) {
@@ -335,7 +342,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>2. Wie sehr hat Ihre Hauterkrankung Sie in den vergangenen 7 Tagen verlegen oder befangen gemacht?</p>
+                    <p style="margin: 5px">2. Wie sehr hat Ihre Hauterkrankung Sie in den vergangenen 7 Tagen verlegen oder befangen gemacht?</p>
 
                     <?php
                     if (isset($row['DLQIverlegen_2'])) {
@@ -363,7 +370,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>3. Wie sehr hat Ihre Hauterkrankung Sie in den vergangenen 7 Tagen bei Einkäufen oder bei Haus- oder Gartenarbeit behindert?</p>
+                    <p style="margin: 5px">3. Wie sehr hat Ihre Hauterkrankung Sie in den vergangenen 7 Tagen bei Einkäufen oder bei Haus- oder Gartenarbeit behindert?</p>
 
                     <?php
                     if (isset($row['DLQIbehindert_3'])) {
@@ -399,7 +406,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>4. Wie sehr hat Ihre Hauterkrankung die Wahl der Kleidung beeinflusst, die Sie in den vergangenen 7 Tagen getragen haben?</p>
+                    <p style="margin: 5px">4. Wie sehr hat Ihre Hauterkrankung die Wahl der Kleidung beeinflusst, die Sie in den vergangenen 7 Tagen getragen haben?</p>
 
                     <?php
                     if (isset($row['DLQIkleidung_4'])) {
@@ -435,7 +442,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>5. Wie sehr hat Ihre Hauterkrankung in den vergangenen 7 Tagen Ihre Aktivitäten mit anderen Menschen oder Ihre Freizeitgestaltung beeinflusst?</p>
+                    <p style="margin: 5px">5. Wie sehr hat Ihre Hauterkrankung in den vergangenen 7 Tagen Ihre Aktivitäten mit anderen Menschen oder Ihre Freizeitgestaltung beeinflusst?</p>
 
                     <?php
                     if (isset($row['DLQIaktivitäten_5'])) {
@@ -471,7 +478,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>6. Wie sehr hat Ihre Hauterkrankung es Ihnen in den vergangenen 7 Tagen erschwert, sportlich aktiv zu sein?</p>
+                    <p style="margin: 5px">6. Wie sehr hat Ihre Hauterkrankung es Ihnen in den vergangenen 7 Tagen erschwert, sportlich aktiv zu sein?</p>
 
                     <?php
                     if (isset($row['DLQIsport_6'])) {
@@ -507,7 +514,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>7. Hat Ihre Hauterkrankung in den vergangenen 7 Tagen dazu geführt, dass Sie ihrer beruflichen Tätigkeit nicht nachgehen oder nicht studieren konnten?</p>
+                    <p style="margin: 5px">7. Hat Ihre Hauterkrankung in den vergangenen 7 Tagen dazu geführt, dass Sie ihrer beruflichen Tätigkeit nicht nachgehen oder nicht studieren konnten?</p>
 
                     <?php
                     if (isset($row['DLQIberuf_7'])) {
@@ -543,7 +550,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>8. Wie sehr hat Ihre Hauterkrankung in den vergangenen 7 Tagen Probleme im Umgang mit Ihrem Partner, Freunden oder Verwandten verursacht?</p>
+                    <p style="margin: 5px">8. Wie sehr hat Ihre Hauterkrankung in den vergangenen 7 Tagen Probleme im Umgang mit Ihrem Partner, Freunden oder Verwandten verursacht?</p>
 
                     <?php
                     if (isset($row['DLQIfreunde_8'])) {
@@ -579,7 +586,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>9. Wie sehr hat Ihre Hauterkrankung in den vergangenen 7 Tagen Ihr Liebesleben beeinträchtigt?</p>
+                    <p style="margin: 5px">9. Wie sehr hat Ihre Hauterkrankung in den vergangenen 7 Tagen Ihr Liebesleben beeinträchtigt?</p>
 
                     <?php
                     if (isset($row['DLQIliebe_9'])) {
@@ -615,7 +622,7 @@ function show_schwere_patient($disabled) {
 
                     </br>
 
-                    <p>10. Inwieweit war die Behandlung Ihrer Haut in den vergangenen 7 Tagen für Sie mit Problemen verbunden (z. B. weil die Behandlung Zeit in Anspruch nahm oder dadurch Ihr Haushalt unsauber wurde)?</p>
+                    <p style="margin: 5px">10. Inwieweit war die Behandlung Ihrer Haut in den vergangenen 7 Tagen für Sie mit Problemen verbunden (z. B. weil die Behandlung Zeit in Anspruch nahm oder dadurch Ihr Haushalt unsauber wurde)?</p>
 
                     <?php
                     if (isset($row['DLQIbehandlung_10'])) {
@@ -649,14 +656,12 @@ function show_schwere_patient($disabled) {
                         </div><!-- /.col-lg-6 -->                      
                     </div><!-- /.row -->        
 
-                    </form>
                 </div>
             </div>
+        </div>
     </div>
-
-
     </form>
-    </div>
+
 
     <?php
 }
