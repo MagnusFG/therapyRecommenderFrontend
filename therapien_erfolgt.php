@@ -3,8 +3,33 @@
 function show_therapien_erfolgt($disabled, $connection) {
 
     // Parameter
-    $patient = $_SESSION['idPatient'];
     $select = 0;
+    $patient = $_SESSION['idPatient'];
+    $visite = $_SESSION['idVisite'];
+
+    // updated Komorbidität
+    if (isset($_POST['speichern_therapieerfolgt'])) {
+
+        if (isset($_POST['therapie']) AND $_POST['therapie'] != NULL) {
+            $val1 = $_POST['therapie'];
+            $val2 = $_POST['dosierung'];
+            $val3 = $_POST['masseinheit'];
+            $val4 = $_POST['verabreichung'];
+            $val5 = $_POST['wirksamkeit'];
+            $val6 = $_POST['UAWJa'];
+            $val7 = $_POST['UAWNein'];
+
+//            if (isset($_POST['erkrankungsfreiseit']) AND is_int($_POST['erkrankungsfreiseit'])) {
+//                $val4 = $_POST['erkrankungsfreiseit'];
+//                $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität,LiegtVor,WirdBehandelt,ErkrankungsfreiSeit,Visite) VALUES ($val1,$val2,$val3,$val4,$visite)");
+//            } else {
+//                $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität,LiegtVor,WirdBehandelt,Visite) VALUES ($val1,$val2,$val3,$visite)");
+//            }
+//            $retval = mysql_query($sql, $connection);
+            
+            echo $val1;
+        }
+    }
 
     // Therapien
     $results = mysql_query("SELECT * FROM tblTherapieName WHERE Typ = 2");
@@ -78,7 +103,7 @@ function show_therapien_erfolgt($disabled, $connection) {
                             $typ = $rowTmp['Typ'];
                         }
                         ?>
-                    <!--<td><?php echo $val ?></td>-->
+                        <!--<td><?php echo $val ?></td>-->
                     <td><b><?php echo $val ?></b></td>
 
                     <?php
@@ -170,7 +195,7 @@ function show_therapien_erfolgt($disabled, $connection) {
 
             </br>
             </br>
-            
+
             <div style="margin: 5px;">
                 <button class="btn btn-primary " type="button" data-toggle="collapse" data-target="#collapseTherapieNeu" aria-expanded="false" aria-controls="collapseTherapieNeu" <?php echo $disabled; ?>>
                     Therapien hinzufügen
@@ -197,11 +222,11 @@ function show_therapien_erfolgt($disabled, $connection) {
                                                 <?php
                                                 $selected = '';
                                                 $results = mysql_query("SELECT * FROM tbltherapiename WHERE Typ = 2");
-                                                echo "<option disabled selected value></option>";
+                                                echo "<option selected value=NULL></option>";
                                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDTherapie'];
                                                     $nameTmp = $rowTmp['Name'];
-                                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                                    echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
                                                 }
                                                 ?>
                                             </select>
@@ -222,11 +247,11 @@ function show_therapien_erfolgt($disabled, $connection) {
                                                 <?php
                                                 $selected = '';
                                                 $results = mysql_query("SELECT * FROM tbltherapieverabreichung");
-                                                echo "<option disabled selected value></option>";
+                                                echo "<option selected value=NULL></option>";
                                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDTherapieVerabreichung'];
                                                     $nameTmp = $rowTmp['TherapieVerabreichung'];
-                                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                                    echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
                                                 }
                                                 ?>
                                             </select>
@@ -253,11 +278,11 @@ function show_therapien_erfolgt($disabled, $connection) {
                                                 <?php
                                                 $selected = '';
                                                 $results = mysql_query("SELECT * FROM tbltherapiemasseinheit");
-                                                echo "<option disabled selected value></option>";
+                                                echo "<option selected value=NULL></option>";
                                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDMaßeinheit'];
                                                     $nameTmp = $rowTmp['Maßeinheit'];
-                                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
+                                                    echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
                                                 }
                                                 ?> 
                                             </select>
@@ -266,44 +291,44 @@ function show_therapien_erfolgt($disabled, $connection) {
                                 </div><!-- /.col-lg-6 -->
                             </div><!-- /.row -->
 
-<!--                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="input-group" style="margin: 5px">
-                                        <span class="input-group-addon" id="basic-addon1">Dosierung Kombi:</span>
-                                        <input type="number" value="" min="0" max="100000" class="form-control" placeholder="" aria-describedby="basic-addon1" name="dosierungkombi">
-                                    </div> /input-group 
-                                </div> /.col-lg-6 
-                                <div class="col-lg-6">
-                                    <div class="input-group" style="margin: 5px">
-                                        <span class="input-group-addon" id="basic-addon1">Maßeinheit Kombi:</span>
-                                        <div class="form-group">
-                                            <select class="form-control" id="sel1" name="masseinheitkombi">
-                                                <option selected></option>
-                                                <?php
-                                                $selected = '';
-                                                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit");
-                                                echo "<option disabled selected value></option>";
-                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
-                                                    $valTmp = $rowTmp['IDMaßeinheit'];
-                                                    $nameTmp = $rowTmp['Maßeinheit'];
-                                                    echo "<option $selected value=\"$valTmp\">" . $nameTmp . "</option>";
-                                                }
-                                                ?> 
-                                            </select>
-                                            </select>
-                                        </div>
-                                    </div> /input-group 
-                                </div> /.col-lg-6 
-                            </div> /.row   -->
+                            <!--                            <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="input-group" style="margin: 5px">
+                                                                    <span class="input-group-addon" id="basic-addon1">Dosierung Kombi:</span>
+                                                                    <input type="number" value="" min="0" max="100000" class="form-control" placeholder="" aria-describedby="basic-addon1" name="dosierungkombi">
+                                                                </div> /input-group 
+                                                            </div> /.col-lg-6 
+                                                            <div class="col-lg-6">
+                                                                <div class="input-group" style="margin: 5px">
+                                                                    <span class="input-group-addon" id="basic-addon1">Maßeinheit Kombi:</span>
+                                                                    <div class="form-group">
+                                                                        <select class="form-control" id="sel1" name="masseinheitkombi">
+                                                                            <option selected></option>
+                            <?php
+                            $selected = '';
+                            $results = mysql_query("SELECT * FROM tbltherapiemasseinheit");
+                            echo "<option selected value=NULL></option>";
+                            while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                $valTmp = $rowTmp['IDMaßeinheit'];
+                                $nameTmp = $rowTmp['Maßeinheit'];
+                                echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
+                            }
+                            ?> 
+                                                                        </select>
+                                                                        </select>
+                                                                    </div>
+                                                                </div> /input-group 
+                                                            </div> /.col-lg-6 
+                                                        </div> /.row   -->
 
                             <div class="row">
                                 <div class="col-lg-6" style="text-align: right;">
                                 </div><!-- /.col-lg-6 -->
                                 <div class="col-lg-6" style="text-align: right;">
 
-                                    <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
-                                    
-                                     <div style="margin: 5px;">
+                                            <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
+
+                                    <div style="margin: 5px;">
                                         <button type="submit" class="btn btn-success btn-md" name="speichern_therapieerfolgt" value="speichern_therapieerfolgt">
                                             <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                                         </button>

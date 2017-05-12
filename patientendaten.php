@@ -7,7 +7,7 @@ function show_patientendaten($disabled, $connection) {
     $visite = $_SESSION['idVisite'];
 
     // updated Patienteninformationen
-    if (isset($_POST['speichern_patienteninformationen'])) {
+    if (isset($_POST['speichern_patienteninformationen']) OR isset($_POST['speichern_diagnose'])) {
 
         // new patient
         $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
@@ -81,7 +81,7 @@ function show_patientendaten($disabled, $connection) {
     }
 
     // updated Diagnose
-    if (isset($_POST['speichern_diagnose'])) {
+    if (isset($_POST['speichern_patienteninformationen']) OR isset($_POST['speichern_diagnose'])) {
 
         // new patient
         $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
@@ -130,7 +130,7 @@ function show_patientendaten($disabled, $connection) {
     // updated Komorbidität
     if (isset($_POST['speichern_komorbiditaet'])) {
 
-        if (isset($_POST['komorbiditaet'])) {
+        if (isset($_POST['komorbiditaet']) AND $_POST['komorbiditaet'] != NULL) {
             $val1 = $_POST['komorbiditaet'];
             $val2 = $_POST['liegtvor'];
             $val3 = $_POST['wirdbehandelt'];
@@ -154,16 +154,14 @@ function show_patientendaten($disabled, $connection) {
         $retval = mysql_query($sql, $connection);
     }
 
-
-// Daten Patient
+    // load data: Patient
     $results = mysql_query("SELECT * FROM tblPatient WHERE IDPatient = $patient");
     $row = mysql_fetch_array($results);
     $geburtJahr = $row['GeburtJahr'];
     $erstdiagnoseJahr = $row['ErstdiagnoseJahr'];
     $geschlecht = $row['Geschlecht'];
 
-
-// Daten Visite    
+    // load data: Visite
     $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
     $row = mysql_fetch_array($results);
     $gewicht = $row['Gewicht'];
@@ -353,9 +351,9 @@ function show_patientendaten($disabled, $connection) {
             </div><!-- /.row -->
 
         </div>
-    </form>
+    <!--</form>-->
 
-    <form class="questionblock" method="post" id="section_diagnose" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#section_diagnose">
+    <!--<form class="questionblock" method="post" id="section_diagnose" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#section_diagnose">-->
         <div class="panel panel-primary">
             <!-- Default panel contents -->
             <div style="float: right; margin: 5px">
@@ -500,7 +498,7 @@ function show_patientendaten($disabled, $connection) {
                 <tbody>
 
                     <?php
-                    $results = mysql_query("SELECT * FROM tblKomorbiditaetenVisite INNER JOIN tblKomorbiditaeten ON tblKomorbiditaetenVisite.Komorbidität = tblKomorbiditaeten.IDKomorbiditäten LEFT JOIN tblKomorbiditaetLiegtVor ON tblKomorbiditaetenVisite.LiegtVor = tblKomorbiditaetLiegtVor.IDLiegtVor WHERE Visite = $visite");
+                    $results = mysql_query("SELECT * FROM tblKomorbiditaetenVisite INNER JOIN tblKomorbiditaeten ON tblKomorbiditaetenVisite.Komorbidität = tblKomorbiditaeten.IDKomorbiditäten LEFT JOIN tblKomorbiditaetLiegtVor ON tblKomorbiditaetenVisite.LiegtVor = tblKomorbiditaetLiegtVor.IDLiegtVor WHERE Visite = $visite ORDER BY IDKomorbiditätenVisite DESC");
                     while ($row = mysql_fetch_array($results)) {
                         $valDelete = $row['IDKomorbiditätenVisite'];
                         ?>
