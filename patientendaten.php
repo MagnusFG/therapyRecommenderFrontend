@@ -130,13 +130,14 @@ function show_patientendaten($disabled, $connection) {
     // updated Komorbidität
     if (isset($_POST['speichern_komorbiditaet'])) {
 
-        if (isset($_POST['komorbiditaet']) AND $_POST['komorbiditaet'] != NULL) {
+        if (isset($_POST['komorbiditaet'])) {
             $val1 = $_POST['komorbiditaet'];
             $val2 = $_POST['liegtvor'];
             $val3 = $_POST['wirdbehandelt'];
             $val4 = $_POST['erkrankungsfreiseit'];
 
             if (isset($_POST['erkrankungsfreiseit']) AND is_int($_POST['erkrankungsfreiseit'])) {
+//            if (isset($_POST['erkrankungsfreiseit'])) {
                 $val4 = $_POST['erkrankungsfreiseit'];
                 $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität,LiegtVor,WirdBehandelt,ErkrankungsfreiSeit,Visite) VALUES ($val1,$val2,$val3,$val4,$visite)");
             } else {
@@ -176,8 +177,6 @@ function show_patientendaten($disabled, $connection) {
     $psoriasistyp2 = $row['Psoriasistyp2'];
     $psoriasistyp3 = $row['Psoriasistyp3'];
     ?>
-
-
 
     <form class="questionblock" method="post" id="section_patienteninformationen" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#section_patienteninformationen">
         <div class="panel panel-primary">
@@ -279,7 +278,7 @@ function show_patientendaten($disabled, $connection) {
                                 <?php
                                 $selected = '';
                                 $results = mysql_query("SELECT * FROM tblPatientendatenKinderwunsch");
-                                echo "<option selected value=NULL></option>";
+                                echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDKinderwunsch'];
                                     $nameTmp = $rowTmp['txtKinderwunsch'];
@@ -308,7 +307,7 @@ function show_patientendaten($disabled, $connection) {
                                 <?php
                                 $selected = '';
                                 $results = mysql_query("SELECT * FROM tblPatientendatenBildungsstand");
-                                echo "<option selected value=NULL></option>";
+                                echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDBildungsstand'];
                                     $nameTmp = $rowTmp['txtBildungsstand'];
@@ -332,7 +331,7 @@ function show_patientendaten($disabled, $connection) {
                                 <?php
                                 $selected = '';
                                 $results = mysql_query("SELECT * FROM tblPatientendatenBerufsstand");
-                                echo "<option selected value=NULL></option>";
+                                echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDBerufsstand'];
                                     $nameTmp = $rowTmp['txtBerufsstand'];
@@ -351,9 +350,9 @@ function show_patientendaten($disabled, $connection) {
             </div><!-- /.row -->
 
         </div>
-    <!--</form>-->
+        <!--</form>-->
 
-    <!--<form class="questionblock" method="post" id="section_diagnose" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#section_diagnose">-->
+        <!--<form class="questionblock" method="post" id="section_diagnose" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#section_diagnose">-->
         <div class="panel panel-primary">
             <!-- Default panel contents -->
             <div style="float: right; margin: 5px">
@@ -376,7 +375,7 @@ function show_patientendaten($disabled, $connection) {
                                 <?php
                                 $selected = '';
                                 $results = mysql_query("SELECT * FROM tblpatientendatenfamilienanamnese");
-                                echo "<option selected value=NULL></option>";
+                                echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDFamilienAnamnese'];
                                     $nameTmp = $rowTmp['txtFamilienanamnese'];
@@ -405,7 +404,7 @@ function show_patientendaten($disabled, $connection) {
                                 <?php
                                 $selected = '';
                                 $results = mysql_query("SELECT * FROM tblPatientendatenPsoriasistyp");
-                                echo "<option selected value=NULL></option>";
+                                echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDPsoriasis'];
                                     $nameTmp = $rowTmp['txtTyp'];
@@ -432,7 +431,7 @@ function show_patientendaten($disabled, $connection) {
                                 <?php
                                 $selected = '';
                                 $results = mysql_query("SELECT * FROM tblPatientendatenPsoriasistyp");
-                                echo "<option selected value=NULL></option>";
+                                echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDPsoriasis'];
                                     $nameTmp = $rowTmp['txtTyp'];
@@ -459,7 +458,7 @@ function show_patientendaten($disabled, $connection) {
                                 <?php
                                 $selected = '';
                                 $results = mysql_query("SELECT * FROM tblPatientendatenPsoriasistyp");
-                                echo "<option selected value=NULL></option>";
+                                echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDPsoriasis'];
                                     $nameTmp = $rowTmp['txtTyp'];
@@ -524,6 +523,7 @@ function show_patientendaten($disabled, $connection) {
                         <?php
                     }
                     ?>
+                        
                 </tbody>
             </table>
 
@@ -556,7 +556,7 @@ function show_patientendaten($disabled, $connection) {
                                                 <?php
                                                 $selected = '';
                                                 $results = mysql_query("SELECT * FROM tblKomorbiditaeten");
-                                                echo "<option selected value=NULL></option>";
+                                                echo "<option selected  value=NULL></option>";
                                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDKomorbiditäten'];
                                                     $nameTmp = $rowTmp['Name'];
@@ -577,7 +577,7 @@ function show_patientendaten($disabled, $connection) {
                                                 <?php
                                                 $selected = '';
                                                 $results = mysql_query("SELECT * FROM tblKomorbiditaetLiegtVor");
-                                                echo "<option selected value=NULL></option>";
+                                                echo "<option selected  value=NULL></option>";
                                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDLiegtVor'];
                                                     $nameTmp = $rowTmp['txtLiegtVor'];
@@ -605,9 +605,9 @@ function show_patientendaten($disabled, $connection) {
                                             <select name="wirdbehandelt" class="form-control" id="sel1" name="wirdbehandelt">
                                                 <option selected></option>
                                                 <?php
-                                                echo "<option selected value=NULL></option>";
-                                                echo "<option value = 1>ja</option>";
-                                                echo "<option value = 0>nein</option>";
+                                                echo "<option selected  value=NULL></option>";
+                                                echo "<option  value=NULL= 1>ja</option>";
+                                                echo "<option  value=NULL= 0>nein</option>";
                                                 ?>
                                             </select>
                                         </div>

@@ -10,54 +10,46 @@ function show_therapien_erfolgt($disabled, $connection) {
     // updated Komorbidität
     if (isset($_POST['speichern_therapieerfolgt'])) {
 
-        if (isset($_POST['therapie']) AND $_POST['therapie'] != NULL) {
+        $val1 = '';
+        $val2 = '';
+        $val3 = '';
+        $val4 = '';
+        $val5 = '';
+        $val6a = 0;
+        $val6b = 0;
+        if (isset($_POST['therapie'])) {
             $val1 = $_POST['therapie'];
             $val2 = $_POST['dosierung'];
             $val3 = $_POST['masseinheit'];
             $val4 = $_POST['verabreichung'];
             $val5 = $_POST['wirksamkeit'];
-            $val6 = $_POST['UAWJa'];
-            $val7 = $_POST['UAWNein'];
+            if ($_POST['uaw'] == 1) {
+                $val6a = 1;
+                $val6b = 0;
+            } elseif ($_POST['uaw'] == 0) {
+                $val6a = 0;
+                $val6b = 1;
+            }
 
-//            if (isset($_POST['erkrankungsfreiseit']) AND is_int($_POST['erkrankungsfreiseit'])) {
-//                $val4 = $_POST['erkrankungsfreiseit'];
-//                $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität,LiegtVor,WirdBehandelt,ErkrankungsfreiSeit,Visite) VALUES ($val1,$val2,$val3,$val4,$visite)");
-//            } else {
-//                $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität,LiegtVor,WirdBehandelt,Visite) VALUES ($val1,$val2,$val3,$visite)");
-//            }
-//            $retval = mysql_query($sql, $connection);
-            
-            echo $val1;
+            $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val2,$val3,$val4,$val5,$val6a,$val6a,$patient)");
+            $retval = mysql_query($sql, $connection);
+
+            if (isset($_POST['dosierung']) AND is_int($_POST['dosierung'])) {
+                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val2,$val3,$val4,$val5,$val6a,$val6a,$patient)");
+            } else {
+                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val3,$val4,$val5,$val6a,$val6a,$patient)");
+            }
+            $retval = mysql_query($sql, $connection);
         }
     }
+    
+    // delete Therapie Jemals
+    if (isset($_POST['loesche_therapieerfolgt'])) {
+        $val = $_POST['loesche_therapieerfolgt'];
 
-    // Therapien
-    $results = mysql_query("SELECT * FROM tblTherapieName WHERE Typ = 2");
-    $therapies = array();
-    while ($row = mysql_fetch_array($results)) {
-        $therapies[$row['IDTherapie']] = $row['Name'];
-    }
-
-    // Wirksamkeit
-    $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit");
-    $wirksamkeit = array();
-    while ($row = mysql_fetch_array($results)) {
-        $wirksamkeiten[$row['IDTherapieWirksamkeit']] = $row['TherapieWirksamkeit'];
-    }
-
-    // Verabreichung
-    $results = mysql_query("SELECT * FROM tblTherapieVerabreichung");
-    $wirksamkeit = array();
-    while ($row = mysql_fetch_array($results)) {
-        $verabreichungen[$row['IDTherapieVerabreichung']] = $row['TherapieVerabreichung'];
-    }
-
-    // Maßeinheit
-    $results = mysql_query("SELECT * FROM tblTherapieMasseinheit");
-    $wirksamkeit = array();
-    while ($row = mysql_fetch_array($results)) {
-        $masseinheiten[$row['IDMaßeinheit']] = $row['Maßeinheit'];
-    }
+        $sql = mysql_query("DELETE FROM tbltherapiejemals WHERE IDTherapie=$val");
+        $retval = mysql_query($sql, $connection);
+    }    
     ?>
 
     <form class="questionblock" method="post" id="section_patienteninformationen" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#section_patienteninformationen">
@@ -90,12 +82,14 @@ function show_therapien_erfolgt($disabled, $connection) {
                     </tr>
                 </thead>
                 <tbody>
+
                     <?php
                     $therapie = mysql_query("SELECT * FROM tblTherapieJemals WHERE Patient = $patient");
                     while ($row = mysql_fetch_array($therapie)) {
                         echo "<tr>";
                         $val = '';
                         if (isset($row['Therapie'])) {
+                            $valDelete = $row['IDTherapie'];
                             $tmp = $row['Therapie'];
                             $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $tmp");
                             $rowTmp = mysql_fetch_array($results);
@@ -103,7 +97,7 @@ function show_therapien_erfolgt($disabled, $connection) {
                             $typ = $rowTmp['Typ'];
                         }
                         ?>
-                        <!--<td><?php echo $val ?></td>-->
+                                            <!--<td><?php echo $val ?></td>-->
                     <td><b><?php echo $val ?></b></td>
 
                     <?php
@@ -180,9 +174,9 @@ function show_therapien_erfolgt($disabled, $connection) {
                     ?>
 
                     <td style="text-align: right;">
-                        <button type="submit" class="btn btn-danger" name="loeschen[<?php echo $row['IDTherapie'] ?>]" value="x"<?php echo $disabled; ?>>
+                        <button type="submit" name="loesche_therapieerfolgt" class="btn btn-danger" value=<?php echo $valDelete; ?><?php echo $disabled; ?>>
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                        </button>
+                        </button>                          
                     </td>
 
                     </tr>
@@ -291,42 +285,64 @@ function show_therapien_erfolgt($disabled, $connection) {
                                 </div><!-- /.col-lg-6 -->
                             </div><!-- /.row -->
 
-                            <!--                            <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="input-group" style="margin: 5px">
-                                                                    <span class="input-group-addon" id="basic-addon1">Dosierung Kombi:</span>
-                                                                    <input type="number" value="" min="0" max="100000" class="form-control" placeholder="" aria-describedby="basic-addon1" name="dosierungkombi">
-                                                                </div> /input-group 
-                                                            </div> /.col-lg-6 
-                                                            <div class="col-lg-6">
-                                                                <div class="input-group" style="margin: 5px">
-                                                                    <span class="input-group-addon" id="basic-addon1">Maßeinheit Kombi:</span>
-                                                                    <div class="form-group">
-                                                                        <select class="form-control" id="sel1" name="masseinheitkombi">
-                                                                            <option selected></option>
-                            <?php
-                            $selected = '';
-                            $results = mysql_query("SELECT * FROM tbltherapiemasseinheit");
-                            echo "<option selected value=NULL></option>";
-                            while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
-                                $valTmp = $rowTmp['IDMaßeinheit'];
-                                $nameTmp = $rowTmp['Maßeinheit'];
-                                echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
-                            }
-                            ?> 
-                                                                        </select>
-                                                                        </select>
-                                                                    </div>
-                                                                </div> /input-group 
-                                                            </div> /.col-lg-6 
-                                                        </div> /.row   -->
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <span class="input-group-addon" id="basic-addon1">Wirksamkeit:</span>
+                                        <div class="form-group">
+                                            <select class="form-control" id="sel1" name="wirksamkeit">
+                                                <option selected></option>
+                                                <?php
+                                                $selected = '';
+                                                $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
+                                                echo "<option selected value=NULL></option>";
+                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                    $valTmp = $rowTmp['IDTherapieWirksamkeit'];
+                                                    $nameTmp = $rowTmp['TherapieWirksamkeit'];
+                                                    echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>    
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
+
+                                <div class="col-lg-6">
+                                    <div class="input-group" style="margin: 5px">
+                                        <span class="input-group-addon" id="basic-addon1">UAW:</span>
+                                        <div class="form-group">
+                                            <select class="form-control" id="sel1" name="uaw">
+                                                <option selected></option>
+                                                <?php
+                                                if ($UAWNein == 1) {
+                                                    $selected0 = "";
+                                                    $selected1 = "selected";
+                                                    $selected2 = "";
+                                                } elseif ($UAWJa == 1) {
+                                                    $selected0 = "";
+                                                    $selected1 = "";
+                                                    $selected2 = "selected";
+                                                } else {
+                                                    $selected0 = "selected";
+                                                    $selected1 = "";
+                                                    $selected2 = "";
+                                                }
+                                                echo "<option $selected0 value=-1></option>";
+                                                echo "<option $selected1 value=0>nein</option>";
+                                                echo "<option $selected2 value=1>ja</option>";
+                                                ?>
+                                            </select>
+                                        </div>    
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
+                            </div><!-- /.row -->                            
 
                             <div class="row">
                                 <div class="col-lg-6" style="text-align: right;">
                                 </div><!-- /.col-lg-6 -->
                                 <div class="col-lg-6" style="text-align: right;">
 
-                                            <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
+                                                                                                <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
 
                                     <div style="margin: 5px;">
                                         <button type="submit" class="btn btn-success btn-md" name="speichern_therapieerfolgt" value="speichern_therapieerfolgt">
