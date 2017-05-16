@@ -23,23 +23,36 @@ function show_therapien_erfolgt($disabled, $connection) {
                 $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Masseinheit,VerabreichungTyp,Patient) VALUES ($val1,$val3,$val4,$patient)");
             }
             $retval = mysql_query($sql, $connection);
-
-
-//            $val5 = intval($_POST['wirksamkeit']);
-//            if ($_POST['uaw'] == 1) {
-//                $val6a = 1;
-//                $val6b = 0;
-//            } elseif ($_POST['uaw'] == 0) {
-//                $val6a = 0;
-//                $val6b = 1;
-//            }
-//            if ($val2 != 0) {
-//                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val2,$val3,$val4,$val5,$val6a,$val6a,$patient)");
-//            } else {
-//                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val3,$val4,$val5,$val6a,$val6a,$patient)");
-//            }
-//            $retval = mysql_query($sql, $connection);
         }
+    }
+
+    // updated therapie outcome
+    if (isset($_POST['speichern_therapieoutcome'])) {
+
+        // new applied therapie
+        $idTherapieRecommended = $_POST['speichern_therapieoutcome'];
+        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE IDTherapie = $idTherapieRecommended");
+        $row = mysql_fetch_array($sql);
+        $val = $row['Therapie'];
+        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $val AND Visite = $visite");
+        $row = mysql_fetch_array($sql);
+        if (!isset($row['IDTherapie'])) {
+            $results = mysql_query("INSERT INTO tbltherapiesvisitesystapplied(Therapie, Dosierung, Masseinheit, VerabreichungTyp) SELECT Therapie, Dosierung, Masseinheit, VerabreichungTyp FROM tbltherapiesvisitesystrecommended WHERE IDTherapie = $idTherapieRecommended");
+            $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied ORDER BY IDTherapie DESC LIMIT 1");
+            $row = mysql_fetch_array($sql);
+        }
+        $idTherapieApplied = $row['IDTherapie'];
+
+        $val2 = intval($_POST['wirksamkeit']);
+        if ($_POST['uaw'] == 1) {
+            $val3a = 1;
+            $val3b = 0;
+        } elseif ($_POST['uaw'] == 0) {
+            $val3a = 0;
+            $val3b = 1;
+        }
+        $sql = mysql_query("UPDATE tbltherapiesvisitesystapplied SET AngewendetJa=1, AngewendetNein=0, Wirksamkeit=$val2, UAWja=$val3a, UAWnein=$val3b WHERE IDTherapie=$idTherapieApplied");
+        $retval = mysql_query($sql, $connection);
     }
 
 // delete therapie erfolgt
@@ -47,6 +60,14 @@ function show_therapien_erfolgt($disabled, $connection) {
         $val = $_POST['loesche_therapieerfolgt'];
 
         $sql = mysql_query("DELETE FROM tbltherapiejemals WHERE IDTherapie=$val");
+        $retval = mysql_query($sql, $connection);
+    }
+
+// delete therapie outcome
+    if (isset($_POST['loesche_therapieoutcome'])) {
+        $val = $_POST['loesche_therapieoutcome'];
+
+        $sql = mysql_query("UPDATE tbltherapiesvisitesystrecommended SET AngewendetJa=0, AngewendetNein=0, NichtUmgesetzt=1 WHERE IDTherapie=$val");
         $retval = mysql_query($sql, $connection);
     }
     ?>
@@ -93,16 +114,11 @@ function show_therapien_erfolgt($disabled, $connection) {
                             break;
                         }
                         // zeige angewendete therapien frühere visite
-                        append_therapie_visite($idPrevVisite, $prevVisite, 0);
+                        append_therapie_visite($visiten, $prevVisite, 0);
                     }
 
                     // zeige empfohlene therapien vorherige visite
-                    if ($prevVisite == 0) {
-                        append_therapie_visite($idPrevVisite, $prevVisite, 0);
-                    } else {
-                        append_therapie_visite($visiten[$prevVisite - 1], $prevVisite, 1);
-                        // TODO: aktuelle Visite für applied / aktuelle Visite für recommended !!!!
-                    }
+                    append_therapie_visite($visiten, $prevVisite, 1);
                     ?>
 
                 </tbody>
@@ -237,7 +253,7 @@ function show_therapien_erfolgt($disabled, $connection) {
 
                             <div class="col-lg-6" style="text-align: right;">
 
-                                                                                                                                                                                                                                                                                                                                                                        <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
+                                                                                                                                                                                                                                                                                                                                                                                                        <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
 
                                 <div style="margin: 5px;">
                                     <button type="submit" class="btn btn-success btn-md" name="speichern_therapieerfolgt" value="speichern_therapieerfolgt">
@@ -353,14 +369,18 @@ function append_therapie_jemals($patient) {
 
 <?php
 
-function append_therapie_visite($visite, $numVisite, $verify) {
+function append_therapie_visite($visiten, $numVisite, $verify) {
 
     $disabled = '';
 
-    if ($verify == 1) {
+    if ($verify == 1 AND $numVisite > 0) {
+        $visite = $visiten[$numVisite - 1];
+        $visiteNext = $visiten[$numVisite];
         $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $visite");
     } else {
+        $visite = $visiten[$numVisite];
         $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite");
+        $verify = 0;
     }
     while ($row = mysql_fetch_array($therapie)) {
 
@@ -418,7 +438,7 @@ function append_therapie_visite($visite, $numVisite, $verify) {
 
             <?php
             if ($verify == 1) { // verify outcome
-                $therapieoutcome = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $therapieTmp AND Visite = $visite");
+                $therapieoutcome = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $therapieTmp AND Visite = $visiteNext");
                 $rowTherapieoutcome = mysql_fetch_array($therapieoutcome);
                 $wirksamkeit = '';
                 if (isset($rowTherapieoutcome['Wirksamkeit'])) {
@@ -512,7 +532,7 @@ function append_therapie_visite($visite, $numVisite, $verify) {
                         <button type="submit" name="speichern_therapieoutcome" class="btn btn-success" value=<?php echo $valDelete; ?><?php echo $disabled; ?>>
                             <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                         </button>
-                        <button type="submit" name="loesche_therapieerfolgt" class="btn btn-danger" value=<?php echo $valDelete; ?><?php echo $disabled; ?>>
+                        <button type="submit" name="loesche_therapieoutcome" class="btn btn-danger" value=<?php echo $valDelete; ?><?php echo $disabled; ?>>
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                         </button>
                     </div>
