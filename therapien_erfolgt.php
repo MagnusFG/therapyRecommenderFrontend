@@ -59,12 +59,12 @@ function show_therapien_erfolgt($disabled, $connection) {
 
             <table class="table table-striped">
                 <colgroup>
-                    <col width="500">
-                    <col width="80">
+                    <col width="200">
                     <col width="80">
                     <col width="80">
                     <col width="100">
-                    <col width="80">
+                    <col width="100">
+                    <col width="120">
                     <col width="80">
                     <col width="120">
                 </colgroup>
@@ -96,8 +96,13 @@ function show_therapien_erfolgt($disabled, $connection) {
                         append_therapie_visite($idPrevVisite, $prevVisite, 0);
                     }
 
-                    // zeige angewendete therapien aktuelle visite
-                    append_therapie_visite($idPrevVisite, array_search($visite, $visiten), 1);
+                    // zeige empfohlene therapien vorherige visite
+                    if ($prevVisite == 0) {
+                        append_therapie_visite($idPrevVisite, $prevVisite, 0);
+                    } else {
+                        append_therapie_visite($visiten[$prevVisite - 1], $prevVisite, 1);
+                        // TODO: aktuelle Visite für applied / aktuelle Visite für recommended !!!!
+                    }
                     ?>
 
                 </tbody>
@@ -200,13 +205,6 @@ function show_therapien_erfolgt($disabled, $connection) {
 
                             </div><!-- /.row -->     
 
-                            <!--                            <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="input-group" style="margin: 5px">
-                                                                    <span class="input-group-addon" id="basic-addon1">Wirksamkeit:</span>
-                                                                    <div class="form-group">
-                                                                        <select class="form-control" id="sel1" name="wirksamkeit">
-                                                                            <option selected></option>
                             <?php
                             $selected = '';
                             $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
@@ -217,17 +215,7 @@ function show_therapien_erfolgt($disabled, $connection) {
                                 echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
                             }
                             ?>
-                                                                        </select>
-                                                                    </div>    
-                                                                </div> /input-group 
-                                                            </div> /.col-lg-6 
-                            
-                                                            <div class="col-lg-6">
-                                                                <div class="input-group" style="margin: 5px">
-                                                                    <span class="input-group-addon" id="basic-addon1">UAW:</span>
-                                                                    <div class="form-group">
-                                                                        <select class="form-control" id="sel1" name="uaw">
-                                                                            <option selected></option>
+
                             <?php
                             if ($UAWNein == 1) {
                                 $selected0 = "";
@@ -246,34 +234,26 @@ function show_therapien_erfolgt($disabled, $connection) {
                             echo "<option $selected1 value=0>nein</option>";
                             echo "<option $selected2 value=1>ja</option>";
                             ?>
-                                                                        </select>
-                                                                    </div>    
-                                                                </div> /input-group 
-                                                            </div> /.col-lg-6 
-                                                        </div> /.row                             -->
 
-                            <div class="row">
-                                <div class="col-lg-6" style="text-align: right;">
-                                </div><!-- /.col-lg-6 -->
-                                <div class="col-lg-6" style="text-align: right;">
+                            <div class="col-lg-6" style="text-align: right;">
 
-                                                                                                                                                                                                                                                                                                                                <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
+                                                                                                                                                                                                                                                                                                                                                                        <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
 
-                                    <div style="margin: 5px;">
-                                        <button type="submit" class="btn btn-success btn-md" name="speichern_therapieerfolgt" value="speichern_therapieerfolgt">
-                                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                                        </button>
-                                    </div>
+                                <div style="margin: 5px;">
+                                    <button type="submit" class="btn btn-success btn-md" name="speichern_therapieerfolgt" value="speichern_therapieerfolgt">
+                                        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                                    </button>
+                                </div>
 
-                                </div><!-- /.col-lg-6 -->
-                            </div><!-- /.row -->
-                        </form>
-                        <?php
-                    }
-                    ?>
-                </div>
+                            </div><!-- /.col-lg-6 -->
+                    </div><!-- /.row -->
+                    </form>
+                    <?php
+                }
+                ?>
             </div>
         </div>
+    </div>
     </form>
 
     <?php
@@ -302,7 +282,7 @@ function append_therapie_jemals($patient) {
                 $val = $rowTmp['Name'];
                 $typ = $rowTmp['Typ'];
             }
-            ?>                                                                            <!--<td><?php echo $val ?></td>-->
+            ?>
             <td><b><?php echo $val ?></b></td>
 
             <?php
@@ -377,8 +357,16 @@ function append_therapie_visite($visite, $numVisite, $verify) {
 
     $disabled = '';
 
-    $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite");
+    if ($verify == 1) {
+        $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $visite");
+    } else {
+        $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite");
+    }
     while ($row = mysql_fetch_array($therapie)) {
+
+        if ($row['NichtUmgesetzt'] == 1) {
+            continue;
+        }
         ?>
 
         <tr>
@@ -387,13 +375,13 @@ function append_therapie_visite($visite, $numVisite, $verify) {
             $val = '';
             if (isset($row['Therapie'])) {
                 $valDelete = $row['IDTherapie'];
-                $tmp = $row['Therapie'];
-                $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $tmp");
+                $therapieTmp = $row['Therapie'];
+                $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $therapieTmp");
                 $rowTmp = mysql_fetch_array($results);
                 $val = $rowTmp['Name'];
                 $typ = $rowTmp['Typ'];
             }
-            ?>                                                                            <!--<td><?php echo $val ?></td>-->
+            ?>
             <td><b><?php echo $val ?></b></td>
 
             <?php
@@ -430,52 +418,62 @@ function append_therapie_visite($visite, $numVisite, $verify) {
 
             <?php
             if ($verify == 1) { // verify outcome
+                $therapieoutcome = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $therapieTmp AND Visite = $visite");
+                $rowTherapieoutcome = mysql_fetch_array($therapieoutcome);
+                $wirksamkeit = '';
+                if (isset($rowTherapieoutcome['Wirksamkeit'])) {
+                    $wirksamkeit = $rowTherapieoutcome['Wirksamkeit'];
+                }
+                $uawJa = $uawNein = '';
+                if (isset($rowTherapieoutcome['UAWja']) AND isset($rowTherapieoutcome['UAWnein'])) {
+                    $uawJa = $rowTherapieoutcome['UAWja'];
+                    $uawNein = $rowTherapieoutcome['UAWnein'];
+                }
                 ?>
 
                 <td>                
-                    <!--                    <div class="col-lg-4">
-                                            <div class="input-group" style="margin: 5px">
-                                                <span class="input-group-addon" id="basic-addon1">Art der Verabreichung:</span>
-                                                <div class="form-group">-->
-                    <select class="form-control" id="sel1" name="verabreichung">
+                    <select class="form-control" id="sel1" name="wirksamkeit">
                         <option selected></option>
                         <?php
-                        $selected = '';
-                        $results = mysql_query("SELECT * FROM tbltherapieverabreichung");
+                        $selected = "";
+                        $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
                         echo "<option selected value=NULL></option>";
                         while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
-                            $valTmp = $rowTmp['IDTherapieVerabreichung'];
-                            $nameTmp = $rowTmp['TherapieVerabreichung'];
+                            $valTmp = $rowTmp['IDTherapieWirksamkeit'];
+                            $nameTmp = $rowTmp['TherapieWirksamkeit'];
+                            if ($wirksamkeit == $valTmp) {
+                                $selected = "selected";
+                            } else {
+                                $selected = "";
+                            }
                             echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
                         }
                         ?>
                     </select>
-                    <!--                            </div>    
-                                            </div> /input-group 
-                                        </div> /.col-lg-6 -->
                 </td>  
 
                 <td>                
-                    <!--                    <div class="col-lg-4">
-                                                        <div class="input-group" style="margin: 5px">
-                                                            <span class="input-group-addon" id="basic-addon1">Art der Verabreichung:</span>
-                                                            <div class="form-group">-->
-                    <select class="form-control" id="sel1" name="verabreichung">
+                    <select class="form-control" id="sel1" name="uaw">
                         <option selected></option>
                         <?php
-                        $selected = '';
-                        $results = mysql_query("SELECT * FROM tbltherapieverabreichung");
-                        echo "<option selected value=NULL></option>";
-                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
-                            $valTmp = $rowTmp['IDTherapieVerabreichung'];
-                            $nameTmp = $rowTmp['TherapieVerabreichung'];
-                            echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
+                        if ($uawNein == 1) {
+                            $selected0 = "";
+                            $selected1 = "selected";
+                            $selected2 = "";
+                        } elseif ($uawJa == 1) {
+                            $selected0 = "";
+                            $selected1 = "";
+                            $selected2 = "selected";
+                        } else {
+                            $selected0 = "selected";
+                            $selected1 = "";
+                            $selected2 = "";
                         }
+                        echo "<option $selected0 value=-1></option>";
+                        echo "<option $selected1 value=0>nein</option>";
+                        echo "<option $selected2 value=1>ja</option>";
                         ?>
                     </select>
-                    <!--                            </div>    
-                                            </div> /input-group 
-                                        </div> /.col-lg-6 -->
                 </td>              
 
                 <?php
