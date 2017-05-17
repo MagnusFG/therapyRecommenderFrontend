@@ -395,7 +395,7 @@ $disabledButtonPatient = ''; // disable buttons
                     } else if ($_GET['action'] == 'therapien_empfohlen') {
                         show_therapien_empfohlen($disabled, $connection);
                     } else if ($_GET['action'] == 'therapien_rs') {
-                        show_therapien_rs();
+                        show_therapien_rs($disabled, $connection);
                     }
                 } else {
                     echo "<div class=\"alert alert-warning\" role=\"alert\">";

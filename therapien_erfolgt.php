@@ -38,6 +38,7 @@ function show_therapien_erfolgt($disabled, $connection) {
         $row = mysql_fetch_array($sql);
         if (!isset($row['IDTherapie'])) {
             $results = mysql_query("INSERT INTO tbltherapiesvisitesystapplied(Therapie, Dosierung, Masseinheit, VerabreichungTyp) SELECT Therapie, Dosierung, Masseinheit, VerabreichungTyp FROM tbltherapiesvisitesystrecommended WHERE IDTherapie = $idTherapieRecommended");
+            $retval = mysql_query($sql, $connection);
             $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied ORDER BY IDTherapie DESC LIMIT 1");
             $row = mysql_fetch_array($sql);
         }

@@ -5,6 +5,7 @@ function show_patientendaten($disabled, $connection) {
     $select = 0;
     $patient = $_SESSION['idPatient'];
     $visite = $_SESSION['idVisite'];
+    $visiten = $_SESSION['visiten'];  
 
     // updated Patienteninformationen
     if (isset($_POST['speichern_patienteninformationen']) OR isset($_POST['speichern_diagnose'])) {
