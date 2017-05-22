@@ -70,12 +70,6 @@ function show_therapien_erfolgt($disabled, $connection) {
                 $row = mysql_fetch_array($sql);
             }
             $idTherapieApplied = $row['IDTherapie'];
-            echo "id:";
-            echo $idTherapieApplied;
-            echo "ther:";
-            echo $therapy;
-            echo "Wirksamkeit";
-            echo $val2;
             $sql = mysql_query("UPDATE tbltherapiesvisitesystapplied SET AngewendetJa=1, AngewendetNein=0, Wirksamkeit=$val2, UAWja=$val3a, UAWnein=$val3b WHERE IDTherapie=$idTherapieApplied");
             $retval = mysql_query($sql, $connection);
         }
