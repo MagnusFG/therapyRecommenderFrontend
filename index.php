@@ -23,6 +23,7 @@ $disabled = ''; //disabled'; // disbable intput / output element
 $disabledSelect = ''; // disable select patient / visite
 $disabledButtonVisite = ''; // disable buttons
 $disabledButtonPatient = ''; // disable buttons
+$newVisite = 0; // neue visite anlegen?
 //$cmd = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\main.exe"';
 //$outputfile = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\out.log"';
 //$pidfile = '"W:\daten\Promotion TUD\Arbeit\Projekt ZEGV\Matlab\system\main\for_testing\pid.log"';
@@ -189,7 +190,7 @@ $disabledButtonPatient = ''; // disable buttons
                 }
 
                 // Button Visite Neu verarbeiten
-                if (isset($_POST['visite_neu'])) { // wenn visite neu gedrueckt, ...
+                if (isset($_POST['visite_neu']) AND isset($_SESSION['idPatient'])) { // wenn visite neu gedrueckt, ...
 // ... aktiviere Eingaben
                     $disabled = '';
 // ... disable Auswahl Patient und Visite
@@ -224,6 +225,10 @@ $disabledButtonPatient = ''; // disable buttons
                     // $numVisite = last element + 1;
                     // insert and load
                     // $_SESSION['idVisite'] = $visiten[$numVisite];
+                    
+// ... open and copy patientendaten from previous consultation
+                    $newVisite = 1;
+                    $_GET['action'] = 'patientendaten';
                 }
 
                 // Button Patient Neu verarbeiten
@@ -237,8 +242,7 @@ $disabledButtonPatient = ''; // disable buttons
 //                    $sql = mysql_query("INSERT INTO tblpatient");
 //                    $retval = mysql_query($sql, $connection);
 // ... apppend patient
-                    $dat = NULL;
-                    $sql = mysql_query("INSERT INTO tblpatient (Geschlecht) VALUE (1)");
+                    $sql = mysql_query("INSERT INTO tblpatient (IDPatient) VALUE (null)");                    
                     $retval = mysql_query($sql, $connection);
 
 //                        $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
@@ -256,11 +260,14 @@ $disabledButtonPatient = ''; // disable buttons
 
 //                  // set global variables
                     $_SESSION['idPatient'] = $idPatient;
-                    $_SESSION['visiten'] = $visiten;
 
                     // reset selected visite if new patient selected
                     unset($_POST['selVisite']);
                     unset($_SESSION['idVisite']);
+                    unset($_SESSION['visiten']);
+//                    $_SESSION['visiten'] = $visiten;
+                    
+                    $_GET['action'] = 'patientendaten';
                 }
 
 
@@ -385,7 +392,7 @@ $disabledButtonPatient = ''; // disable buttons
                 <?php
                 if (isset($_SESSION['idVisite']) && $_SESSION['idVisite'] != '') {
                     if ($_GET['action'] == 'patientendaten') {
-                        show_patientendaten($disabled, $connection);
+                        show_patientendaten($disabled, $connection, $newVisite);
                     } else if ($_GET['action'] == 'schwere_arzt') {
                         show_schwere_arzt($disabled, $connection);
                     } else if ($_GET['action'] == 'schwere_patient') {

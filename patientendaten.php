@@ -1,11 +1,23 @@
 <?php
 
-function show_patientendaten($disabled, $connection) {
+function show_patientendaten($disabled, $connection, $newVisite) {
 
     $select = 0;
     $patient = $_SESSION['idPatient'];
     $visite = $_SESSION['idVisite'];
     $visiten = $_SESSION['visiten'];  
+    
+    // copy Patienteninformationen and Komorbiditäten
+    if ($newVisite == 1) {
+        end($visiten); // move pointer to last element
+        $prevVisite = prev($visiten);#
+        
+        $sql = mysql_query("INSERT INTO tblPatientendatenVisite (Gewicht, Größe, Familienanamnese, Psoriasistyp1, Psoriasistyp2, Psoriasistyp3, FamilienstandJa, FamilienstandNein, Bildungsstand, Kinderwunsch, Visite) SELECT Gewicht, Größe, Familienanamnese, Psoriasistyp1, Psoriasistyp2, Psoriasistyp3, FamilienstandJa, FamilienstandNein, Bildungsstand, Kinderwunsch, $visite FROM tblPatientendatenVisite WHERE Visite = $prevVisite");
+        $retval = mysql_query($sql, $connection);
+        
+        $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität, LiegtVor, WirdBehandelt, Organ, Stadium, ErkrankungsfreiSeit, Visite) SELECT Komorbidität, LiegtVor, WirdBehandelt, Organ, Stadium, ErkrankungsfreiSeit, $visite FROM tblkomorbiditaetenvisite WHERE Visite = $prevVisite");
+        $retval = mysql_query($sql, $connection);        
+    }
 
     // updated Patienteninformationen
     if (isset($_POST['speichern_patienteninformationen']) OR isset($_POST['speichern_diagnose'])) {
@@ -135,14 +147,12 @@ function show_patientendaten($disabled, $connection) {
             $val1 = $_POST['komorbiditaet'];
             $val2 = $_POST['liegtvor'];
             $val3 = $_POST['wirdbehandelt'];
-            $val4 = $_POST['erkrankungsfreiseit'];
+            $val4 = $_POST['erkrankungsfreiseit']; 
 
-            if (isset($_POST['erkrankungsfreiseit']) AND is_int($_POST['erkrankungsfreiseit'])) {
-//            if (isset($_POST['erkrankungsfreiseit'])) {
-                $val4 = $_POST['erkrankungsfreiseit'];
-                $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität,LiegtVor,WirdBehandelt,ErkrankungsfreiSeit,Visite) VALUES ($val1,$val2,$val3,$val4,$visite)");
-            } else {
+            if ($val4 < 1900 OR $val4 > 2017) {
                 $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität,LiegtVor,WirdBehandelt,Visite) VALUES ($val1,$val2,$val3,$visite)");
+            } else {
+                $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität,LiegtVor,WirdBehandelt,ErkrankungsfreiSeit,Visite) VALUES ($val1,$val2,$val3,$val4,$visite)");
             }
             $retval = mysql_query($sql, $connection);
         }
@@ -607,8 +617,8 @@ function show_patientendaten($disabled, $connection) {
                                                 <option selected></option>
                                                 <?php
                                                 echo "<option selected  value=NULL></option>";
-                                                echo "<option  value=NULL= 1>ja</option>";
-                                                echo "<option  value=NULL= 0>nein</option>";
+                                                echo "<option  value=1>ja</option>";
+                                                echo "<option  value=0>nein</option>";
                                                 ?>
                                             </select>
                                         </div>

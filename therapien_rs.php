@@ -6,34 +6,27 @@ function show_therapien_rs($disabled, $connection) {
     $patient = $_SESSION['idPatient'];
     $visite = $_SESSION['idVisite'];
     $visiten = $_SESSION['visiten'];
-
-    // insert visite into input interface
     $numVisite = array_search($visite, $visiten);
-    $sql = mysql_query("INSERT INTO tblInputInterface(Visite, Patient, NumVisite) VALUES ($visite,$patient,$numVisite)");
-    $retval = mysql_query($sql, $connection);
-
-// Therapien
-//    $results = mysql_query("SELECT * FROM tbltherapierecom WHERE ingTyp = 2 ORDER BY Indicator DESC");
     $therapies = array();
-//    while ($row = mysql_fetch_array($results)) {
-//        $indicator[$row['IDTherapie']] = $row['Indicator'];
-//        $therapies[$row['IDTherapie']] = $row['txtName'];
-//        $info[$row['IDTherapie']] = $row['Information'];
-//        $infoTyp[$row['IDTherapie']] = $row['InfoTyp'];
-//    }
-//    print_r($indicator);
-//    print_r($therapies);  
-//    print_r($info);
-    // select between input and show therapie?
+    $numRecom = 3;
+
     // fetch recommendation
     if (isset($_POST['generiere_therapieempfehlung'])) {
-        $results = mysql_query("SELECT * FROM tbltherapierecom WHERE Visite = $visite ORDER BY Indicator DESC");
-        $therapies = array();
-    while ($row = mysql_fetch_array($results)) {
-            $indicator[$row['IDTherapie']] = $row['Indicator'];
-            $therapies[$row['IDTherapie']] = $row['txtName'];
-            $info[$row['IDTherapie']] = $row['Information'];
-            $infoTyp[$row['IDTherapie']] = $row['InfoTyp'];
+        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystlist WHERE Visite = $visite ORDER BY Score DESC LIMIT $numRecom");
+        while ($row = mysql_fetch_array($sql)) {
+            $therapies[$row['Therapie']] = $row['Score'];
+        }
+    } else {
+        // insert visite into input interface if not already in queue
+        $sql = mysql_query("SELECT * FROM tblInputInterface WHERE Visite = $visite ORDER BY IDInput DESC LIMIT 1");
+        $row = mysql_fetch_array($sql);
+        if (empty($row['IDInput'])) {
+            // empty table to make sure no old request is in queue
+            $sql = mysql_query("TRUNCATE TABLE tblInputInterface");
+            $retval = mysql_query($sql, $connection);
+            // append new request
+            $sql = mysql_query("INSERT INTO tblInputInterface(Visite, Patient, NumVisite) VALUES ($visite,$patient,$numVisite)");
+            $retval = mysql_query($sql, $connection);
         }
     }
     ?>
@@ -56,19 +49,19 @@ function show_therapien_rs($disabled, $connection) {
                     </colgroup>-->
                 <thead>
                     <tr>
-                        <th>Indikator</th>
+                        <th>Score</th>
                         <th>Therapie</th>
-                        <th>Information</th>
+                        <th>Therapie ID</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    $therapieCnt = 0;
-                    $numRecom = 3;
-                    foreach ($therapies as $id => $val) {
+//                    $therapieCnt = 0;
+                    foreach ($therapies as $therapie => $score) {
 
-                        $therapieCnt ++;
-                        echo "<tr style=\"background-color:#7FFFD4;\">";
+//                        $therapieCnt ++;
+//                        echo "<tr style=\"background-color:#7FFFD4;\">";
+                        echo "<tr>";
 
 //                        if ($infoTyp[$id] == 1) {
 //                            echo "<tr style=\"background-color:#66f;\">";
@@ -86,18 +79,18 @@ function show_therapien_rs($disabled, $connection) {
 //                        if ($infoTyp[$id] == 1 && $therapieCnt > $numRecom) {
 //                            echo "<tr style=\"background-color:#b3e6ff;\">";
 //                        }
-                        if ($therapieCnt > $numRecom) {
-                            echo "<tr style=\"background-color:#b3e6ff;\">";
-                        }
+//                        if ($therapieCnt > $numRecom) {
+//                            echo "<tr style=\"background-color:#b3e6ff;\">";
+//                        }
                         ?>
-                    <td><b><?php echo round(100 * $indicator[$id], 2) ?></b></td>
+                    <td><b><?php echo round(100 * $score, 2) ?></b></td>
                     <?php
-                    $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $val");
+                    $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $therapie");
                     $row = mysql_fetch_array($results);
-                    $valName = $row['Name'];
+                    $therapieName = $row['Name'];
                     ?>
-                    <td><b><?php echo $valName ?></b></td>
-                    <td><b><?php echo $info[$id] ?></b></td>             
+                    <td><b><?php echo $therapieName ?></b></td>
+                    <td><b><?php echo $therapie ?></b></td> 
 
                     </tr>
                     <?php

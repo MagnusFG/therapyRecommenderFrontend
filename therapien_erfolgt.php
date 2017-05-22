@@ -16,11 +16,22 @@ function show_therapien_erfolgt($disabled, $connection) {
             $val2 = intval($_POST['dosierung']);
             $val3 = intval($_POST['masseinheit']);
             $val4 = intval($_POST['verabreichung']);
+            $val5 = intval($_POST['wirksamkeitNew']);
+            if ($_POST['uawNew'] == 1) {
+                $val6a = 1;
+                $val6b = 0;
+            } elseif ($_POST['uawNew'] == 0) {
+                $val6a = 0;
+                $val6b = 1;
+            } else {
+                $val6a = 0;
+                $val6b = 0;
+            }
 
             if ($val2 != 0) {
-                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Patient) VALUES ($val1,$val2,$val3,$val4,$patient)");
+                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val2,$val3,$val4,$val5,$val6a,$val6b,$patient)");
             } else {
-                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Masseinheit,VerabreichungTyp,Patient) VALUES ($val1,$val3,$val4,$patient)");
+                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val3,$val4,$val5,$val6a,$val6b,$patient)");
             }
             $retval = mysql_query($sql, $connection);
         }
@@ -29,20 +40,7 @@ function show_therapien_erfolgt($disabled, $connection) {
     // updated therapie outcome
     if (isset($_POST['speichern_therapieoutcome'])) {
 
-        // new applied therapie
-        $idTherapieRecommended = $_POST['speichern_therapieoutcome'];
-        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE IDTherapie = $idTherapieRecommended");
-        $row = mysql_fetch_array($sql);
-        $val = $row['Therapie'];
-        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $val AND Visite = $visite");
-        $row = mysql_fetch_array($sql);
-        if (!isset($row['IDTherapie'])) {
-            $results = mysql_query("INSERT INTO tbltherapiesvisitesystapplied(Therapie, Dosierung, Masseinheit, VerabreichungTyp) SELECT Therapie, Dosierung, Masseinheit, VerabreichungTyp FROM tbltherapiesvisitesystrecommended WHERE IDTherapie = $idTherapieRecommended");
-            $retval = mysql_query($sql, $connection);
-            $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied ORDER BY IDTherapie DESC LIMIT 1");
-            $row = mysql_fetch_array($sql);
-        }
-        $idTherapieApplied = $row['IDTherapie'];
+        $prevVisite = $_POST['speichern_therapieoutcome'];
 
         $val2 = intval($_POST['wirksamkeit']);
         if ($_POST['uaw'] == 1) {
@@ -51,9 +49,36 @@ function show_therapien_erfolgt($disabled, $connection) {
         } elseif ($_POST['uaw'] == 0) {
             $val3a = 0;
             $val3b = 1;
+        } else {
+            $val3a = 0;
+            $val3b = 0;
         }
-        $sql = mysql_query("UPDATE tbltherapiesvisitesystapplied SET AngewendetJa=1, AngewendetNein=0, Wirksamkeit=$val2, UAWja=$val3a, UAWnein=$val3b WHERE IDTherapie=$idTherapieApplied");
-        $retval = mysql_query($sql, $connection);
+
+        // new applied therapie
+        $therapies = array();
+        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $prevVisite");
+        while ($row = mysql_fetch_array($sql)) { // while Antworten ausgeben
+            $therapies[$row['IDTherapie']] = $row['Therapie'];
+        }
+        foreach ($therapies as $idTherapyRecommended => $therapy) {
+            $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $therapy AND Visite = $visite");
+            $row = mysql_fetch_array($sql);
+            if (!isset($row['IDTherapie'])) {
+                $sql = mysql_query("INSERT INTO tbltherapiesvisitesystapplied(Therapie, Dosierung, Masseinheit, VerabreichungTyp, Visite) SELECT Therapie, Dosierung, Masseinheit, VerabreichungTyp, $visite FROM tbltherapiesvisitesystrecommended WHERE IDTherapie = $idTherapyRecommended");
+                $retval = mysql_query($sql, $connection);
+                $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite AND Therapie = $therapy LIMIT 1");
+                $row = mysql_fetch_array($sql);
+            }
+            $idTherapieApplied = $row['IDTherapie'];
+            echo "id:";
+            echo $idTherapieApplied;
+            echo "ther:";
+            echo $therapy;
+            echo "Wirksamkeit";
+            echo $val2;
+            $sql = mysql_query("UPDATE tbltherapiesvisitesystapplied SET AngewendetJa=1, AngewendetNein=0, Wirksamkeit=$val2, UAWja=$val3a, UAWnein=$val3b WHERE IDTherapie=$idTherapieApplied");
+            $retval = mysql_query($sql, $connection);
+        }
     }
 
 // delete therapie erfolgt
@@ -66,10 +91,17 @@ function show_therapien_erfolgt($disabled, $connection) {
 
 // delete therapie outcome
     if (isset($_POST['loesche_therapieoutcome'])) {
-        $val = $_POST['loesche_therapieoutcome'];
+        $prevVisite = $_POST['loesche_therapieoutcome'];
 
-        $sql = mysql_query("UPDATE tbltherapiesvisitesystrecommended SET AngewendetJa=0, AngewendetNein=0, NichtUmgesetzt=1 WHERE IDTherapie=$val");
-        $retval = mysql_query($sql, $connection);
+        $therapies = array();
+        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $prevVisite");
+        while ($row = mysql_fetch_array($sql)) { // while Antworten ausgeben
+            $therapies[$row['IDTherapie']] = $row['Therapie'];
+        }
+        foreach ($therapies as $idTherapyRecommended => $therapy) {
+            $sql = mysql_query("UPDATE tbltherapiesvisitesystrecommended SET AngewendetJa=0, AngewendetNein=0, NichtUmgesetzt=1 WHERE IDTherapie=$idTherapyRecommended");
+            $retval = mysql_query($sql, $connection);
+        }
     }
     ?>
 
@@ -220,57 +252,73 @@ function show_therapien_erfolgt($disabled, $connection) {
                                     </div><!-- /input-group -->
                                 </div><!-- /.col-lg-6 -->
 
-                            </div><!-- /.row -->     
+                            </div><!-- /.row -->
 
-                            <?php
-                            $selected = '';
-                            $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
-                            echo "<option selected value=NULL></option>";
-                            while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
-                                $valTmp = $rowTmp['IDTherapieWirksamkeit'];
-                                $nameTmp = $rowTmp['TherapieWirksamkeit'];
-                                echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
-                            }
-                            ?>
+                            <div class="row">
 
-                            <?php
-                            if ($UAWNein == 1) {
-                                $selected0 = "";
-                                $selected1 = "selected";
-                                $selected2 = "";
-                            } elseif ($UAWJa == 1) {
-                                $selected0 = "";
-                                $selected1 = "";
-                                $selected2 = "selected";
-                            } else {
-                                $selected0 = "selected";
-                                $selected1 = "";
-                                $selected2 = "";
-                            }
-                            echo "<option $selected0 value=-1></option>";
-                            echo "<option $selected1 value=0>nein</option>";
-                            echo "<option $selected2 value=1>ja</option>";
-                            ?>
+                                <div class="col-lg-4">
+                                    <div class="input-group" style="margin: 5px">
+                                        <span class="input-group-addon" id="basic-addon1">Wirksamkeit:</span>
+                                        <div class="form-group">
+                                            <select class="form-control" id="sel1" name="wirksamkeitNew">
+                                                <option selected></option>
+                                                <?php
+                                                $selected = '';
+                                                $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
+                                                echo "<option selected value=NULL></option>";
+                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                    $valTmp = $rowTmp['IDTherapieWirksamkeit'];
+                                                    $nameTmp = $rowTmp['TherapieWirksamkeit'];
+                                                    echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
+                                                }
+                                                ?> 
+                                            </select>
+                                        </div>
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
 
-                            <div class="col-lg-6" style="text-align: right;">
+                                <div class="col-lg-4">
+                                    <div class="input-group" style="margin: 5px">
+                                        <span class="input-group-addon" id="basic-addon1">UAW:</span>
+                                        <div class="form-group">
+                                            <select class="form-control" id="sel1" name="uawNew">
+                                                <option selected></option>
+                                                <?php
+                                                $selected0 = "";
+                                                $selected1 = "";
+                                                $selected2 = "";
+                                                echo "<option $selected0 value=-1></option>";
+                                                echo "<option $selected1 value=0>nein</option>";
+                                                echo "<option $selected2 value=1>ja</option>";
+                                                ?>
+                                            </select>
+                                        </div>    
+                                    </div><!-- /input-group -->
+                                </div><!-- /.col-lg-6 -->
 
-                                                                                                                                                                                                                                                                                                                                                                                                        <!--<a href="#liste" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>-->
+                            </div><!-- /.row -->
 
-                                <div style="margin: 5px;">
-                                    <button type="submit" class="btn btn-success btn-md" name="speichern_therapieerfolgt" value="speichern_therapieerfolgt">
-                                        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                                    </button>
-                                </div>
+                            <div class="row">
+                                <div class="col-lg-6" style="text-align: right;">
+                                </div><!-- /.col-lg-6 -->
+                                <div class="col-lg-6" style="text-align: right;">
 
-                            </div><!-- /.col-lg-6 -->
-                    </div><!-- /.row -->
-                    </form>
-                    <?php
-                }
-                ?>
+                                    <div style="margin: 5px;">
+                                        <button type="submit" class="btn btn-success btn-md" name="speichern_therapieerfolgt" value="speichern_therapieerfolgt">
+                                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+
+                                </div><!-- /.col-lg-6 -->
+                            </div><!-- /.row -->
+
+                        </form>
+                        <?php
+                    }
+                    ?>
+                </div>
             </div>
         </div>
-    </div>
     </form>
 
     <?php
@@ -283,7 +331,7 @@ function append_therapie_jemals($patient) {
 
     $disabled = '';
 
-    $therapie = mysql_query("SELECT * FROM tbltherapiejemals INNER JOIN tbltherapiename ON tbltherapiejemals.Therapie = tbltherapiename.IDTherapie WHERE Typ = 2 AND Patient = $patient");
+    $therapie = mysql_query("SELECT * FROM tbltherapiejemals WHERE Patient = $patient");
     while ($row = mysql_fetch_array($therapie)) {
         ?>
 
@@ -298,6 +346,9 @@ function append_therapie_jemals($patient) {
                 $rowTmp = mysql_fetch_array($results);
                 $val = $rowTmp['Name'];
                 $typ = $rowTmp['Typ'];
+                if ($typ != 2) {
+                    continue;
+                }
             }
             ?>
             <td><b><?php echo $val ?></b></td>
@@ -383,6 +434,7 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
         $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite");
         $verify = 0;
     }
+    $kombi = 0;
     while ($row = mysql_fetch_array($therapie)) {
 
         if ($row['NichtUmgesetzt'] == 1) {
@@ -452,53 +504,81 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
                 }
                 ?>
 
-                <td>                
-                    <select class="form-control" id="sel1" name="wirksamkeit">
-                        <option selected></option>
-                        <?php
-                        $selected = "";
-                        $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
-                        echo "<option selected value=NULL></option>";
-                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
-                            $valTmp = $rowTmp['IDTherapieWirksamkeit'];
-                            $nameTmp = $rowTmp['TherapieWirksamkeit'];
-                            if ($wirksamkeit == $valTmp) {
-                                $selected = "selected";
-                            } else {
-                                $selected = "";
-                            }
-                            echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
-                        }
-                        ?>
-                    </select>
-                </td>  
+                <?php
+                if ($kombi == 0) {
+                    ?>
 
-                <td>                
-                    <select class="form-control" id="sel1" name="uaw">
-                        <option selected></option>
-                        <?php
-                        if ($uawNein == 1) {
-                            $selected0 = "";
-                            $selected1 = "selected";
-                            $selected2 = "";
-                        } elseif ($uawJa == 1) {
-                            $selected0 = "";
-                            $selected1 = "";
-                            $selected2 = "selected";
-                        } else {
-                            $selected0 = "selected";
-                            $selected1 = "";
-                            $selected2 = "";
-                        }
-                        echo "<option $selected0 value=-1></option>";
-                        echo "<option $selected1 value=0>nein</option>";
-                        echo "<option $selected2 value=1>ja</option>";
-                        ?>
-                    </select>
-                </td>              
+                    <td>
+
+                        <select class="form-control" id="sel1" name="wirksamkeit">
+                            <option selected></option>
+                            <?php
+                            $selected = "";
+                            $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
+//                        echo "<option selected value=NULL></option>";
+                            while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                $valTmp = $rowTmp['IDTherapieWirksamkeit'];
+                                $nameTmp = $rowTmp['TherapieWirksamkeit'];
+                                if ($wirksamkeit == $valTmp) {
+                                    $selected = "selected";
+                                } else {
+                                    $selected = "";
+                                }
+                                echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </td>  
+
+                    <td>                
+                        <select class="form-control" id="sel1" name="uaw">
+                            <!--<option selected></option>-->
+                            <?php
+                            if ($uawNein == 1) {
+                                $selected0 = "";
+                                $selected1 = "selected";
+                                $selected2 = "";
+                            } elseif ($uawJa == 1) {
+                                $selected0 = "";
+                                $selected1 = "";
+                                $selected2 = "selected";
+                            } else {
+                                $selected0 = "";
+                                $selected1 = "";
+                                $selected2 = "";
+                            }
+                            echo "<option $selected0 value=-1></option>";
+                            echo "<option $selected1 value=0>nein</option>";
+                            echo "<option $selected2 value=1>ja</option>";
+                            ?>
+                        </select>
+                    </td>   
+
+                    <?php
+                } else { // $kombi == 0
+                    ?>
+
+                    <?php
+                    $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit WHERE IDTherapieWirksamkeit = $wirksamkeit");
+                    $rowTmp = mysql_fetch_array($results);
+                    $val = $rowTmp['TherapieWirksamkeit'];
+                    ?>
+                    <td><?php echo $val ?></td>                             
+
+                    <?php
+                    if ($uawJa == 1) {
+                        echo "<td>ja</td>";
+                    } else {
+                        echo "<td></td>";
+                    }
+                    ?>                    
+
+                    <?php
+                } // $kombi == 0
+                ?>                    
 
                 <?php
-            } else { // show outocome                
+            } else { // show outcome                
                 ?>
 
                 <?php
@@ -526,14 +606,13 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
 
             <td style="text-align: right;">
                 <?php
-                if ($verify == 1) { // verify outcome
+                if ($verify == 1 AND $kombi == 0) { // verify outcome
                     ?>
-
                     <div class="button-box col-sm-4-12">
-                        <button type="submit" name="speichern_therapieoutcome" class="btn btn-success" value=<?php echo $valDelete; ?><?php echo $disabled; ?>>
+                        <button type="submit" name="speichern_therapieoutcome" class="btn btn-success" value=<?php echo $visite; ?><?php echo $disabled; ?>>
                             <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                         </button>
-                        <button type="submit" name="loesche_therapieoutcome" class="btn btn-danger" value=<?php echo $valDelete; ?><?php echo $disabled; ?>>
+                        <button type="submit" name="loesche_therapieoutcome" class="btn btn-danger" value=<?php echo $visite; ?><?php echo $disabled; ?>>
                             <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                         </button>
                     </div>
@@ -552,6 +631,7 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
         </tr>
 
         <?php
+        $kombi = 1;
     }
     return 1;
 }
