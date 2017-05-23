@@ -99,7 +99,8 @@ $newVisite = 0; // neue visite anlegen?
     <body>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+        <script src="js/jquery-1.11.3.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="js/bootstrap.min.js"></script>
 
@@ -200,7 +201,7 @@ $newVisite = 0; // neue visite anlegen?
                     $idPatient = $_SESSION['idPatient'];
                     $sql = mysql_query("SELECT * FROM tblVisite WHERE Patient = $idPatient ORDER BY NumVisite DESC");
                     $row = mysql_fetch_array($sql);
-                    if (!$row['NumVisite']) {
+                    if (!isset($row['NumVisite'])) {
                         $numVisite = 0;
                     } else {
                         $numVisite = $row['NumVisite'] + 1;
@@ -228,7 +229,9 @@ $newVisite = 0; // neue visite anlegen?
                     
 // ... open and copy patientendaten from previous consultation
                     $newVisite = 1;
+                    
                     $_GET['action'] = 'patientendaten';
+                    $_SESSION['action'] = $_GET['action'];
                 }
 
                 // Button Patient Neu verarbeiten
@@ -268,6 +271,7 @@ $newVisite = 0; // neue visite anlegen?
 //                    $_SESSION['visiten'] = $visiten;
                     
                     $_GET['action'] = 'patientendaten';
+                    $_SESSION['action'] = $_GET['action'];
                 }
 
 

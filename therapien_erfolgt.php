@@ -553,9 +553,12 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
                     ?>
 
                     <?php
-                    $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit WHERE IDTherapieWirksamkeit = $wirksamkeit");
-                    $rowTmp = mysql_fetch_array($results);
-                    $val = $rowTmp['TherapieWirksamkeit'];
+                    $val = '';
+                    if ($wirksamkeit > 0) {
+                        $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit WHERE IDTherapieWirksamkeit = $wirksamkeit");
+                        $rowTmp = mysql_fetch_array($results);
+                        $val = $rowTmp['TherapieWirksamkeit'];
+                    }
                     ?>
                     <td><?php echo $val ?></td>                             
 
