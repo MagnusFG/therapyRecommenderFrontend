@@ -19,9 +19,12 @@ function show_schwere_arzt($disabled, $connection) {
 
         // pasi
         $val = '';
-        if (isset($_POST['pasi'])) {
+        if (isset($_POST['pasi']) AND $_POST['pasi'] != '') {
             $val = $_POST['pasi'];
             $sql = mysql_query("UPDATE tblpasivisite SET PasiScore=$val WHERE Visite = $visite");
+            $retval = mysql_query($sql, $connection);
+        } else {
+            $sql = mysql_query("UPDATE tblpasivisite SET PasiScore=null WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
@@ -172,7 +175,7 @@ function show_schwere_arzt($disabled, $connection) {
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
                         <span class="input-group-addon" id="basic-addon1">PASI Score:</span>
-                        <input type="number" min="0" max="72" name="pasi"<?php echo $disabled; ?> value="<?php echo $pasi; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
+                        <input type="number" max="72" name="pasi"<?php echo $disabled; ?> value="<?php echo $pasi; ?>" class="form-control" placeholder="" aria-describedby="basic-addon1">
                     </div><!-- /input-group -->
                 </div><!-- /.col-lg-6 -->                    
             </div><!-- /.row -->     

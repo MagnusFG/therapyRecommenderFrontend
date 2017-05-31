@@ -85,9 +85,12 @@ function show_schwere_patient($disabled, $connection) {
         }
 
         $val = '';
-        if (isset($_POST['dlqi'])) {
+        if (isset($_POST['dlqi']) AND $_POST['dlqi'] != '') {
             $val = $_POST['dlqi'];
             $sql = mysql_query("UPDATE tbldlqivisite SET DlqiScore=$val WHERE Visite = $visite");
+            $retval = mysql_query($sql, $connection);
+        } else {
+            $sql = mysql_query("UPDATE tbldlqivisite SET DlqiScore=null WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
@@ -347,7 +350,7 @@ function show_schwere_patient($disabled, $connection) {
             <div class="row">
                 <div class="col-lg-6">
                     <div class="input-group" style="margin: 5px">
-                        <span class="input-group-addon" id="basic-addon1">Gesicht:</span>
+                        <span class="input-group-addon" id="basic-addon1">Gesicht/behaarter Kopf:</span>
                         <div class="form-group">
                             <select name="veraenderungGesicht"<?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
@@ -609,8 +612,9 @@ function show_schwere_patient($disabled, $connection) {
                                         $checked = "";
                                     }
                                     ?>                                     
-                                    <input type="checkbox" value=1 name="BetrifftNicht_3"<?php echo $disabled;
-                                echo $checked;
+                                    <input type="checkbox" value=1 name="BetrifftNicht_3"<?php
+                                    echo $disabled;
+                                    echo $checked;
                                     ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
@@ -657,9 +661,10 @@ function show_schwere_patient($disabled, $connection) {
                                         $checked = "";
                                     }
                                     ?>                                     
-                                    <input type="checkbox" value=1 name="BetrifftNicht_4"<?php echo $disabled;
-                                    echo $checked;
-                                    ?> aria-label="...">
+                                    <input type="checkbox" value=1 name="BetrifftNicht_4"<?php
+                                           echo $disabled;
+                                           echo $checked;
+                                           ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -705,9 +710,10 @@ function show_schwere_patient($disabled, $connection) {
                                         $checked = "";
                                     }
                                     ?>                                     
-                                    <input type="checkbox" value=1 name="BetrifftNicht_5"<?php echo $disabled;
-                                       echo $checked;
-                                       ?> aria-label="...">
+                                    <input type="checkbox" value=1 name="BetrifftNicht_5"<?php
+                                echo $disabled;
+                                echo $checked;
+                                ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -753,9 +759,10 @@ function show_schwere_patient($disabled, $connection) {
                                         $checked = "";
                                     }
                                     ?>                                     
-                                    <input type="checkbox" value=1 name="BetrifftNicht_6"<?php echo $disabled;
-                                    echo $checked;
-                                    ?> aria-label="...">
+                                    <input type="checkbox" value=1 name="BetrifftNicht_6"<?php
+                                       echo $disabled;
+                                       echo $checked;
+                                       ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
@@ -801,7 +808,8 @@ function show_schwere_patient($disabled, $connection) {
                                         $checked = "";
                                     }
                                     ?>                                     
-                                    <input type="checkbox" value=1 name="BetrifftNicht_7"<?php echo $disabled;
+                                    <input type="checkbox" value=1 name="BetrifftNicht_7"<?php
+                                    echo $disabled;
                                     echo $checked;
                                     ?> aria-label="...">
                                 </span>
@@ -849,7 +857,8 @@ function show_schwere_patient($disabled, $connection) {
                                         $checked = "";
                                     }
                                     ?>                                     
-                                    <input type="checkbox" value=1 name="BetrifftNicht_8"<?php echo $disabled;
+                                    <input type="checkbox" value=1 name="BetrifftNicht_8"<?php
+                                    echo $disabled;
                                     echo $checked;
                                     ?> aria-label="...">
                                 </span>
@@ -897,7 +906,8 @@ function show_schwere_patient($disabled, $connection) {
                                         $checked = "";
                                     }
                                     ?>                                      
-                                    <input type="checkbox" value=1 name="BetrifftNicht_9"<?php echo $disabled;
+                                    <input type="checkbox" value=1 name="BetrifftNicht_9"<?php
+                                    echo $disabled;
                                     echo $checked;
                                     ?> aria-label="...">
                                 </span>
@@ -938,16 +948,17 @@ function show_schwere_patient($disabled, $connection) {
                         <div class="col-lg-6">
                             <div class="input-group" style="margin: 5px">
                                 <span class="input-group-addon">
-                                           <?php
-                                           if ($BetrifftNicht_10 == 1) {
-                                               $checked = "checked";
-                                           } else {
-                                               $checked = "";
-                                           }
-                                           ?>                                    
-                                    <input type="checkbox" value=1 name="BetrifftNicht_10"<?php echo $disabled;
-                                           echo $checked;
-                                           ?> aria-label="...">
+                                    <?php
+                                    if ($BetrifftNicht_10 == 1) {
+                                        $checked = "checked";
+                                    } else {
+                                        $checked = "";
+                                    }
+                                    ?>                                    
+                                    <input type="checkbox" value=1 name="BetrifftNicht_10"<?php
+                                    echo $disabled;
+                                    echo $checked;
+                                    ?> aria-label="...">
                                 </span>
                                 <input type="text" disabled value="Frage betrifft mich nicht" class="form-control" aria-label="...">
                             </div><!-- /input-group -->
