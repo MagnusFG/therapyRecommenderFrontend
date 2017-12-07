@@ -134,7 +134,7 @@ if (!isset($_SESSION['login'])) {
                     <?php
                     // fill patienten array
                     $patienten = array();
-                    $results = mysql_query("SELECT * FROM tblPatient");
+                    $results = mysql_query("SELECT * FROM tblpatient");
                     while ($row = mysql_fetch_array($results)) {
                         $patienten[] = $row['IDPatient'];
                     }
@@ -152,7 +152,7 @@ if (!isset($_SESSION['login'])) {
                             $idPatient = $_POST['selPatient'];
 
                             // fill visiten array
-                            $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
+                            $results = mysql_query("SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
                             while ($row = mysql_fetch_array($results)) {
                                 $visiten[$row['NumVisite']] = $row['IDVisite'];
                             }
@@ -207,7 +207,7 @@ if (!isset($_SESSION['login'])) {
 //                    $disabledButtonPatient = 'disabled';
 // ... finde letzte Visite
                         $idPatient = $_SESSION['idPatient'];
-                        $sql = mysql_query("SELECT * FROM tblVisite WHERE Patient = $idPatient ORDER BY NumVisite DESC");
+                        $sql = mysql_query("SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite DESC");
                         $row = mysql_fetch_array($sql);
                         if (!isset($row['NumVisite'])) {
                             $numVisite = 0;
@@ -216,11 +216,11 @@ if (!isset($_SESSION['login'])) {
                         }
 
 // ... apppend Visite
-                        $sql = mysql_query("INSERT INTO tblVisite (Patient,NumVisite) VALUE ($idPatient,$numVisite)");
+                        $sql = mysql_query("INSERT INTO tblvisite (Patient,NumVisite) VALUE ($idPatient,$numVisite)");
                         $retval = mysql_query($sql, $connection);
 //               
                         // ... update visiten array
-                        $results = mysql_query("SELECT * FROM tblVisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
+                        $results = mysql_query("SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
                         while ($row = mysql_fetch_array($results)) {
                             $visiten[$row['NumVisite']] = $row['IDVisite'];
                         }
@@ -263,7 +263,7 @@ if (!isset($_SESSION['login'])) {
                         $idPatient = $row['IDPatient'];
 
                         // update patient list
-                        $results = mysql_query("SELECT * FROM tblPatient");
+                        $results = mysql_query("SELECT * FROM tblpatient");
                         while ($row = mysql_fetch_array($results)) {
                             $patienten[] = $row['IDPatient'];
                         }

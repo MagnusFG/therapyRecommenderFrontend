@@ -361,7 +361,7 @@ function append_therapie_jemals($patient) {
             $val = '';
             if (isset($row['Masseinheit'])) {
                 $tmp = $row['Masseinheit'];
-                $results = mysql_query("SELECT * FROM tblTherapieMasseinheit WHERE IDMaßeinheit = $tmp");
+                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
                 $rowTmp = mysql_fetch_array($results);
                 $val = $rowTmp['Maßeinheit'];
             }
@@ -372,7 +372,7 @@ function append_therapie_jemals($patient) {
             $val = '';
             if (isset($row['VerabreichungTyp'])) {
                 $tmp = $row['VerabreichungTyp'];
-                $results = mysql_query("SELECT * FROM tblTherapieVerabreichung WHERE IDTherapieVerabreichung = $tmp");
+                $results = mysql_query("SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
                 $rowTmp = mysql_fetch_array($results);
                 $val = $rowTmp['TherapieVerabreichung'];
             }
@@ -383,7 +383,7 @@ function append_therapie_jemals($patient) {
             $val = '';
             if (isset($row['Wirksamkeit'])) {
                 $tmp = $row['Wirksamkeit'];
-                $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
+                $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
                 $rowTmp = mysql_fetch_array($results);
                 $val = $rowTmp['TherapieWirksamkeit'];
             }
@@ -443,7 +443,7 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
             if (isset($row['Therapie'])) {
                 $valDelete = $row['IDTherapie'];
                 $therapieTmp = $row['Therapie'];
-                $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $therapieTmp");
+                $results = mysql_query("SELECT * FROM tbltherapiename WHERE IDTherapie = $therapieTmp");
                 $rowTmp = mysql_fetch_array($results);
                 $val = $rowTmp['Name'];
                 $typ = $rowTmp['Typ'];
@@ -465,7 +465,7 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
             $val = '';
             if (isset($row['Masseinheit'])) {
                 $tmp = $row['Masseinheit'];
-                $results = mysql_query("SELECT * FROM tblTherapieMasseinheit WHERE IDMaßeinheit = $tmp");
+                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
                 $rowTmp = mysql_fetch_array($results);
                 $val = $rowTmp['Maßeinheit'];
             }
@@ -476,7 +476,7 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
             $val = '';
             if (isset($row['VerabreichungTyp'])) {
                 $tmp = $row['VerabreichungTyp'];
-                $results = mysql_query("SELECT * FROM tblTherapieVerabreichung WHERE IDTherapieVerabreichung = $tmp");
+                $results = mysql_query("SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
                 $rowTmp = mysql_fetch_array($results);
                 $val = $rowTmp['TherapieVerabreichung'];
             }
@@ -555,7 +555,7 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
                     <?php
                     $val = '';
                     if ($wirksamkeit > 0) {
-                        $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit WHERE IDTherapieWirksamkeit = $wirksamkeit");
+                        $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $wirksamkeit");
                         $rowTmp = mysql_fetch_array($results);
                         $val = $rowTmp['TherapieWirksamkeit'];
                     }
@@ -582,7 +582,7 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
                 $val = '';
                 if (isset($row['Wirksamkeit'])) {
                     $tmp = $row['Wirksamkeit'];
-                    $results = mysql_query("SELECT * FROM tblTherapieWirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
+                    $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
                     $rowTmp = mysql_fetch_array($results);
                     $val = $rowTmp['TherapieWirksamkeit'];
                 }

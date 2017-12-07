@@ -18,14 +18,14 @@ function show_therapien_rs($disabled, $connection) {
         }
     } else {
         // insert visite into input interface if not already in queue
-        $sql = mysql_query("SELECT * FROM tblInputInterface WHERE Visite = $visite ORDER BY IDInput DESC LIMIT 1");
+        $sql = mysql_query("SELECT * FROM tblinputinterface WHERE Visite = $visite ORDER BY IDInput DESC LIMIT 1");
         $row = mysql_fetch_array($sql);
         if (empty($row['IDInput'])) {
             // empty table to make sure no old request is in queue
-            $sql = mysql_query("TRUNCATE TABLE tblInputInterface");
+            $sql = mysql_query("TRUNCATE TABLE tblinputinterface");
             $retval = mysql_query($sql, $connection);
             // append new request
-            $sql = mysql_query("INSERT INTO tblInputInterface(Visite, Patient, NumVisite) VALUES ($visite,$patient,$numVisite)");
+            $sql = mysql_query("INSERT INTO tblinputinterface(Visite, Patient, NumVisite) VALUES ($visite,$patient,$numVisite)");
             $retval = mysql_query($sql, $connection);
         }
     }
@@ -85,7 +85,7 @@ function show_therapien_rs($disabled, $connection) {
                         ?>
                     <td><b><?php echo round(100 * $score, 2) ?></b></td>
                     <?php
-                    $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $therapie");
+                    $results = mysql_query("SELECT * FROM tbltherapiename WHERE IDTherapie = $therapie");
                     $row = mysql_fetch_array($results);
                     $therapieName = $row['Name'];
                     ?>

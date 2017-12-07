@@ -69,7 +69,7 @@ function show_therapien_empfohlen($disabled, $connection) {
                         if (isset($row['Therapie'])) {
                             $valDelete = $row['IDTherapie'];
                             $tmp = $row['Therapie'];
-                            $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $tmp");
+                            $results = mysql_query("SELECT * FROM tbltherapiename WHERE IDTherapie = $tmp");
                             $rowTmp = mysql_fetch_array($results);
                             $val = $rowTmp['Name'];
                             $typ = $rowTmp['Typ'];
@@ -80,7 +80,7 @@ function show_therapien_empfohlen($disabled, $connection) {
                     <?php
                     $val = '';
                     if (isset($typ)) {
-                        $results = mysql_query("SELECT * FROM tblTherapieTyp WHERE IDTherapieTyp = $typ");
+                        $results = mysql_query("SELECT * FROM tbltherapietyp WHERE IDTherapieTyp = $typ");
                         $rowTmp = mysql_fetch_array($results);
                         $val = $rowTmp['Typ'];
                     }
@@ -96,7 +96,7 @@ function show_therapien_empfohlen($disabled, $connection) {
                     $val = '';
                     if (isset($row['Masseinheit'])) {
                         $tmp = $row['Masseinheit'];
-                        $results = mysql_query("SELECT * FROM tblTherapieMasseinheit WHERE IDMaßeinheit = $tmp");
+                        $results = mysql_query("SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
                         $rowTmp = mysql_fetch_array($results);
                         $val = $rowTmp['Maßeinheit'];
                     }
@@ -107,7 +107,7 @@ function show_therapien_empfohlen($disabled, $connection) {
                     $val = '';
                     if (isset($row['VerabreichungTyp'])) {
                         $tmp = $row['VerabreichungTyp'];
-                        $results = mysql_query("SELECT * FROM tblTherapieVerabreichung WHERE IDTherapieVerabreichung = $tmp");
+                        $results = mysql_query("SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
                         $rowTmp = mysql_fetch_array($results);
                         $val = $rowTmp['TherapieVerabreichung'];
                     }

@@ -12,7 +12,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
         end($visiten); // move pointer to last element
         $prevVisite = prev($visiten);#
         
-        $sql = mysql_query("INSERT INTO tblPatientendatenVisite (Gewicht, Größe, Familienanamnese, Psoriasistyp1, Psoriasistyp2, Psoriasistyp3, FamilienstandJa, FamilienstandNein, Bildungsstand, Kinderwunsch, Visite) SELECT Gewicht, Größe, Familienanamnese, Psoriasistyp1, Psoriasistyp2, Psoriasistyp3, FamilienstandJa, FamilienstandNein, Bildungsstand, Kinderwunsch, $visite FROM tblPatientendatenVisite WHERE Visite = $prevVisite");
+        $sql = mysql_query("INSERT INTO tblpatientendatenVisite (Gewicht, Größe, Familienanamnese, Psoriasistyp1, Psoriasistyp2, Psoriasistyp3, FamilienstandJa, FamilienstandNein, Bildungsstand, Kinderwunsch, Visite) SELECT Gewicht, Größe, Familienanamnese, Psoriasistyp1, Psoriasistyp2, Psoriasistyp3, FamilienstandJa, FamilienstandNein, Bildungsstand, Kinderwunsch, $visite FROM tblPatientendatenVisite WHERE Visite = $prevVisite");
         $retval = mysql_query($sql, $connection);
         
         $sql = mysql_query("INSERT INTO tblkomorbiditaetenvisite (Komorbidität, LiegtVor, WirdBehandelt, Organ, Stadium, ErkrankungsfreiSeit, Visite) SELECT Komorbidität, LiegtVor, WirdBehandelt, Organ, Stadium, ErkrankungsfreiSeit, $visite FROM tblkomorbiditaetenvisite WHERE Visite = $prevVisite");
@@ -23,38 +23,38 @@ function show_patientendaten($disabled, $connection, $newVisite) {
     if (isset($_POST['speichern_patienteninformationen']) OR isset($_POST['speichern_diagnose'])) {
 
         // new patient
-        $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
+        $results = mysql_query("SELECT * FROM tblpatientendatenVisite WHERE Visite = $visite");
         $row = mysql_fetch_array($results);
         if (!isset($row['IDPatientendaten'])) {
-            $sql = mysql_query("INSERT INTO tblPatientendatenVisite (Visite) VALUES ($visite)");
+            $sql = mysql_query("INSERT INTO tblpatientendatenVisite (Visite) VALUES ($visite)");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['geburtJahr'])) {
             $val = $_POST['geburtJahr'];
-            $sql = mysql_query("UPDATE tblPatient SET GeburtJahr=$val WHERE IDPatient = $patient");
+            $sql = mysql_query("UPDATE tblpatient SET GeburtJahr=$val WHERE IDPatient = $patient");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['geschlecht'])) {
             $val = $_POST['geschlecht'];
-            $sql = mysql_query("UPDATE tblPatient SET Geschlecht=$val WHERE IDPatient = $patient");
+            $sql = mysql_query("UPDATE tblpatient SET Geschlecht=$val WHERE IDPatient = $patient");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['gewicht'])) {
             $val = $_POST['gewicht'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Gewicht=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenvisite SET Gewicht=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['groesse'])) {
             $val = $_POST['groesse'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Größe=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenvisite SET Größe=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
@@ -62,11 +62,11 @@ function show_patientendaten($disabled, $connection, $newVisite) {
         if (isset($_POST['familienstand'])) {
             $val = $_POST['familienstand'];
             if ($_POST['familienstand'] == 0) {
-                $sql = mysql_query("UPDATE tblPatientendatenVisite SET FamilienstandJa=0, FamilienstandNein=1 WHERE Visite = $visite");
+                $sql = mysql_query("UPDATE tblpatientendatenvisite SET FamilienstandJa=0, FamilienstandNein=1 WHERE Visite = $visite");
             } elseif ($_POST['familienstand'] == 1) {
-                $sql = mysql_query("UPDATE tblPatientendatenVisite SET FamilienstandJa=1, FamilienstandNein=0 WHERE Visite = $visite");
+                $sql = mysql_query("UPDATE tblpatientendatenvisite SET FamilienstandJa=1, FamilienstandNein=0 WHERE Visite = $visite");
             } else {
-                $sql = mysql_query("UPDATE tblPatientendatenVisite SET FamilienstandJa='', FamilienstandNein='' WHERE Visite = $visite");
+                $sql = mysql_query("UPDATE tblpatientendatenvisite SET FamilienstandJa='', FamilienstandNein='' WHERE Visite = $visite");
             }
             $retval = mysql_query($sql, $connection);
         }
@@ -74,21 +74,21 @@ function show_patientendaten($disabled, $connection, $newVisite) {
         $val = '';
         if (isset($_POST['kinderwunsch'])) {
             $val = $_POST['kinderwunsch'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Kinderwunsch=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenvisite SET Kinderwunsch=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['bildungsstand'])) {
             $val = $_POST['bildungsstand'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Bildungsstand=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenvisite SET Bildungsstand=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['berufsstand'])) {
             $val = $_POST['berufsstand'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Berufsstand=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenvisite SET Berufsstand=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
     }
@@ -97,45 +97,45 @@ function show_patientendaten($disabled, $connection, $newVisite) {
     if (isset($_POST['speichern_patienteninformationen']) OR isset($_POST['speichern_diagnose'])) {
 
         // new patient
-        $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
+        $results = mysql_query("SELECT * FROM tblpatientendatenvisite WHERE Visite = $visite");
         $row = mysql_fetch_array($results);
         if (!isset($row['IDPatientendaten'])) {
-            $sql = mysql_query("INSERT INTO tblPatientendatenVisite (Visite) VALUES ($visite)");
+            $sql = mysql_query("INSERT INTO tblpatientendatenvisite (Visite) VALUES ($visite)");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['erstdiagnose'])) {
             $val = $_POST['erstdiagnose'];
-            $sql = mysql_query("UPDATE tblPatient SET ErstdiagnoseJahr=$val WHERE IDPatient = $patient");
+            $sql = mysql_query("UPDATE tblpatient SET ErstdiagnoseJahr=$val WHERE IDPatient = $patient");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['familienanamnese'])) {
             $val = $_POST['familienanamnese'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Familienanamnese=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenVisite SET Familienanamnese=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['psoriasistyp1'])) {
             $val = $_POST['psoriasistyp1'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Psoriasistyp1=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenVisite SET Psoriasistyp1=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['psoriasistyp2'])) {
             $val = $_POST['psoriasistyp2'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Psoriasistyp2=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenVisite SET Psoriasistyp2=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
 
         $val = '';
         if (isset($_POST['psoriasistyp3'])) {
             $val = $_POST['psoriasistyp3'];
-            $sql = mysql_query("UPDATE tblPatientendatenVisite SET Psoriasistyp3=$val WHERE Visite = $visite");
+            $sql = mysql_query("UPDATE tblpatientendatenVisite SET Psoriasistyp3=$val WHERE Visite = $visite");
             $retval = mysql_query($sql, $connection);
         }
     }
@@ -167,14 +167,14 @@ function show_patientendaten($disabled, $connection, $newVisite) {
     }
 
     // load data: Patient
-    $results = mysql_query("SELECT * FROM tblPatient WHERE IDPatient = $patient");
+    $results = mysql_query("SELECT * FROM tblpatient WHERE IDPatient = $patient");
     $row = mysql_fetch_array($results);
     $geburtJahr = $row['GeburtJahr'];
     $erstdiagnoseJahr = $row['ErstdiagnoseJahr'];
     $geschlecht = $row['Geschlecht'];
 
     // load data: Visite
-    $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
+    $results = mysql_query("SELECT * FROM tblpatientendatenvisite WHERE Visite = $visite");
     $row = mysql_fetch_array($results);
     $gewicht = $row['Gewicht'];
     $groesse = $row['Größe'];
@@ -317,7 +317,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
                             <select name="bildungsstand"<?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 $selected = '';
-                                $results = mysql_query("SELECT * FROM tblPatientendatenBildungsstand");
+                                $results = mysql_query("SELECT * FROM tblpatientendatenbildungsstand");
                                 echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDBildungsstand'];
@@ -341,7 +341,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
                             <select name="berufsstand"<?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 $selected = '';
-                                $results = mysql_query("SELECT * FROM tblPatientendatenBerufsstand");
+                                $results = mysql_query("SELECT * FROM tblpatientendatenBerufsstand");
                                 echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDBerufsstand'];
@@ -414,7 +414,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
                             <select name="psoriasistyp1"<?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 $selected = '';
-                                $results = mysql_query("SELECT * FROM tblPatientendatenPsoriasistyp");
+                                $results = mysql_query("SELECT * FROM tblpatientendatenpsoriasistyp");
                                 echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDPsoriasis'];
@@ -441,7 +441,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
                             <select name="psoriasistyp2"<?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 $selected = '';
-                                $results = mysql_query("SELECT * FROM tblPatientendatenPsoriasistyp");
+                                $results = mysql_query("SELECT * FROM tblpatientendatenpsoriasistyp");
                                 echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDPsoriasis'];
@@ -468,7 +468,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
                             <select name="psoriasistyp3"<?php echo $disabled; ?> class="form-control" id="sel1">
                                 <?php
                                 $selected = '';
-                                $results = mysql_query("SELECT * FROM tblPatientendatenPsoriasistyp");
+                                $results = mysql_query("SELECT * FROM tblpatientendatenpsoriasistyp");
                                 echo "<option selected  value=NULL></option>";
                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                     $valTmp = $rowTmp['IDPsoriasis'];
@@ -508,7 +508,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
                 <tbody>
 
                     <?php
-                    $results = mysql_query("SELECT * FROM tblKomorbiditaetenVisite INNER JOIN tblKomorbiditaeten ON tblKomorbiditaetenVisite.Komorbidität = tblKomorbiditaeten.IDKomorbiditäten LEFT JOIN tblKomorbiditaetLiegtVor ON tblKomorbiditaetenVisite.LiegtVor = tblKomorbiditaetLiegtVor.IDLiegtVor WHERE Visite = $visite ORDER BY IDKomorbiditätenVisite DESC");
+                    $results = mysql_query("SELECT * FROM tblkomorbiditaetenvisite INNER JOIN tblKomorbiditaeten ON tblkomorbiditaetenvisite.Komorbidität = tblkomorbiditaeten.IDKomorbiditäten LEFT JOIN tblkomorbiditaetLiegtVor ON tblkomorbiditaetenvisite.LiegtVor = tblkomorbiditaetliegtvor.IDLiegtVor WHERE Visite = $visite ORDER BY IDKomorbiditätenVisite DESC");
                     while ($row = mysql_fetch_array($results)) {
                         $valDelete = $row['IDKomorbiditätenVisite'];
                         ?>
@@ -566,7 +566,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tblKomorbiditaeten");
+                                                $results = mysql_query("SELECT * FROM tblkomorbiditaeten");
                                                 echo "<option selected  value=NULL></option>";
                                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDKomorbiditäten'];
@@ -587,7 +587,7 @@ function show_patientendaten($disabled, $connection, $newVisite) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tblKomorbiditaetLiegtVor");
+                                                $results = mysql_query("SELECT * FROM tblkomorbiditaetliegtvor");
                                                 echo "<option selected  value=NULL></option>";
                                                 while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDLiegtVor'];
