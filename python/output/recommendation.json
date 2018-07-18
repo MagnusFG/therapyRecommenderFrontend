@@ -1,0 +1,26 @@
+{
+"therapyData": [
+{"Therapy":"Methotrexat", "Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Ciclosporin","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Acitretin","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Fumaderm","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Infliximab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Etanercept","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Golimumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Ustekinumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Certolizumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Apremilast","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Secukinumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"PUVA","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Andere UV-Therapie","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Andere Therapie (Systemische Therapie)","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Methotrexat / Adalimumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Methotrexat / Etanercept","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Methotrexat / Infliximab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Methotrexat / Secukinumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Methotrexat / Ustekinumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Methotrexat / Golimumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Acitretin / Etanercept","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+,{"Therapy":"Acitretin / Ustekinumab","Affinity": "Math.random()", "prediction":{"Wirksamkeit":"Math.random()", "deltaPASI":"Math.random()", "UAW":"Math.random()"}}
+]
+}

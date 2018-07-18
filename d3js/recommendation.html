@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<title>Visualization Recommendation</title>
 <style>
 body{
-    width:1060px;
+    width:1250px;
     margin:50px auto;
 }
 path {  stroke: #fff; }
@@ -39,36 +40,36 @@ rect:hover {  fill:#DDA0DD; }
 
 </style>
 <body>
+<h1 style="color:#5A8AB8;font-family:sans-serif">Therapy Recommender</h1>
+<p style="color:#002557;font-family:sans-serif">Affinity Prediction</p>
 <div id='dashboard'>
 </div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
-function dashboard(id, fData, data){
+function dashboard(id, tData, sData){
+
     var barColor = '#FFC0CB';
     function segColor(c){ return {Wirksamkeit:"#5A8AB8", deltaPASI:"#002557",UAW:"#cccccc"}[c]; }
     
-    // compute total for each state.
-    fData.forEach(function(d){d.total=d.freq.Wirksamkeit+d.freq.deltaPASI+d.freq.UAW;});
-    
-    // function to handle histogram.
-    function histoGram(fD){
-        var hG={},    hGDim = {t: 60, r: 0, b: 300, l: 0};
-        hGDim.w = 600 - hGDim.l - hGDim.r,
-        hGDim.h = 600 - hGDim.t - hGDim.b;
+    // function to handle bar chart.
+    function barChart(fD){
+        var bC={},    bCDim = {t: 60, r: 0, b: 300, l: 0};
+        bCDim.w = 700 - bCDim.l - bCDim.r,
+        bCDim.h = 600 - bCDim.t - bCDim.b;
             
-        //create svg for histogram.
-        var hGsvg = d3.select(id).append("svg")
-            .attr("width", hGDim.w + hGDim.l + hGDim.r)
-            .attr("height", hGDim.h + hGDim.t + hGDim.b).append("g")
-            .attr("transform", "translate(" + hGDim.l + "," + hGDim.t + ")");
+        //create svg for bar chart.
+        var bCsvg = d3.select(id).append("svg")
+            .attr("width", bCDim.w + bCDim.l + bCDim.r)
+            .attr("height", bCDim.h + bCDim.t + bCDim.b).append("g")
+            .attr("transform", "translate(" + bCDim.l + "," + bCDim.t + ")");
 
         // create function for x-axis mapping.
-        var x = d3.scale.ordinal().rangeRoundBands([0, hGDim.w], 0.1)
+        var x = d3.scale.ordinal().rangeRoundBands([0, bCDim.w], 0.1)
                 .domain(fD.map(function(d) { return d[0]; }));
 
-        // Add x-axis to the histogram svg.
-        hGsvg.append("g").attr("class", "x axis")
-            .attr("transform", "translate(0," + hGDim.h + ")")
+        // Add x-axis to the bar chart svg.
+        bCsvg.append("g").attr("class", "x axis")
+            .attr("transform", "translate(0," + bCDim.h + ")")
             .call(d3.svg.axis().scale(x).orient("bottom"))
 			.selectAll("text")	
 				.style("text-anchor", "end")
@@ -79,11 +80,11 @@ function dashboard(id, fData, data){
 					});
 
         // Create function for y-axis map.
-        var y = d3.scale.linear().range([hGDim.h, 0])
+        var y = d3.scale.linear().range([bCDim.h, 0])
                 .domain([0, d3.max(fD, function(d) { return d[1]; })]);
 
-        // Create bars for histogram to contain rectangles and freq labels.
-        var bars = hGsvg.selectAll(".bar").data(fD).enter()
+        // Create bars for bar chart to contain rectangles and freq labels.
+        var bars = bCsvg.selectAll(".bar").data(fD).enter()
                 .append("g").attr("class", "bar");
         
         //create the rectangles.
@@ -91,21 +92,21 @@ function dashboard(id, fData, data){
             .attr("x", function(d) { return x(d[0]); })
             .attr("y", function(d) { return y(d[1]); })
             .attr("width", x.rangeBand())
-            .attr("height", function(d) { return hGDim.h - y(d[1]); })
+            .attr("height", function(d) { return bCDim.h - y(d[1]); })
             .attr('fill',barColor)
             .on("mouseover",mouseover)// mouseover is defined below.
             .on("mouseout",mouseout);// mouseout is defined below.
             
         //Create the frequency labels above the rectangles.
-        bars.append("text").text(function(d){ return d3.format(",.2f")(d[1]/10000)})
+        bars.append("text").text(function(d){ return d3.format(",.2f")(d[1])})
             .attr("x", function(d) { return x(d[0])+x.rangeBand()/2; })
             .attr("y", function(d) { return y(d[1])-5; })
             .attr("text-anchor", "middle");
         
         function mouseover(d){  // utility function to be called on mouseover.
-            // filter for selected state.
-            var st = fData.filter(function(s){ return s.State == d[0];})[0],
-                nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};});
+            // filter for selected therapy.
+            var st = tData.filter(function(s){ return s.Therapy == d[0];})[0],
+                nD = d3.keys(st.prediction).map(function(s){ return {type:s, prediction:st.prediction[s]};});
                
             // call update functions of pie-chart and legend.    
             pC.update(nD);
@@ -114,34 +115,35 @@ function dashboard(id, fData, data){
         
         function mouseout(d){    // utility function to be called on mouseout.
             // reset the pie-chart and legend.    
-            pC.update(tF);
-            leg.update(tF);
+            //pC.update(tF);
+            leg.reset(tF);
         }
         
         // create function to update the bars. This will be used by pie-chart.
-        hG.update = function(nD, color){
+        bC.update = function(nD, color){
             // update the domain of the y-axis map to reflect change in frequencies.
             y.domain([0, d3.max(nD, function(d) { return d[1]; })]);
             
             // Attach the new data to the bars.
-            var bars = hGsvg.selectAll(".bar").data(nD);
+            var bars = bCsvg.selectAll(".bar").data(nD);
             
             // transition the height and color of rectangles.
             bars.select("rect").transition().duration(500)
                 .attr("y", function(d) {return y(d[1]); })
-                .attr("height", function(d) { return hGDim.h - y(d[1]); })
+                .attr("height", function(d) { return bCDim.h - y(d[1]); })
                 .attr("fill", color);
 
             // transition the frequency labels location and change value.
             bars.select("text").transition().duration(500)
-                .text(function(d){ return d3.format(",")(d[1])})
+                .text(function(d){ return d3.format(",.2f")(d[1])})
                 .attr("y", function(d) {return y(d[1])-5; });            
         }        
-        return hG;
+        return bC;
     }
     
     // function to handle pieChart.
     function pieChart(pD){
+	
         var pC ={},    pieDim ={w:250, h: 600};
         pieDim.r = Math.min(pieDim.w, pieDim.h) / 2;
                 
@@ -154,7 +156,7 @@ function dashboard(id, fData, data){
         var arc = d3.svg.arc().outerRadius(pieDim.r - 10).innerRadius(0);
 
         // create a function to compute the pie slice angles.
-        var pie = d3.layout.pie().sort(null).value(function(d) { return d.freq; });
+        var pie = d3.layout.pie().sort(null).value(function(d) { return d.prediction; });
 
         // Draw the pie slices.
         piesvg.selectAll("path").data(pie(pD)).enter().append("path").attr("d", arc)
@@ -162,22 +164,29 @@ function dashboard(id, fData, data){
             .style("fill", function(d) { return segColor(d.data.type); })
             .on("mouseover",mouseover).on("mouseout",mouseout);
 
-        // create function to update pie-chart. This will be used by histogram.
+        // create function to update pie chart.
         pC.update = function(nD){
             piesvg.selectAll("path").data(pie(nD)).transition().duration(500)
                 .attrTween("d", arcTween);
-        }        
+        }
+
+		// create function to update pie chart.
+        pC.reset = function(nD){
+            piesvg.selectAll("path").data(pie(nD)).transition().duration(500)
+                .attrTween("d", arcTween);
+        } 
+		
         // Utility function to be called on mouseover a pie slice.
         function mouseover(d){
             // call the update function of histogram with new data.
-            hG.update(fData.map(function(v){
-                return [v.State,v.freq[d.data.type]];}),segColor(d.data.type));
+            bC.update(tData.map(function(v){
+                return [v.Therapy,v.prediction[d.data.type]];}),segColor(d.data.type));
         }
         //Utility function to be called on mouseout a pie slice.
         function mouseout(d){
-            // call the update function of histogram with all data.
-            hG.update(fData.map(function(v){
-                return [v.State,v.total];}), barColor);
+            // call the update function of bar chart with all data.
+            bC.update(tData.map(function(v){
+                return [v.Therapy,v.Affinity];}), barColor);
         }
         // Animating the pie-slice requiring a custom function which specifies
         // how the intermediate paths should be drawn.
@@ -188,13 +197,13 @@ function dashboard(id, fData, data){
         }
 		
 		
-		leg= legend(tF,piesvg);  // create the legend.
+		leg= legend(tF);  // create the legend.
 		
         return pC,leg;
     }
     
     // function to handle legend.
-    function legend(lD,piesvg){
+    function legend(lD){
         var leg = {};
 			
         // create table for legend.
@@ -213,7 +222,8 @@ function dashboard(id, fData, data){
 
         // create the third column for each segment.
         tr.append("td").attr("class",'legendFreq')
-            .text(function(d){ return d3.format(",")(d.freq);});
+			.text(function(d){ return ("");});
+			//.text(function(d){ return d3.format(",.2f")(d.prediction);});
 
         <!-- // create the fourth column for each segment. -->
         <!-- tr.append("td").attr("class",'legendPerc') -->
@@ -225,64 +235,83 @@ function dashboard(id, fData, data){
             var l = legend.select("tbody").selectAll("tr").data(nD);
 
             // update the frequencies.
-            l.select(".legendFreq").text(function(d){ return d3.format(",")(d.freq);});
+            l.select(".legendFreq").text(function(d){ return d3.format(",.2f")(d.prediction);});
 
             // update the percentage column.
-            l.select(".legendPerc").text(function(d){ return getLegend(d,nD);});        
+            //l.select(".legendPerc").text(function(d){ return getLegend(d,nD);});        
+        }
+		
+        // Utility function to be used to reset the legend.
+        leg.reset = function(nD){
+            // update the data attached to the row elements.
+            var l = legend.select("tbody").selectAll("tr").data(nD);
+
+            // update the frequencies.
+            l.select(".legendFreq").text(function(d){ return ("");});
+
+            // update the percentage column.
+            //l.select(".legendPerc").text(function(d){ return getLegend(d,nD);});        
         }
         
         function getLegend(d,aD){ // Utility function to compute percentage.
-            return d3.format("%")(d.freq/d3.sum(aD.map(function(v){ return v.freq; })));
+            return d3.format("%")(d.prediction/d3.sum(aD.map(function(v){ return v.prediction; })));
         }
-
+		
         return leg;
-    }
+    } 
+	
+    // get weights of affinity components
+	var tF = ['Wirksamkeit','deltaPASI','UAW'].map(function(d){
+		return {type:d, prediction: d3.sum(sData.map(function(t){ return t.prediction[d];}))};
+	}); 
     
-    // calculate total frequency by segment for all state.
-    var tF = ['Wirksamkeit','deltaPASI','UAW'].map(function(d){
-        return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))};
-    });    
-    
-    // calculate total frequency by state for all segment.
-    var sF = fData.map(function(d){return [d.State,d.total];});
+    // get affinity for therapies
+    var sF = tData.map(function(d){return [d.Therapy,d.Affinity];});
+	
 
-    var hG = histoGram(sF), // create the histogram.
-        pC = pieChart(tF); // create the pie-chart.
+    var bC = barChart(sF), // create the bar chart.
+        pC = pieChart(tF); // create the pie chart.
         
 }
 </script>
 
 <script>
-d3.csv("/namesLabel.csv", function(data) {
-  console.log(data[0]);
-});
 
-var freqData=[
-{State:'Ustekinumab',freq:{Wirksamkeit:4786, deltaPASI:1319, UAW:249}}
-,{State:'Etanercept',freq:{Wirksamkeit:1101, deltaPASI:412, UAW:674}}
-,{State:'Adalimumab',freq:{Wirksamkeit:932, deltaPASI:2149, UAW:418}}
-,{State:'Fumaderm',freq:{Wirksamkeit:832, deltaPASI:1152, UAW:1862}}
-,{State:'Methotrexat',freq:{Wirksamkeit:4481, deltaPASI:3304, UAW:948}}
-,{State:'Infliximab',freq:{Wirksamkeit:1619, deltaPASI:167, UAW:1063}}
-,{State:'Secukinumab',freq:{Wirksamkeit:1819, deltaPASI:247, UAW:1203}}
-,{State:'Methotrexat / Infliximab',freq:{Wirksamkeit:4498, deltaPASI:3852, UAW:942}}
-,{State:'Apremilast',freq:{Wirksamkeit:797, deltaPASI:1849, UAW:1534}}
-,{State:'Methotrexat / Etanercept',freq:{Wirksamkeit:162, deltaPASI:379, UAW:471}}
-,{State:'Etanercept',freq:{Wirksamkeit:1101, deltaPASI:412, UAW:674}}
-,{State:'Methotrexat / Etanercept',freq:{Wirksamkeit:932, deltaPASI:2149, UAW:418}}
-,{State:'Golimumab',freq:{Wirksamkeit:832, deltaPASI:1152, UAW:1862}}
-,{State:'Methotrexat / Adalimumab',freq:{Wirksamkeit:4481, deltaPASI:3304, UAW:948}}
-,{State:'Ciclosporin',freq:{Wirksamkeit:1619, deltaPASI:167, UAW:1063}}
-,{State:'Methotrexat / Ustekinumab',freq:{Wirksamkeit:1819, deltaPASI:247, UAW:1203}}
-,{State:'Acitretin',freq:{Wirksamkeit:4498, deltaPASI:3852, UAW:942}}
-,{State:'PUVA',freq:{Wirksamkeit:797, deltaPASI:1849, UAW:1534}}
-,{State:'Acitretin / Etanercept / Etanercept',freq:{Wirksamkeit:162, deltaPASI:379, UAW:471}}
-,{State:'Methotrexat / Infliximab',freq:{Wirksamkeit:4498, deltaPASI:3852, UAW:942}}
-,{State:'Andere Therapie (Systemische Therapie) ',freq:{Wirksamkeit:797, deltaPASI:1849, UAW:1534}}
-,{State:'Andere UV-Therapie / Etanercept',freq:{Wirksamkeit:162, deltaPASI:379, UAW:471}}
+var settingsData=[
+{Settings:'default', prediction:{Wirksamkeit:1, deltaPASI:1, UAW:1}}
 ];
 
+var therapyData=[
+{Therapy:'Methotrexat', Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Ciclosporin',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Acitretin',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Fumaderm',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Infliximab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Etanercept',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Golimumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Ustekinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Certolizumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Apremilast',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Secukinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'PUVA',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Andere UV-Therapie',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Andere Therapie (Systemische Therapie)',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Methotrexat / Adalimumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Methotrexat / Etanercept',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Methotrexat / Infliximab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Methotrexat / Secukinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Methotrexat / Ustekinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Methotrexat / Golimumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Acitretin / Etanercept',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+,{Therapy:'Acitretin / Ustekinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+];
 
+d3.json("recommendation.json", function(error, data) {
+  if (error) throw error;
+  console.log(data.therapyData[0]);
+  
+//dashboard('#dashboard',data.therapyData,settingsData);
+dashboard('#dashboard',therapyData,settingsData);
 
-dashboard('#dashboard',freqData,data);
+});
 </script>
