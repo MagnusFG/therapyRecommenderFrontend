@@ -43,16 +43,17 @@ vdb.cur.execute("SELECT * FROM tblkomorbiditaeten")
 tblkomorbiditaeten = vdb.cur.fetchall()
 tblkomorbiditaeten_names = [description[0] for description in vdb.cur.description]
 #
-#vdb.cur.execute("SELECT * FROM tblkomorbiditaetentyp")
-#tblkomorbiditaetentyp = vdb.cur.fetchall()
-#tblkomorbiditaetentyp_names = [description[0] for description in vdb.cur.description]
+vdb.cur.execute("SELECT * FROM tblkomorbiditaetentyp")
+tblkomorbiditaetentyp = vdb.cur.fetchall()
+tblkomorbiditaetentyp_names = [description[0] for description in vdb.cur.description]
 #
 vdb.cur.execute("SELECT * FROM tblkomorbiditaetenvisite")
 tblkomorbiditaetenvisite = vdb.cur.fetchall()
 tblkomorbiditaetenvisite_names = [description[0] for description in vdb.cur.description]
 #
-#vdb.cur.execute("SELECT * FROM tblkomorbiditaetliegtvor")
-#tblkomorbiditaetliegtvor = vdb.cur.fetchall()
+vdb.cur.execute("SELECT * FROM tblkomorbiditaetliegtvor")
+tblkomorbiditaetliegtvor = vdb.cur.fetchall()
+tblkomorbiditaetliegtvor_names = [description[0] for description in vdb.cur.description]
 #
 #vdb.cur.execute("SELECT * FROM tbllogin")
 #tbllogin = vdb.cur.fetchall()
@@ -111,8 +112,9 @@ tbltherapiejemals_names = [description[0] for description in vdb.cur.description
 #vdb.cur.execute("SELECT * FROM tbltherapiemasseinheit")
 #tbltherapiemasseinheit = vdb.cur.fetchall()
 #
-#vdb.cur.execute("SELECT * FROM tbltherapiename")
-#tbltherapiename = vdb.cur.fetchall()
+vdb.cur.execute("SELECT * FROM tbltherapiename")
+tbltherapiename = vdb.cur.fetchall()
+tbltherapiename_names = [description[0] for description in vdb.cur.description]
 #
 vdb.cur.execute("SELECT * FROM tbltherapiesvisitesystapplied")
 tbltherapiesvisitesystapplied = vdb.cur.fetchall()

@@ -3,8 +3,9 @@ import time
 start = time.time()
 
 ### Project Modules
-from Visit import Visit
 from VisitDatabase import VisitDatabase
+from Visit import Visit
+from Dataset import Dataset
 from TherapyRecommender import TherapyRecommender
 from helpfuncs import config
 
@@ -17,19 +18,46 @@ config.write()
 vdb = VisitDatabase(config_db)
 vdb.connect()
 # visit
-Visit.tables = config_tables
-Visit.features = config_features       
+#Visit.tables = config_tables
+#Visit.features = config_features       
 vis = Visit()
+# recominput
+ds = Dataset()
 # recommender
-recom = TherapyRecommender(vdb, config_recom)
+recom = TherapyRecommender(config_recom)
 
 #vis.patientID = 5
 #vis.numVisit = 3
-vis.visitID = 24
+vis.visitID = 23
 #vis.loadVisitInfo(vdb)
 #vis.loadVisitData(vdb)
-recom.doRecommendation(vdb, vis)
 
+
+try:
+    recom.doRecommendation(ds, vis, vdb)
+except:
+    print('some error')
+    vdb.disconnect()
+
+#import pandas as pd    
+#ds = Dataset()
+#recom = TherapyRecommender(config_recom)
+#predictions = []
+#ids = []    
+#dsInfoTrain = pd.read_csv(Dataset.filepath + 'dsInfoTrain.csv')    
+#
+#for idv in dsInfoTrain['Visite']:
+#    print('ID:', idv)
+#    vis = Visit()
+#    vis.visitID = idv
+#    ids.append(idv)
+#    predictions.append(recom.doRecommendation(ds, vis, vdb))     
+    
+    
+    
+    
+    
+    
 ### doRecommendation for all visits
 #import pandas as pd
 #recoms = pd.DataFrame()
