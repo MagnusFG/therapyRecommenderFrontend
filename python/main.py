@@ -34,7 +34,10 @@ vis.visitID = 23
 
 
 try:
+    s = time.time()
     recom.doRecommendation(ds, vis, vdb)
+    e = time.time()
+    print('doRecommendation:', e-s)
 except:
     print('some error')
     vdb.disconnect()

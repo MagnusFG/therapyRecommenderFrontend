@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
-#import time
+import time
 #from functools import reduce
 #import pickle
 
@@ -39,31 +39,28 @@ class TherapyRecommender:
         ...
 
         
-    def doRecommendation(self, ds, vis, vdb):        
+    def doRecommendation(self, ds, vis, vdb):
+        # create dataset
+        s = time.time()
         ds.create(vis, vdb)
+        e = time.time()
+        print('--create dataset:', e-s)
+        # preprocess data
+        s = time.time()
         self.preprocess(ds)
+        e = time.time()        
+        print('--preprocess:', e-s)
+        # process data
+        s = time.time()
         self.process()
-        self.postprocess()
+        e = time.time()
+        print('--process:', e-s)
+        # postprocess results
+        s = time.time()
+        self.postprocess(ds)
+        e = time.time()
+        print('--postprocess:', e-s)
         #return self.prediction
-#        ### prepare features for calculation (currently: feature normalization)
-#        s = time.time()
-#        currentData, trainData = self.prepareFeatures(currentData, trainData)
-#        e = time.time()
-#        print("prepareFeatures:", e-s)
-#        ### find k-nearest neighbors of current visit
-#        s = time.time()
-#        self.currentkNN = self.calcKNN(currentData, trainData)
-#        e = time.time()
-#        print("calcKNN:", e-s)
-#        ### estimate affinities of current visits based on kNN 
-#        s = time.time()
-#        self.currentRecom, currentRecom_thr = self.calcRecom(self.currentkNN)
-#        e = time.time()
-#        print("calcRecom:", e-s)
-#        ### print recommendations above threshold
-#        if not currentRecom_thr.empty:
-#            for idx, val in currentRecom_thr.iteritems():
-#                print(idx, "=", val)
 
 
     def preprocess(self, ds):
@@ -89,8 +86,16 @@ class TherapyRecommender:
 
                     
     def process(self):
+        # get k-nearest-neighbours
+        s = time.time()
         self.calcKNN(distfunc='gower')
+        e = time.time()
+        print('----calcKNN:', e-s)
+        # predict outcome
+        s = time.time()
         self.calcRecom()
+        e = time.time()
+        print('----calcRecom:', e-s)
 
 
     def calcRecom(self):
@@ -139,11 +144,14 @@ class TherapyRecommender:
     
     def calcKNN(self, distfunc='gower'):
         ### define distance function
-        if distfunc == 'gower':
-            calcSimilarity = self.calcGower            
+        if distfunc == 'gower':            
+            calcSimilarity = self.calcGower                       
         
         ### calculate similarity
-        self.similarity = calcSimilarity()        
+        s = time.time()
+        self.similarity = calcSimilarity()
+        e = time.time()
+        print('--------calcSimilarity:', e-s)        
         
         ### take k-nearest-neighbors
         similarity_sorted = self.similarity.sort_values(ascending=False)        
@@ -224,55 +232,67 @@ class TherapyRecommender:
         return gsc        
 
     
-    def postprocess(self):
-        self.JSONOut()
+    def postprocess(self, ds):
+        self.JSONOut(ds)
 
 
-    def JSONOut(self):
-        ### neighbourhood 
-               
-        # nodes
-#        def node_format(data):
-#            for key, value in data.items():
-#                if None in value and len(value) > 1:
-#                    data[key] = ['k.A.' if val is None else val for val in value]
-#                elif len(value) == 1:
-#                    if None in value:
-#                         data[key] = 'k.A.'
-#                    else:     
-#                        data[key] = value[0]
-#            return data
-#           
-#        nodes = []
-#        nodes.append({"id": str(vis.visitID).zfill(4),
-#                      "Patientendaten": node_format(vis.attributes)})
-#        for idx in self.currentkNN.index.values.tolist():
-#            idx_new = self.trainIDs["visitIDs"].index(idx)
-#            nodes.append({"id": str(idx).zfill(4),
-#                          "Patientendaten": node_format(self.trainVisits[idx_new].attributes)})
+    def JSONOut(self, ds):
+        
+        '''neighbourhood.json'''                 
+        
+        ### nodes 
+        def to_dict(df):
+            patientdata = {}
+            data = df.values.copy()
+            attributes = df.columns.values.copy()
+            # remove attribute numbering
+            for i, name in enumerate(attributes):
+                attributes[i] = name.split('_')[0]
+            # get unique names   
+            unique_attributes = np.unique(attributes)
+            # df to dict
+            for name in unique_attributes:
+                idx = attributes == name
+                if data[:, idx].shape[1] > 1:
+                    # return connected attributes as list
+                    patientdata[name] = data[:, idx].tolist()[0]
+                else:
+                    # return stand-alone attributes as scalar
+                    patientdata[name] = np.asscalar(data[:, idx])
+            return patientdata
+                  
+        nodes = []
+        nodes.append({"id": str(self.IDTest['Visite'].values[0]).zfill(4),
+                      "Patientendaten": to_dict(ds.currentData)})
+        for idx in self.kNN.index:
+            nodes.append({"id": str(idx).zfill(4),
+                          "Patientendaten": to_dict(pd.DataFrame(ds.trainData.loc[idx, :]).T)})
 
-        # links
+        ### links
         links = []     
         for k in range(len(self.kNN)):
             links.append({"source": str(self.IDTest['Visite'].values[0]).zfill(4),
                           "target": str(self.kNN.index.values[k]).zfill(4),
-                          "similarity": self.kNN.values[k]})        
-        
-#        with open('output/neighbourhood.json', 'w') as fp:
-#            fp.write('{' +
-#                    '\n\t"nodes": [\n' +
-#                    ',\n'.join('\t\t' + json.dumps(dictx, ensure_ascii=False) for dictx in nodes) +
-#                    '\n\t]' +
-#                    ',' +
-#                    '\n\t"links": [\n' +
-#                    ',\n'.join('\t\t' + json.dumps(dictx, ensure_ascii=False) for dictx in links) +
-#                    '\n\t]' +
-#                    '\n}')
+                          "similarity": self.kNN.values[k]})  
+      
+        ### write output
+        with open('output/neighbourhood.json', 'w') as fp:
+            fp.write('{' +
+                    '\n\t"nodes": [\n' +
+                    ',\n'.join('\t\t' + json.dumps(dictx, ensure_ascii=False) for dictx in nodes) +
+                    '\n\t]' +
+                    ',' +
+                    '\n\t"links": [\n' +
+                    ',\n'.join('\t\t' + json.dumps(dictx, ensure_ascii=False) for dictx in links) +
+                    '\n\t]' +
+                    '\n}')
+
     
-        ### recommendation
+        '''recommendation.sjon'''        
         # static therapy names
         therapy_names = ['Methotrexat','Ciclosporin','Acitretin','Fumaderm','Infliximab','Etanercept','Golimumab','Adalimumab','Ustekinumab','Certolizumab','Apremilast','Secukinumab','PUVA','Andere UV-Therapie','Andere Therapie (Systemische Therapie)','Methotrexat / Adalimumab','Methotrexat / Etanercept','Methotrexat / Infliximab','Methotrexat / Secukinumab','Methotrexat / Ustekinumab','Methotrexat / Golimumab']
-            
+        
+        ### therapyData    
         therapyData = []
         for tx in range(len(self.prediction)):
             therapyData.append({"Therapy": therapy_names[tx],
@@ -280,8 +300,9 @@ class TherapyRecommender:
                                 "prediction": {"Wirksamkeit": self.prediction[tx],
                                                "deltaPasi": self.prediction[tx],
                                                "UAW": self.prediction[tx]}
-                                })
+                                }) 
     
+        ### write output
         with open('output/recommendation.json', 'w') as fp:
             fp.write('{' +
                     '\n\t"therapyData": [\n' +
