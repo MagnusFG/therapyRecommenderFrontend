@@ -2,8 +2,7 @@ import pandas as pd
 import numpy as np
 import json
 import time
-#from functools import reduce
-#import pickle
+
 
 class TherapyRecommender:
             
@@ -23,8 +22,14 @@ class TherapyRecommender:
         # info
         self.IDTest = pd.DataFrame()
         # outcome
-        self.outcomeTrain = pd.DataFrame()
-        self.outcomeTest = pd.DataFrame()
+        self.outcomeTrain = {'affinity': pd.DataFrame(),
+                             'uaw': pd.DataFrame(),
+                             'wirksamkeit': pd.DataFrame(),
+                             'deltapasi': pd.DataFrame()}      
+        self.outcomeTest = {'affinity': pd.DataFrame(),
+                            'uaw': pd.DataFrame(),
+                            'wirksamkeit': pd.DataFrame(),
+                            'deltapasi': pd.DataFrame()}
         # metadata
         self.fType = pd.DataFrame()        
         self.fRange = pd.DataFrame()
@@ -33,13 +38,16 @@ class TherapyRecommender:
         ### computed       
         self.similarity = pd.Series()
         self.kNN = pd.Series()
-        self.prediction = pd.Series()
+        self.prediction = {'affinity': pd.Series(),
+                           'uaw': pd.Series(),
+                           'wirksamkeit': pd.Series(),
+                           'deltapasi': pd.Series()}
         
         ### output
         ...
 
         
-    def doRecommendation(self, ds, vis, vdb):
+    def doRecommendation(self, ds, vis, vdb, predict=['affinity','uaw', 'wirksamkeit', 'deltapasi']):
         # create dataset
         s = time.time()
         ds.create(vis, vdb)
@@ -52,7 +60,7 @@ class TherapyRecommender:
         print('--preprocess:', e-s)
         # process data
         s = time.time()
-        self.process()
+        self.process(predict)
         e = time.time()
         print('--process:', e-s)
         # postprocess results
@@ -65,14 +73,29 @@ class TherapyRecommender:
 
     def preprocess(self, ds):
         # unzip dataset
-        self.dsTrain = ds.trainData
-        self.dsTest = ds.currentData
-        self.IDTest = ds.currentID
-        self.outcomeTrain = ds.trainOutcome_static
-        self.outcomeTest = ds.currentOutcome
-        self.fType = ds.trainTypes
-        self.fRange = ds.featureRange
-        self.fWeights = ds.currentWeights
+        self.dsTrain = ds.trainData.copy()
+        self.dsTest = ds.currentData.copy()
+        self.IDTest = ds.currentID.copy()
+        
+        self.outcomeTrain['affinity'] = ds.trainAffinityAll_static.copy()
+        self.outcomeTrain['uaw'] = ds.trainUAWAll_static.copy()
+        self.outcomeTrain['wirksamkeit'] = ds.trainWirksamkeitAll_static.copy()
+        self.outcomeTrain['deltapasi'] = ds.trainDeltaPasiAll_static.copy()
+
+        self.outcomeTest['affinity'] = ds.currentAffinityAll.copy()
+        self.outcomeTest['uaw'] = ds.currentUAWAll.copy()
+        self.outcomeTest['wirksamkeit'] = ds.currentWirksamkeitAll.copy()
+        self.outcomeTest['deltapasi'] = ds.currentDeltaPasiAll.copy()
+        
+        self.fType = ds.trainTypes.copy()
+        self.fRange = ds.featureRange.copy()
+        self.fWeights = ds.currentWeights.copy()
+        
+        # adjust attributes
+#        s = time.time()
+#        self.convertNominal()
+#        e = time.time()
+#        print('----convertNominal:', e-s)
         
         # eliminate zero attributes
         self.dsTest = self.dsTest.loc[:, self.dsTrain.sum(axis=0, skipna=False) != 0]
@@ -81,11 +104,48 @@ class TherapyRecommender:
         self.fWeights = self.fWeights.loc[:, self.dsTrain.sum(axis=0, skipna=False) != 0]
         self.dsTrain = self.dsTrain.loc[:, self.dsTrain.sum(axis=0, skipna=False) != 0]
         
-        # for comparison
-        self.gsc23mat = ds.D_mat_23
-
-                    
-    def process(self):
+    
+#    def convertNominal(self):        
+#        def onehot(df):
+#            df_converted = pd.DataFrame()
+#            for attribute in df.columns:
+#                # get range
+#                rng = self.fRange[attribute][0]
+#                # build onehot indices
+#                idx = df[attribute].values - 1
+#                isnan = np.isnan(idx)
+#                idx[isnan] = 0
+#                idx = np.int64(idx)
+#                # convert
+#                onehot = np.zeros([idx.shape[0], rng+1])
+#                onehot[np.arange(idx.shape[0]), idx] = 1
+#                onehot[isnan, :] = 0
+#                # get new names (by numbering old name)
+#                attributes_new = []
+#                for i in range(onehot.shape[1]):
+#                    attributes_new.append(attribute + '_' + str(i+1))
+#                # array to dataframe
+#                df_new = pd.DataFrame(onehot, index=df.index, columns=attributes_new)
+#                # concatenate converted features
+#                df_converted = pd.concat([df_converted, df_new])
+#            return df_converted
+#        
+#        # extract nominal attributes                                
+#        dsNominalTrain = self.dsTrain.loc[:, (self.fType.values==2)[0]]
+#        dsNominalTest = self.dsTest.loc[:, (self.fType.values==2)[0]]
+#        # extract other attributes
+#        dsTrain = self.dsTrain.loc[:, (self.fType.values!=2)[0]]
+#        dsTest = self.dsTest.loc[:, (self.fType.values!=2)[0]]
+#        # combine other attributes and converted nominal attributes
+#        dsTrain = pd.concat([dsTrain, onehot(dsNominalTrain)], axis=1)
+#        dsTest = pd.concat([dsTest, onehot(dsNominalTest)], axis=1)
+#        # overwrite
+#        #self.dsTrain = dsTrain
+#        #self.dsTest = dsTest
+            
+            
+            
+    def process(self, predict):
         # get k-nearest-neighbours
         s = time.time()
         self.calcKNN(distfunc='gower')
@@ -93,63 +153,74 @@ class TherapyRecommender:
         print('----calcKNN:', e-s)
         # predict outcome
         s = time.time()
-        self.calcRecom()
+        for measure in predict:
+            self.prediction[measure] = self.calcRecom(self.outcomeTrain[measure], measure)
         e = time.time()
         print('----calcRecom:', e-s)
-
-
-    def calcRecom(self):
-        # mean of present ratings w.r.t. therapies        
-        all_ratings = self.outcomeTrain.values.copy()
-        all_ratings[np.isnan(all_ratings)] = 0
-        nonzero_ratings = np.sum(all_ratings!=0, axis=0)# avoid division by zero
-        nonzero_ratings[nonzero_ratings==0] = 1         # avoid division by zero
-        mean_ratings = np.sum(all_ratings, axis=0) / nonzero_ratings
+            
+            
+    def calcRecom(self, data, measure):                
         # ground truth
-        t_rating = self.outcomeTrain.loc[self.IDTest['Visite'], :]
+        t_rating = data.loc[self.IDTest['Visite'], :]
         # nearest ratings
-        nn_ratings = self.outcomeTrain.loc[self.kNN.index, :]
+        nn_ratings = data.loc[self.kNN.index, :]
         
         # if no similarity
         if np.sum(self.kNN) == 0:
             # prediction = ground truth
             r_rating = t_rating
         else:
-            # normalize = 0
+            ## normalize = 0
+            # nearest ratings
             x_rating = nn_ratings.values.copy()
+            # weights w.r.t kNN
             w_rating = np.broadcast_to(self.kNN.values, (x_rating.shape[1], x_rating.shape[0])).copy().T
-            w_rating[np.isnan(x_rating) + (x_rating==0)] = 0
+            w_rating[np.isnan(x_rating)] = 0
+            if measure == 'affinity':
+                w_rating[(x_rating==0)] = 0
             w_rating_sum = np.sum(w_rating, axis=0) # avoid division by zero
             w_rating_sum[w_rating_sum==0] = 1       # avoid division by zero
             w_rating = w_rating / w_rating_sum
             w_rating[np.isnan(w_rating)] = 0
             x_rating[np.isnan(x_rating)] = 0            
+            # regression
             r_rating = np.sum(x_rating * w_rating, axis=0)
+        
+        if measure == 'affinity':
+            # mean of present ratings w.r.t. therapies        
+            all_ratings = data.values.copy()
+            all_ratings[np.isnan(all_ratings)] = 0
+            nonzero_ratings = np.sum(all_ratings!=0, axis=0)# avoid division by zero
+            nonzero_ratings[nonzero_ratings==0] = 1         # avoid division by zero
+            mean_ratings = np.sum(all_ratings, axis=0) / nonzero_ratings    
             
-        # ignore recommendations below threshhold
-        r_rating[r_rating <= self.affinity_thr] = 0   
+            # ignore recommendations below threshhold
+            r_rating[r_rating <= self.affinity_thr] = 0   
+                
+            # break ties
+            eps = 1e-6
+            unique_ratings = np.unique(r_rating[r_rating > 0])
+            for val in unique_ratings:
+                isval = r_rating == val
+                if np.sum(isval) > 1:
+                    r_rating[isval] = r_rating[isval] + (eps * mean_ratings[isval])
             
-        # break ties
-        eps = 1e-6
-        unique_ratings = np.unique(r_rating[r_rating > 0])
-        for val in unique_ratings:
-            isval = r_rating == val
-            if np.sum(isval) > 1:
-                r_rating[isval] = r_rating[isval] + (eps * mean_ratings[isval])
-            
-        # normalize
-        r_rating = r_rating / np.sum(r_rating)            
-        self.prediction = pd.Series(r_rating, name='affinity')
+            # normalize
+            r_rating = r_rating / np.sum(r_rating)            
+
+        return pd.Series(r_rating, name=measure)
     
     
     def calcKNN(self, distfunc='gower'):
         ### define distance function
         if distfunc == 'gower':            
-            calcSimilarity = self.calcGower                       
+            calcDist = self.calcGower                       
         
-        ### calculate similarity
+        ### calculate (rooted) distance & similarity
         s = time.time()
-        self.similarity = calcSimilarity()
+        root_distance = calcDist()
+        similarity = 1 - np.square(root_distance)
+        self.similarity = pd.Series(similarity, index=self.dsTrain.index, name='similarity')
         e = time.time()
         print('--------calcSimilarity:', e-s)        
         
@@ -219,16 +290,9 @@ class TherapyRecommender:
         score = score_qual + score_quant
         div = div_qual + div_quant
         gsc = score / div        
-        # ???????? -> sqrt(distance)
-        #gsc = np.sqrt(1-gsc)                                                    
-        gsc = pd.Series(gsc, index=self.dsTrain.index, name='similarity')
-        #######################################################################
-        gsc23mat = self.gsc23mat.T
-        # python: similarity
-        gsc_sort = gsc.sort_values(ascending=False)
-        # matlab: sqrt(distance)
-        gsc23mat_sort = gsc23mat.sort_values(by=[0], ascending=True)
-        #######################################################################
+        
+        # sqrt(distance)
+        gsc = np.sqrt(1 - gsc)                                                    
         return gsc        
 
     
@@ -238,9 +302,12 @@ class TherapyRecommender:
 
     def JSONOut(self, ds):
         
-        '''neighbourhood.json'''                 
+        '''neighbourhood.json'''                        
         
-        ### nodes 
+        ### nodes         
+        # static psoriasis type names
+        psoriasis_names = ['Chronischer Plaque-Typ (Psoriasis vulgaris)','Psoriasis pustulosa palmoplantaris','Psoriasis guttata','Psoriasis inversa','Nagelbeteiligung','Psoriasis Arthritis']
+        # convert dataframe to dictionary (for patientdata)
         def to_dict(df):
             patientdata = {}
             data = df.values.copy()
@@ -254,13 +321,21 @@ class TherapyRecommender:
             for name in unique_attributes:
                 idx = attributes == name
                 if data[:, idx].shape[1] > 1:
-                    # return connected attributes as list
-                    patientdata[name] = data[:, idx].tolist()[0]
+                    # special treatment
+                    if name=='Psoriasistyp':
+                        patientdata[name] = []
+                        psoriasisdata = data[:, idx].tolist()[0]
+                        for i, val in enumerate(psoriasisdata):
+                            if val == 1:
+                                patientdata[name].append(psoriasis_names[i])
+                    else:
+                        # return connected attributes as list
+                        patientdata[name] = data[:, idx].tolist()[0]                                                    
                 else:
                     # return stand-alone attributes as scalar
                     patientdata[name] = np.asscalar(data[:, idx])
             return patientdata
-                  
+                          
         nodes = []
         nodes.append({"id": str(self.IDTest['Visite'].values[0]).zfill(4),
                       "Patientendaten": to_dict(ds.currentData)})
@@ -294,12 +369,12 @@ class TherapyRecommender:
         
         ### therapyData    
         therapyData = []
-        for tx in range(len(self.prediction)):
+        for tx in range(len(self.prediction['affinity'])):
             therapyData.append({"Therapy": therapy_names[tx],
-                                "Affinity": self.prediction[tx],
-                                "prediction": {"Wirksamkeit": self.prediction[tx],
-                                               "deltaPasi": self.prediction[tx],
-                                               "UAW": self.prediction[tx]}
+                                "Affinity": self.prediction['affinity'][tx],
+                                "prediction": {"Wirksamkeit": self.prediction['wirksamkeit'][tx],
+                                               "deltaPasi": self.prediction['deltapasi'][tx],
+                                               "UAW": self.prediction['uaw'][tx]}
                                 }) 
     
         ### write output
@@ -309,43 +384,4 @@ class TherapyRecommender:
                     ',\n'.join('\t\t' + json.dumps(dictx, ensure_ascii=False) for dictx in therapyData) +
                     '\n\t]' +
                     '\n}')
-
-
-                             
-#    def imputeFeatures(self, data, filler='mode'):            
-#        for index, row in data.iterrows():
-#            ### fill NaNs with {filler} of feature 
-#            if row.isnull().any():
-#                data.loc[index].fillna(self.moct_adj.loc[index, filler], inplace=True)       
-#        return data
-#
-#
-#    def modifyFeatures(self, data):        
-#        ### feature normalization on 0-1 range
-#        
-#        ### numpy arrays for calculation:
-#        # minimum of features
-#        npranges_min = self.ranges_adj["min"].values
-#        npranges_min = npranges_min.repeat(data.shape[1])
-#        npranges_min = npranges_min.reshape(data.shape[0],data.shape[1])
-#        # maximum - minimum of features
-#        ranges_div = (self.ranges_adj["max"] - self.ranges_adj["min"])
-#        npranges_div = ranges_div.values
-#        npranges_div = npranges_div.repeat(data.shape[1])
-#        npranges_div = npranges_div.reshape(data.shape[0],data.shape[1])
-#        # feature types
-#        npcurrentTypes = self.currentTypes.values
-#        npcurrentTypes = npcurrentTypes.repeat(data.shape[1])
-#        npcurrentTypes = npcurrentTypes.reshape(data.shape[0],data.shape[1])
-#        
-#        ### normalize: (value - min)/(max - min)
-#        data_norm = data.sub(npranges_min)
-#        data_norm = data_norm.div(npranges_div)
-#        
-#        ### overwrite dataframe if dtype >= ordinal
-#        data = data.mask(npcurrentTypes > 2, other=data_norm, axis=0)
-#                
-#        return data
-    
- 
 

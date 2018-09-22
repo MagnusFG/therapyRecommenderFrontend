@@ -82,8 +82,9 @@ tblpatient_names = [description[0] for description in vdb.cur.description]
 #vdb.cur.execute("SELECT * FROM tblpatientendatenkinderwunsch")
 #tblpatientendatenkinderwunsch = vdb.cur.fetchall()
 #
-#vdb.cur.execute("SELECT * FROM tblpatientendatenpsoriasistyp")
-#tblpatientendatenpsoriasistyp = vdb.cur.fetchall()
+vdb.cur.execute("SELECT * FROM tblpatientendatenpsoriasistyp")
+tblpatientendatenpsoriasistyp = vdb.cur.fetchall()
+tblpatientendatenpsoriasistyp_names = [description[0] for description in vdb.cur.description]
 #
 vdb.cur.execute("SELECT * FROM tblpatientendatenvisite")
 tblpatientendatenvisite = vdb.cur.fetchall()
@@ -136,8 +137,9 @@ tbltherapiesvisitesystapplied_names = [description[0] for description in vdb.cur
 #tbltherapievisite = vdb.cur.fetchall()
 #tbltherapievisite_names = [description[0] for description in vdb.cur.description]
 #
-#vdb.cur.execute("SELECT * FROM tbltherapiewirksamkeit")
-#tbltherapiewirksamkeit = vdb.cur.fetchall()
+vdb.cur.execute("SELECT * FROM tbltherapiewirksamkeit")
+tbltherapiewirksamkeit = vdb.cur.fetchall()
+tbltherapiewirksamkeit_names = [description[0] for description in vdb.cur.description]
 #
 vdb.cur.execute("SELECT * FROM tblvisite")
 tblvisite = vdb.cur.fetchall()
@@ -272,3 +274,59 @@ vdb.disconnect()
 #            data_tmp[0] = data[col]            
 #            data[col] = data_tmp.mask(self.currentTypes > 2, other=data_new, axis=0)
 #        return data
+
+
+#import numpy as np
+#uaw = Dataset.trainData_static.filter(regex='UAW').values
+#uaw[np.isnan(uaw)]=-12345
+#uawhist = Dataset.trainUAWHist_static.values
+#uawhist[np.isnan(uawhist)]=-12345
+#uawvgl = uaw==uawhist
+#wirk = Dataset.trainData_static.filter(regex='Wirksamkeit').values
+#wirk[np.isnan(wirk)]=-12345
+#wirkhist = Dataset.trainWirksamkeitHist_static.values
+#wirkhist[np.isnan(wirkhist)]=-12345
+#wirkvgl = wirk==wirkhist
+#dpasi = Dataset.trainData_static.filter(regex='DeltaPasi').values
+#dpasi[np.isnan(dpasi)]=-12345
+#dpasihist = Dataset.trainDeltaPasiHist_static.values
+#dpasihist[np.isnan(dpasihist)]=-12345
+#dpasivgl = dpasi==dpasihist
+
+
+
+    
+    
+    
+    
+    
+    
+### doRecommendation for all visits
+#import pandas as pd
+#recoms = pd.DataFrame()
+#for ID in recom.trainIDs["visitIDs"]:
+#    print("\n", ID, "\n")
+#    vis = Visit()
+#    vis.visitID = ID
+#    s = time.time()
+#    recom.doRecommendation(vdb,vis)
+#    e = time.time()
+#    print("dorecom:",e-s)
+#    recoms[ID] = recom.currentRecom
+
+
+### doRecommendation for requested visit
+#while True:
+#    vis = Visit()
+#    vdb.cur.execute("SELECT tblinputinterface.Visite FROM tblinputinterface")
+#    ID = vdb.cur.fetchall()
+#    if ID:    
+#        vis.visitID = ID[0][0]
+#        recom.doRecommendation(vdb, vis)
+#        vdb.cur.execute("DELETE FROM tblinputinterface")
+#        vdb.conn.commit()
+#    else:
+#        vdb.cur.execute("DELETE FROM tblinputinterface")
+#        vdb.conn.commit()
+#        print("no request")
+#    time.sleep(4)
