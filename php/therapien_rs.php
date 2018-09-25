@@ -1,4 +1,5 @@
 <?php
+include('d3js/recommendation.html');
 
 function show_therapien_rs($disabled, $connection) {
 
@@ -12,21 +13,21 @@ function show_therapien_rs($disabled, $connection) {
 
     // fetch recommendation
     if (isset($_POST['generiere_therapieempfehlung'])) {
-        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystlist WHERE Visite = $visite ORDER BY Score DESC LIMIT $numRecom");
-        while ($row = mysql_fetch_array($sql)) {
+        $sql = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystlist WHERE Visite = $visite ORDER BY Score DESC LIMIT $numRecom");
+        while ($row = mysqli_fetch_array($sql)) {
             $therapies[$row['Therapie']] = $row['Score'];
         }
     } else {
         // insert visite into input interface if not already in queue
-        $sql = mysql_query("SELECT * FROM tblinputinterface WHERE Visite = $visite ORDER BY IDInput DESC LIMIT 1");
-        $row = mysql_fetch_array($sql);
+        $sql = mysqli_query($connection, "SELECT * FROM tblinputinterface WHERE Visite = $visite ORDER BY IDInput DESC LIMIT 1");
+        $row = mysqli_fetch_array($sql);
         if (empty($row['IDInput'])) {
             // empty table to make sure no old request is in queue
-            $sql = mysql_query("TRUNCATE TABLE tblinputinterface");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "TRUNCATE TABLE tblinputinterface");
+            $retval = mysqli_query($connection, $sql);
             // append new request
-            $sql = mysql_query("INSERT INTO tblinputinterface(Visite, Patient, NumVisite) VALUES ($visite,$patient,$numVisite)");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "INSERT INTO tblinputinterface(Visite, Patient, NumVisite) VALUES ($visite,$patient,$numVisite)");
+            $retval = mysqli_query($connection, $sql);
         }
     }
     ?>
@@ -37,76 +38,18 @@ function show_therapien_rs($disabled, $connection) {
         <div class = "panel panel-primary">
             <!--Default panel contents -->
             <div class = "panel-heading">Vom Therapieempfehlungssystem empfohlene Therapie:</div>
+            
+            <div id="dashboard"></div>
+  <script>
+            d3.json("d3js/recommendation.json", function(error, data) {
+  if (error) throw error;
+  console.log(data.therapyData[0]);
+  
+//dashboard('#dashboard',data.therapyData,settingsData);
+dashboard('#dashboard',therapyData,settingsData);
 
-            <table class = "table table-striped">
-        <!--                <colgroup>
-                        <col width = "500">
-                        <col width = "500">
-                        <col width = "80">
-                        <col width = "80">
-                        <col width = "80">
-                        <col width = "80">
-                    </colgroup>-->
-                <thead>
-                    <tr>
-                        <th>Score</th>
-                        <th>Therapie</th>
-                        <th>Therapie ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-//                    $therapieCnt = 0;
-                    foreach ($therapies as $therapie => $score) {
-
-//                        $therapieCnt ++;
-//                        echo "<tr style=\"background-color:#7FFFD4;\">";
-                        echo "<tr>";
-
-//                        if ($infoTyp[$id] == 1) {
-//                            echo "<tr style=\"background-color:#66f;\">";
-//                            $therapieCnt ++;
-//                        }
-//
-//                        if ($infoTyp[$id] == 2) {
-//                            echo "<tr style=\"background-color:#ff9;\">";
-//                        }
-//
-//                        if ($infoTyp[$id] == 3) {
-//                            echo "<tr style=\"background-color:#ffd9b3;\">";
-//                        }
-//
-//                        if ($infoTyp[$id] == 1 && $therapieCnt > $numRecom) {
-//                            echo "<tr style=\"background-color:#b3e6ff;\">";
-//                        }
-//                        if ($therapieCnt > $numRecom) {
-//                            echo "<tr style=\"background-color:#b3e6ff;\">";
-//                        }
-                        ?>
-                    <td><b><?php echo round(100 * $score, 2) ?></b></td>
-                    <?php
-                    $results = mysql_query("SELECT * FROM tbltherapiename WHERE IDTherapie = $therapie");
-                    $row = mysql_fetch_array($results);
-                    $therapieName = $row['Name'];
-                    ?>
-                    <td><b><?php echo $therapieName ?></b></td>
-                    <td><b><?php echo $therapie ?></b></td> 
-
-                    </tr>
-                    <?php
-                }
-                ?>
-                </tbody>
-            </table>
-
-            </br>
-            </br>
-
-            <div style="margin: 5px;">
-                <button type="submit" name="generiere_therapieempfehlung" class="btn btn-primary " type="button" value=<?php echo $visite; ?><?php echo $disabled; ?>>
-                    Therapieempfehlung
-                </button>
-            </div>               
+});
+</script>          
 
         </div>
     </form>

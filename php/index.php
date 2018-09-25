@@ -38,16 +38,20 @@
             ?>
 
         <body>
-            <h2>Therapieempfehlungssystem</h2>
-            <p>Expertenbewertung</p>
+<!--            <h2>Therapieempfehlungssystem</h2>
+            <p>Expertenbewertung</p>-->
+            <!--<img src="images/Logo_DARE.png" alt="Logo ZEGV" style="width:250px;">-->
+            </br>
+            </br>
             </br>
 
             <div class="login">           
 
                 <div class="login-screen">
 
-                    <img src="images/TU_Logo_HKS41.png" alt="Logo TUD" style="width:175px;">
-                    <img src="images/Logo_ZEGV_small.png" alt="Logo ZEGV" style="width:65px;">
+<!--                    <img src="images/TU_Logo_HKS41.png" alt="Logo TUD" style="width:175px;">
+                    <img src="images/Logo_ZEGV_small.png" alt="Logo ZEGV" style="width:65px;">-->
+                    <img src="images/Logo_DARE.png" alt="Logo ZEGV" style="width:250px;">
 
                     <div class="app-title">
                         <h3>Login</h3>

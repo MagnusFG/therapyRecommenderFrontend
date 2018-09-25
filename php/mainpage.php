@@ -134,8 +134,8 @@ if (!isset($_SESSION['login'])) {
                     <?php
                     // fill patienten array
                     $patienten = array();
-                    $results = mysql_query("SELECT * FROM tblpatient");
-                    while ($row = mysql_fetch_array($results)) {
+                    $results = mysqli_query($connection, "SELECT * FROM tblpatient");
+                    while ($row = mysqli_fetch_array($results)) {
                         $patienten[] = $row['IDPatient'];
                     }
                     ?>
@@ -152,8 +152,8 @@ if (!isset($_SESSION['login'])) {
                             $idPatient = $_POST['selPatient'];
 
                             // fill visiten array
-                            $results = mysql_query("SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
-                            while ($row = mysql_fetch_array($results)) {
+                            $results = mysqli_query($connection, "SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
+                            while ($row = mysqli_fetch_array($results)) {
                                 $visiten[$row['NumVisite']] = $row['IDVisite'];
                             }
                             // set global variables
@@ -207,8 +207,8 @@ if (!isset($_SESSION['login'])) {
 //                    $disabledButtonPatient = 'disabled';
 // ... finde letzte Visite
                         $idPatient = $_SESSION['idPatient'];
-                        $sql = mysql_query("SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite DESC");
-                        $row = mysql_fetch_array($sql);
+                        $sql = mysqli_query($connection, "SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite DESC");
+                        $row = mysqli_fetch_array($sql);
                         if (!isset($row['NumVisite'])) {
                             $numVisite = 0;
                         } else {
@@ -216,12 +216,12 @@ if (!isset($_SESSION['login'])) {
                         }
 
 // ... apppend Visite
-                        $sql = mysql_query("INSERT INTO tblvisite (Patient,NumVisite) VALUE ($idPatient,$numVisite)");
-                        $retval = mysql_query($sql, $connection);
+                        $sql = mysqli_query($connection, "INSERT INTO tblvisite (Patient,NumVisite) VALUE ($idPatient,$numVisite)");
+                        $retval = mysqli_query($connection, $sql);
 //               
                         // ... update visiten array
-                        $results = mysql_query("SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
-                        while ($row = mysql_fetch_array($results)) {
+                        $results = mysqli_query($connection, "SELECT * FROM tblvisite WHERE Patient = $idPatient ORDER BY NumVisite ASC");
+                        while ($row = mysqli_fetch_array($results)) {
                             $visiten[$row['NumVisite']] = $row['IDVisite'];
                         }
 
@@ -249,22 +249,22 @@ if (!isset($_SESSION['login'])) {
 //                    $disabledSelect = 'disabled';
 //                    $disabledButtonVisite = 'disabled';
                         // ... insert new patient
-//                    $sql = mysql_query("INSERT INTO tblpatient");
-//                    $retval = mysql_query($sql, $connection);
+//                    $sql = mysqli_query($connection, "INSERT INTO tblpatient");
+//                    $retval = mysqli_query($connection, $sql, $connection);
 // ... apppend patient
-                        $sql = mysql_query("INSERT INTO tblpatient (IDPatient) VALUE (null)");
-                        $retval = mysql_query($sql, $connection);
+                        $sql = mysqli_query($connection, "INSERT INTO tblpatient (IDPatient) VALUE (null)");
+                        $retval = mysqli_query($connection, $sql);
 
-//                        $results = mysql_query("SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
-//    $row = mysql_fetch_array($results);
+//                        $results = mysqli_query($connection, "SELECT * FROM tblPatientendatenVisite WHERE Visite = $visite");
+//    $row = mysqli_fetch_array($results);
                         // ... find last patient
-                        $sql = mysql_query("SELECT * FROM tblpatient ORDER BY IDPatient DESC");
-                        $row = mysql_fetch_array($sql);
+                        $sql = mysqli_query($connection, "SELECT * FROM tblpatient ORDER BY IDPatient DESC");
+                        $row = mysqli_fetch_array($sql);
                         $idPatient = $row['IDPatient'];
 
                         // update patient list
-                        $results = mysql_query("SELECT * FROM tblpatient");
-                        while ($row = mysql_fetch_array($results)) {
+                        $results = mysqli_query($connection, "SELECT * FROM tblpatient");
+                        while ($row = mysqli_fetch_array($results)) {
                             $patienten[] = $row['IDPatient'];
                         }
 
@@ -288,13 +288,16 @@ if (!isset($_SESSION['login'])) {
 //                // write IDPatient and selVisite to input file
 //                $patient = $_SESSION['idPatient'];
 //                $idVisite = $_SESSION['idVisite'];
-//                $results = mysql_query("INSERT INTO tblinput (Patient, NumVisite) VALUES ($patient, $idVisite)");
+//                $results = mysqli_query($connection, "INSERT INTO tblinput (Patient, NumVisite) VALUES ($patient, $idVisite)");
 //            }
 //        }
                     ?>
 
                     <form class="" action="" method="post">
-                        <h2>Therapieempfehlungssystem</h2>
+                        <!--<h2>Therapieempfehlungssystem</h2>-->
+                        <img src="images/Logo_DARE.png" alt="Logo ZEGV" style="width:350px;">
+                        </br>
+                        </br>
                         <p>Herzlich Wilkommen</p>
                         <button type="submit" class="btn btn-default btn-xs" name="logout[<?php echo $_SESSION['idExperte'] ?>]" value="Logout">
                             <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> <?php echo "Logout " . $_SESSION['idExperte'] ?>
@@ -401,7 +404,7 @@ if (!isset($_SESSION['login'])) {
                         <li role="presentation" <?php if ($_GET['action'] == 'schwere_patient') echo " class=\"active\""; ?>><a href="mainpage.php?action=schwere_patient">Einschätzung Patient</a></li>
                         <li role="presentation" <?php if ($_GET['action'] == 'therapien_erfolgt') echo " class=\"active\""; ?>><a href="mainpage.php?action=therapien_erfolgt">Therapien Erfolgt</a></li>
                         <li role="presentation" <?php if ($_GET['action'] == 'therapien_empfohlen') echo " class=\"active\""; ?>><a href="mainpage.php?action=therapien_empfohlen">Therapieempfehlung Arzt</a></li>
-                        <li role="presentation" <?php if ($_GET['action'] == 'therapien_rs') echo " class=\"active\""; ?>><a href="mainpage.php?action=therapien_rs">Therapieempfehlung System</a></li>
+                        <li role="presentation" <?php if ($_GET['action'] == 'therapien_rs') echo " class=\"active\""; ?>><a style="background-color: #ccffcc ;" href="mainpage.php?action=therapien_rs">Therapieempfehlung System</a></li>
                     </ul>
 
                 </div>

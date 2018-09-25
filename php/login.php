@@ -35,8 +35,8 @@ function get_loginID($loginName) {
     $connection = connect_login();
 
 // Login ID aus Datenbank lesen
-    $qryLoginUser = mysql_query("SELECT IDLogin FROM tbllogin WHERE txtUsername = '$loginName'");
-    while ($rowLoginUser = mysql_fetch_object($qryLoginUser)) {
+    $qryLoginUser = mysqli_query("SELECT IDLogin FROM tbllogin WHERE txtUsername = '$loginName'");
+    while ($rowLoginUser = mysqli_fetch_object($qryLoginUser)) {
         $loginUserID = $rowLoginUser->IDLogin;
     }
 
@@ -65,8 +65,8 @@ function check_login($login_name, $login_pass) {
     }
 
 // Logindaten laden
-    $qryLogin = mysql_query("SELECT txtPassword, txtUsername FROM tbllogin WHERE txtUsername = '$login_name'");
-    $rowLogin = mysql_fetch_object($qryLogin);
+    $qryLogin = mysqli_query($connection,"SELECT txtPassword, txtUsername FROM tbllogin WHERE txtUsername = '$login_name'");
+    $rowLogin = mysqli_fetch_object($qryLogin);
 
 // Logindaten verschlüsseln
     $encrypted_password = password_hash($rowLogin->txtPassword, PASSWORD_DEFAULT);
@@ -100,8 +100,8 @@ function check_admin($login_id) {
     $connection = connect_login();
 
 // Adminstrator Status lesen
-    $qryLogin = mysql_query("SELECT LoginAdmin_bln FROM tbllogin WHERE Login_ID = '$login_id'");
-    $rowLogin = mysql_fetch_object($qryLogin);
+    $qryLogin = mysqli_query("SELECT LoginAdmin_bln FROM tbllogin WHERE Login_ID = '$login_id'");
+    $rowLogin = mysqli_fetch_object($qryLogin);
     $status = $rowLogin->LoginAdmin_bln;
 
 // Verbindung zu Login Datenbank trennen

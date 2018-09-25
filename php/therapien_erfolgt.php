@@ -29,11 +29,11 @@ function show_therapien_erfolgt($disabled, $connection) {
             }
 
             if ($val2 != 0) {
-                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val2,$val3,$val4,$val5,$val6a,$val6b,$patient)");
+                $sql = mysqli_query($connection, "INSERT INTO tbltherapiejemals (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val2,$val3,$val4,$val5,$val6a,$val6b,$patient)");
             } else {
-                $sql = mysql_query("INSERT INTO tbltherapiejemals (Therapie,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val3,$val4,$val5,$val6a,$val6b,$patient)");
+                $sql = mysqli_query($connection, "INSERT INTO tbltherapiejemals (Therapie,Masseinheit,VerabreichungTyp,Wirksamkeit,UAWJa,UAWNein,Patient) VALUES ($val1,$val3,$val4,$val5,$val6a,$val6b,$patient)");
             }
-            $retval = mysql_query($sql, $connection);
+            $retval = mysqli_query($connection, $sql);
         }
     }
 
@@ -56,22 +56,22 @@ function show_therapien_erfolgt($disabled, $connection) {
 
         // new applied therapie
         $therapies = array();
-        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $prevVisite");
-        while ($row = mysql_fetch_array($sql)) { // while Antworten ausgeben
+        $sql = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $prevVisite");
+        while ($row = mysqli_fetch_array($sql)) { // while Antworten ausgeben
             $therapies[$row['IDTherapie']] = $row['Therapie'];
         }
         foreach ($therapies as $idTherapyRecommended => $therapy) {
-            $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $therapy AND Visite = $visite");
-            $row = mysql_fetch_array($sql);
+            $sql = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $therapy AND Visite = $visite");
+            $row = mysqli_fetch_array($sql);
             if (!isset($row['IDTherapie'])) {
-                $sql = mysql_query("INSERT INTO tbltherapiesvisitesystapplied(Therapie, Dosierung, Masseinheit, VerabreichungTyp, Visite) SELECT Therapie, Dosierung, Masseinheit, VerabreichungTyp, $visite FROM tbltherapiesvisitesystrecommended WHERE IDTherapie = $idTherapyRecommended");
-                $retval = mysql_query($sql, $connection);
-                $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite AND Therapie = $therapy LIMIT 1");
-                $row = mysql_fetch_array($sql);
+                $sql = mysqli_query($connection, "INSERT INTO tbltherapiesvisitesystapplied(Therapie, Dosierung, Masseinheit, VerabreichungTyp, Visite) SELECT Therapie, Dosierung, Masseinheit, VerabreichungTyp, $visite FROM tbltherapiesvisitesystrecommended WHERE IDTherapie = $idTherapyRecommended");
+                $retval = mysqli_query($connection, $sql);
+                $sql = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite AND Therapie = $therapy LIMIT 1");
+                $row = mysqli_fetch_array($sql);
             }
             $idTherapieApplied = $row['IDTherapie'];
-            $sql = mysql_query("UPDATE tbltherapiesvisitesystapplied SET AngewendetJa=1, AngewendetNein=0, Wirksamkeit=$val2, UAWja=$val3a, UAWnein=$val3b WHERE IDTherapie=$idTherapieApplied");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tbltherapiesvisitesystapplied SET AngewendetJa=1, AngewendetNein=0, Wirksamkeit=$val2, UAWja=$val3a, UAWnein=$val3b WHERE IDTherapie=$idTherapieApplied");
+            $retval = mysqli_query($connection, $sql);
         }
     }
 
@@ -79,8 +79,8 @@ function show_therapien_erfolgt($disabled, $connection) {
     if (isset($_POST['loesche_therapieerfolgt'])) {
         $val = $_POST['loesche_therapieerfolgt'];
 
-        $sql = mysql_query("DELETE FROM tbltherapiejemals WHERE IDTherapie=$val");
-        $retval = mysql_query($sql, $connection);
+        $sql = mysqli_query($connection, "DELETE FROM tbltherapiejemals WHERE IDTherapie=$val");
+        $retval = mysqli_query($connection, $sql);
     }
 
 // delete therapie outcome
@@ -88,13 +88,13 @@ function show_therapien_erfolgt($disabled, $connection) {
         $prevVisite = $_POST['loesche_therapieoutcome'];
 
         $therapies = array();
-        $sql = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $prevVisite");
-        while ($row = mysql_fetch_array($sql)) { // while Antworten ausgeben
+        $sql = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $prevVisite");
+        while ($row = mysqli_fetch_array($sql)) { // while Antworten ausgeben
             $therapies[$row['IDTherapie']] = $row['Therapie'];
         }
         foreach ($therapies as $idTherapyRecommended => $therapy) {
-            $sql = mysql_query("UPDATE tbltherapiesvisitesystrecommended SET AngewendetJa=0, AngewendetNein=0, NichtUmgesetzt=1 WHERE IDTherapie=$idTherapyRecommended");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tbltherapiesvisitesystrecommended SET AngewendetJa=0, AngewendetNein=0, NichtUmgesetzt=1 WHERE IDTherapie=$idTherapyRecommended");
+            $retval = mysqli_query($connection, $sql);
         }
     }
     ?>
@@ -132,7 +132,7 @@ function show_therapien_erfolgt($disabled, $connection) {
 
                     <?php
                     // zeige angewendete therapien jemals
-                    append_therapie_jemals($patient);
+                    append_therapie_jemals($patient, $connection, $connection);
 
                     // go through previous consultations
                     foreach ($visiten as $prevVisite => $idPrevVisite) {
@@ -141,11 +141,11 @@ function show_therapien_erfolgt($disabled, $connection) {
                             break;
                         }
                         // zeige angewendete therapien frühere visite
-                        append_therapie_visite($visiten, $prevVisite, 0);
+                        append_therapie_visite($visiten, $prevVisite, 0, $connection);
                     }
 
                     // zeige empfohlene therapien vorherige visite
-                    append_therapie_visite($visiten, $prevVisite, 1);
+                    append_therapie_visite($visiten, $prevVisite, 1, $connection);
                     ?>
 
                 </tbody>
@@ -179,9 +179,9 @@ function show_therapien_erfolgt($disabled, $connection) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tbltherapiename WHERE Typ = 2");
+                                                $results = mysqli_query($connection, "SELECT * FROM tbltherapiename WHERE Typ = 2");
                                                 echo "<option selected value=NULL></option>";
-                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDTherapie'];
                                                     $nameTmp = $rowTmp['Name'];
                                                     echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
@@ -212,9 +212,9 @@ function show_therapien_erfolgt($disabled, $connection) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit");
+                                                $results = mysqli_query($connection, "SELECT * FROM tbltherapiemasseinheit");
                                                 echo "<option selected value=NULL></option>";
-                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDMaßeinheit'];
                                                     $nameTmp = $rowTmp['Maßeinheit'];
                                                     echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
@@ -233,9 +233,9 @@ function show_therapien_erfolgt($disabled, $connection) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tbltherapieverabreichung");
+                                                $results = mysqli_query($connection, "SELECT * FROM tbltherapieverabreichung");
                                                 echo "<option selected value=NULL></option>";
-                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDTherapieVerabreichung'];
                                                     $nameTmp = $rowTmp['TherapieVerabreichung'];
                                                     echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
@@ -258,9 +258,9 @@ function show_therapien_erfolgt($disabled, $connection) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
+                                                $results = mysqli_query($connection, "SELECT * FROM tbltherapiewirksamkeit");
                                                 echo "<option selected value=NULL></option>";
-                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDTherapieWirksamkeit'];
                                                     $nameTmp = $rowTmp['TherapieWirksamkeit'];
                                                     echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
@@ -321,12 +321,12 @@ function show_therapien_erfolgt($disabled, $connection) {
 
 <?php
 
-function append_therapie_jemals($patient) {
+function append_therapie_jemals($patient, $connection) {
 
     $disabled = '';
 
-    $therapie = mysql_query("SELECT * FROM tbltherapiejemals WHERE Patient = $patient");
-    while ($row = mysql_fetch_array($therapie)) {
+    $therapie = mysqli_query($connection, "SELECT * FROM tbltherapiejemals WHERE Patient = $patient");
+    while ($row = mysqli_fetch_array($therapie)) {
         ?>
 
         <tr>
@@ -336,8 +336,8 @@ function append_therapie_jemals($patient) {
             if (isset($row['Therapie'])) {
                 $valDelete = $row['IDTherapie'];
                 $tmp = $row['Therapie'];
-                $results = mysql_query("SELECT * FROM tblTherapieName WHERE IDTherapie = $tmp");
-                $rowTmp = mysql_fetch_array($results);
+                $results = mysqli_query($connection, "SELECT * FROM tblTherapieName WHERE IDTherapie = $tmp");
+                $rowTmp = mysqli_fetch_array($results);
                 $val = $rowTmp['Name'];
                 $typ = $rowTmp['Typ'];
                 if ($typ != 2) {
@@ -361,8 +361,8 @@ function append_therapie_jemals($patient) {
             $val = '';
             if (isset($row['Masseinheit'])) {
                 $tmp = $row['Masseinheit'];
-                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
-                $rowTmp = mysql_fetch_array($results);
+                $results = mysqli_query($connection, "SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
+                $rowTmp = mysqli_fetch_array($results);
                 $val = $rowTmp['Maßeinheit'];
             }
             ?>
@@ -372,8 +372,8 @@ function append_therapie_jemals($patient) {
             $val = '';
             if (isset($row['VerabreichungTyp'])) {
                 $tmp = $row['VerabreichungTyp'];
-                $results = mysql_query("SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
-                $rowTmp = mysql_fetch_array($results);
+                $results = mysqli_query($connection, "SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
+                $rowTmp = mysqli_fetch_array($results);
                 $val = $rowTmp['TherapieVerabreichung'];
             }
             ?>
@@ -383,8 +383,8 @@ function append_therapie_jemals($patient) {
             $val = '';
             if (isset($row['Wirksamkeit'])) {
                 $tmp = $row['Wirksamkeit'];
-                $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
-                $rowTmp = mysql_fetch_array($results);
+                $results = mysqli_query($connection, "SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
+                $rowTmp = mysqli_fetch_array($results);
                 $val = $rowTmp['TherapieWirksamkeit'];
             }
             ?>
@@ -415,21 +415,21 @@ function append_therapie_jemals($patient) {
 
 <?php
 
-function append_therapie_visite($visiten, $numVisite, $verify) {
+function append_therapie_visite($visiten, $numVisite, $verify, $connection) {
 
     $disabled = '';
 
     if ($verify == 1 AND $numVisite > 0) {
         $visite = $visiten[$numVisite - 1];
         $visiteNext = $visiten[$numVisite];
-        $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $visite");
+        $therapie = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $visite");
     } else {
         $visite = $visiten[$numVisite];
-        $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite");
+        $therapie = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystapplied WHERE Visite = $visite");
         $verify = 0;
     }
     $kombi = 0;
-    while ($row = mysql_fetch_array($therapie)) {
+    while ($row = mysqli_fetch_array($therapie)) {
 
         if ($row['NichtUmgesetzt'] == 1) {
             continue;
@@ -443,8 +443,8 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
             if (isset($row['Therapie'])) {
                 $valDelete = $row['IDTherapie'];
                 $therapieTmp = $row['Therapie'];
-                $results = mysql_query("SELECT * FROM tbltherapiename WHERE IDTherapie = $therapieTmp");
-                $rowTmp = mysql_fetch_array($results);
+                $results = mysqli_query($connection, "SELECT * FROM tbltherapiename WHERE IDTherapie = $therapieTmp");
+                $rowTmp = mysqli_fetch_array($results);
                 $val = $rowTmp['Name'];
                 $typ = $rowTmp['Typ'];
             }
@@ -465,8 +465,8 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
             $val = '';
             if (isset($row['Masseinheit'])) {
                 $tmp = $row['Masseinheit'];
-                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
-                $rowTmp = mysql_fetch_array($results);
+                $results = mysqli_query($connection, "SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
+                $rowTmp = mysqli_fetch_array($results);
                 $val = $rowTmp['Maßeinheit'];
             }
             ?>
@@ -476,8 +476,8 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
             $val = '';
             if (isset($row['VerabreichungTyp'])) {
                 $tmp = $row['VerabreichungTyp'];
-                $results = mysql_query("SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
-                $rowTmp = mysql_fetch_array($results);
+                $results = mysqli_query($connection, "SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
+                $rowTmp = mysqli_fetch_array($results);
                 $val = $rowTmp['TherapieVerabreichung'];
             }
             ?>
@@ -485,8 +485,8 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
 
             <?php
             if ($verify == 1) { // verify outcome
-                $therapieoutcome = mysql_query("SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $therapieTmp AND Visite = $visiteNext");
-                $rowTherapieoutcome = mysql_fetch_array($therapieoutcome);
+                $therapieoutcome = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystapplied WHERE Therapie = $therapieTmp AND Visite = $visiteNext");
+                $rowTherapieoutcome = mysqli_fetch_array($therapieoutcome);
                 $wirksamkeit = '';
                 if (isset($rowTherapieoutcome['Wirksamkeit'])) {
                     $wirksamkeit = $rowTherapieoutcome['Wirksamkeit'];
@@ -508,9 +508,9 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
                             <option selected></option>
                             <?php
                             $selected = "";
-                            $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit");
+                            $results = mysqli_query($connection, "SELECT * FROM tbltherapiewirksamkeit");
 //                        echo "<option selected value=NULL></option>";
-                            while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                            while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                 $valTmp = $rowTmp['IDTherapieWirksamkeit'];
                                 $nameTmp = $rowTmp['TherapieWirksamkeit'];
                                 if ($wirksamkeit == $valTmp) {
@@ -555,8 +555,8 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
                     <?php
                     $val = '';
                     if ($wirksamkeit > 0) {
-                        $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $wirksamkeit");
-                        $rowTmp = mysql_fetch_array($results);
+                        $results = mysqli_query($connection, "SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $wirksamkeit");
+                        $rowTmp = mysqli_fetch_array($results);
                         $val = $rowTmp['TherapieWirksamkeit'];
                     }
                     ?>
@@ -582,8 +582,8 @@ function append_therapie_visite($visiten, $numVisite, $verify) {
                 $val = '';
                 if (isset($row['Wirksamkeit'])) {
                     $tmp = $row['Wirksamkeit'];
-                    $results = mysql_query("SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
-                    $rowTmp = mysql_fetch_array($results);
+                    $results = mysqli_query($connection, "SELECT * FROM tbltherapiewirksamkeit WHERE IDTherapieWirksamkeit = $tmp");
+                    $rowTmp = mysqli_fetch_array($results);
                     $val = $rowTmp['TherapieWirksamkeit'];
                 }
                 ?>

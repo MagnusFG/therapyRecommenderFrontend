@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<title>Visualization Recommendation</title>
+<!-- <meta charset="utf-8">
+<title>Visualization Recommendation</title>-->
 <style>
 body{
     width:1250px;
@@ -39,11 +39,12 @@ rect:hover {  fill:#DDA0DD; }
 }
 
 </style>
-<body>
+
+<!-- <body>
 <h1 style="color:#5A8AB8;font-family:sans-serif">Therapy Recommender</h1>
 <p style="color:#002557;font-family:sans-serif">Affinity Prediction</p>
 <div id='dashboard'>
-</div>
+</div> -->
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 function dashboard(id, tData, sData){
@@ -54,7 +55,7 @@ function dashboard(id, tData, sData){
     // function to handle bar chart.
     function barChart(fD){
         var bC={},    bCDim = {t: 60, r: 0, b: 300, l: 0};
-        bCDim.w = 700 - bCDim.l - bCDim.r,
+        bCDim.w = 600 - bCDim.l - bCDim.r,
         bCDim.h = 600 - bCDim.t - bCDim.b;
             
         //create svg for bar chart.
@@ -282,28 +283,20 @@ var settingsData=[
 ];
 
 var therapyData=[
-{Therapy:'Methotrexat', Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Ciclosporin',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Acitretin',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Fumaderm',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Infliximab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Etanercept',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Golimumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Ustekinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Certolizumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Apremilast',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Secukinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'PUVA',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Andere UV-Therapie',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Andere Therapie (Systemische Therapie)',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Methotrexat / Adalimumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Methotrexat / Etanercept',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Methotrexat / Infliximab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Methotrexat / Secukinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Methotrexat / Ustekinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Methotrexat / Golimumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Acitretin / Etanercept',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
-,{Therapy:'Acitretin / Ustekinumab',Affinity: Math.random(), prediction:{Wirksamkeit:Math.random(), deltaPASI:Math.random(), UAW:Math.random()}}
+{Therapy:'Methotrexat', Affinity: 0.91, prediction:{Wirksamkeit:0.61, deltaPASI:0.76, UAW:0.21}}
+,{Therapy:'Ciclosporin',Affinity: 0.12, prediction:{Wirksamkeit:0.32, deltaPASI:0.25, UAW:0.76}}
+,{Therapy:'Acitretin',Affinity: 0.33, prediction:{Wirksamkeit:0.22, deltaPASI:0.43, UAW:0.52}}
+,{Therapy:'Fumaderm',Affinity: 0.25, prediction:{Wirksamkeit:0.22, deltaPASI:0.42, UAW:0.41}}
+,{Therapy:'Infliximab',Affinity: 0.19, prediction:{Wirksamkeit:0.26, deltaPASI:0.25, UAW:0.72}}
+,{Therapy:'Etanercept',Affinity: 0.18, prediction:{Wirksamkeit:0.13, deltaPASI:0.12, UAW:0.72}}
+,{Therapy:'Golimumab',Affinity: 0.23, prediction:{Wirksamkeit:0.22, deltaPASI:0.24, UAW:0.65}}
+,{Therapy:'Ustekinumab', Affinity: 0.75, prediction:{Wirksamkeit:0.72, deltaPASI:0.56, UAW:0.14}}
+,{Therapy:'Certolizumab',Affinity: 0.14, prediction:{Wirksamkeit:0.35, deltaPASI:0.15, UAW:0.64}}
+,{Therapy:'Apremilast',Affinity: 0.31, prediction:{Wirksamkeit:0.13, deltaPASI:0.16, UAW:0.53}}
+,{Therapy:'Secukinumab', Affinity: 0.85, prediction:{Wirksamkeit:0.91, deltaPASI:0.76, UAW:0.14}}
+,{Therapy:'PUVA',Affinity: 0.36, prediction:{Wirksamkeit:0.12, deltaPASI:0.23, UAW:0.41}}
+,{Therapy:'Andere UV-Therapie',Affinity: 0.14, prediction:{Wirksamkeit:0.13, deltaPASI:0.27, UAW:0.78}}
+,{Therapy:'Andere Therapie (Systemische Therapie)',Affinity: 0.31, prediction:{Wirksamkeit:0.31, deltaPASI:0.24, UAW:0.54}}
 ];
 
 d3.json("recommendation.json", function(error, data) {

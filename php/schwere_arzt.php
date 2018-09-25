@@ -10,22 +10,22 @@ function show_schwere_arzt($disabled, $connection) {
     if (isset($_POST['speichern_pasi'])) {
 
         // new patient
-        $results = mysql_query("SELECT * FROM tblpasivisite WHERE Visite = $visite");
-        $row = mysql_fetch_array($results);
+        $results = mysqli_query($connection, "SELECT * FROM tblpasivisite WHERE Visite = $visite");
+        $row = mysqli_fetch_array($results);
         if (!isset($row['IDpasi'])) {
-            $sql = mysql_query("INSERT INTO tblpasivisite (Visite) VALUES ($visite)");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "INSERT INTO tblpasivisite (Visite) VALUES ($visite)");
+            $retval = mysqli_query($connection, $sql);
         }
 
         // pasi
         $val = '';
         if (isset($_POST['pasi']) AND $_POST['pasi'] != '') {
             $val = $_POST['pasi'];
-            $sql = mysql_query("UPDATE tblpasivisite SET PasiScore=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET PasiScore=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         } else {
-            $sql = mysql_query("UPDATE tblpasivisite SET PasiScore=null WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET PasiScore=null WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
 
         // pasi details
@@ -33,110 +33,110 @@ function show_schwere_arzt($disabled, $connection) {
         $val = '';
         if (isset($_POST['pasiKopfRoetung'])) {
             $val = $_POST['pasiKopfRoetung'];
-            $sql = mysql_query("UPDATE tblpasivisite SET HalsRötung=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET HalsRötung=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiKopfInfiltration'])) {
             $val = $_POST['pasiKopfInfiltration'];
-            $sql = mysql_query("UPDATE tblpasivisite SET HalsInfiltration=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET HalsInfiltration=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiKopfSchuppung'])) {
             $val = $_POST['pasiKopfSchuppung'];
-            $sql = mysql_query("UPDATE tblpasivisite SET HalsSchuppung=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET HalsSchuppung=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiKopfFlaeche'])) {
             $val = $_POST['pasiKopfFlaeche'];
-            $sql = mysql_query("UPDATE tblpasivisite SET HalsFläche=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET HalsFläche=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
 
         // Stamm
         $val = '';
         if (isset($_POST['pasiStammRoetung'])) {
             $val = $_POST['pasiStammRoetung'];
-            $sql = mysql_query("UPDATE tblpasivisite SET StammRötung=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET StammRötung=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiStammInfiltration'])) {
             $val = $_POST['pasiStammInfiltration'];
-            $sql = mysql_query("UPDATE tblpasivisite SET StammInfiltration=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET StammInfiltration=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiStammSchuppung'])) {
             $val = $_POST['pasiStammSchuppung'];
-            $sql = mysql_query("UPDATE tblpasivisite SET StammSchuppung=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET StammSchuppung=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiStammFlaeche'])) {
             $val = $_POST['pasiStammFlaeche'];
-            $sql = mysql_query("UPDATE tblpasivisite SET StammFläche=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET StammFläche=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
 
         // Arme
         $val = '';
         if (isset($_POST['pasiArmeRoetung'])) {
             $val = $_POST['pasiArmeRoetung'];
-            $sql = mysql_query("UPDATE tblpasivisite SET ArmeRötung=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET ArmeRötung=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiArmeInfiltration'])) {
             $val = $_POST['pasiArmeInfiltration'];
-            $sql = mysql_query("UPDATE tblpasivisite SET ArmeInfiltration=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET ArmeInfiltration=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiArmeSchuppung'])) {
             $val = $_POST['pasiArmeSchuppung'];
-            $sql = mysql_query("UPDATE tblpasivisite SET ArmeSchuppung=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET ArmeSchuppung=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiArmeFlaeche'])) {
             $val = $_POST['pasiArmeFlaeche'];
-            $sql = mysql_query("UPDATE tblpasivisite SET ArmeFläche=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET ArmeFläche=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
 
         // Beine
         $val = '';
         if (isset($_POST['pasiBeineRoetung'])) {
             $val = $_POST['pasiBeineRoetung'];
-            $sql = mysql_query("UPDATE tblpasivisite SET BeineRötung=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET BeineRötung=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiBeineInfiltration'])) {
             $val = $_POST['pasiBeineInfiltration'];
-            $sql = mysql_query("UPDATE tblpasivisite SET BeineInfiltration=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET BeineInfiltration=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiBeineSchuppung'])) {
             $val = $_POST['pasiBeineSchuppung'];
-            $sql = mysql_query("UPDATE tblpasivisite SET BeineSchuppung=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET BeineSchuppung=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
         $val = '';
         if (isset($_POST['pasiBeineFlaeche'])) {
             $val = $_POST['pasiBeineFlaeche'];
-            $sql = mysql_query("UPDATE tblpasivisite SET BeineFläche=$val WHERE Visite = $visite");
-            $retval = mysql_query($sql, $connection);
+            $sql = mysqli_query($connection, "UPDATE tblpasivisite SET BeineFläche=$val WHERE Visite = $visite");
+            $retval = mysqli_query($connection, $sql);
         }
     }
 
     // load data
-    $results = mysql_query("SELECT * FROM tblpasivisite WHERE Visite = $visite");
-    $row = mysql_fetch_array($results);
+    $results = mysqli_query($connection, "SELECT * FROM tblpasivisite WHERE Visite = $visite");
+    $row = mysqli_fetch_array($results);
 
     $pasi = $row['PasiScore'];
 
@@ -204,9 +204,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiKopfRoetung" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiKopfRoetung == $valTmp) {
@@ -228,9 +228,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiKopfInfiltration" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiKopfInfiltration == $valTmp) {
@@ -255,9 +255,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiKopfSchuppung" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiKopfSchuppung == $valTmp) {
@@ -279,9 +279,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiKopfFlaeche" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiFläche'];
                                             if ($pasiKopfFlaeche == $valTmp) {
@@ -310,9 +310,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiStammRoetung" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiStammRoetung == $valTmp) {
@@ -334,9 +334,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiStammInfiltration" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiStammInfiltration == $valTmp) {
@@ -361,9 +361,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiStammSchuppung" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiStammSchuppung == $valTmp) {
@@ -385,9 +385,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiStammFlaeche" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiFläche'];
                                             if ($pasiStammFlaeche == $valTmp) {
@@ -416,9 +416,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiArmeRoetung" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiArmeRoetung == $valTmp) {
@@ -440,9 +440,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiArmeInfiltration" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiArmeInfiltration == $valTmp) {
@@ -467,9 +467,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiArmeSchuppung" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiArmeSchuppung == $valTmp) {
@@ -491,9 +491,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiArmeFlaeche" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiFläche'];
                                             if ($pasiArmeFlaeche == $valTmp) {
@@ -522,9 +522,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiBeineRoetung" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiBeineRoetung == $valTmp) {
@@ -546,9 +546,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiBeineInfiltration" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiBeineInfiltration == $valTmp) {
@@ -573,9 +573,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiBeineSchuppung" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore LIMIT 5");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore LIMIT 5");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiIndikator'];
                                             if ($pasiBeineSchuppung == $valTmp) {
@@ -597,9 +597,9 @@ function show_schwere_arzt($disabled, $connection) {
                                     <select name="pasiBeineFlaeche" <?php echo $disabled; ?> class="form-control" id="sel1">
                                         <?php
                                         $selected = '';
-                                        $results = mysql_query("SELECT * FROM tblpasiscore");
+                                        $results = mysqli_query($connection, "SELECT * FROM tblpasiscore");
                                         echo "<option selected value=NULL></option>";
-                                        while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                        while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                             $valTmp = $rowTmp['intPasiScore'];
                                             $nameTmp = $rowTmp['txtPasiFläche'];
                                             if ($pasiBeineFlaeche == $valTmp) {

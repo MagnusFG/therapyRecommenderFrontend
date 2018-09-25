@@ -17,11 +17,11 @@ function show_therapien_empfohlen($disabled, $connection) {
             $val4 = intval($_POST['verabreichung']);
             
             if ($val2 != 0) {
-                $sql = mysql_query("INSERT INTO tbltherapiesvisitesystrecommended (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Visite) VALUES ($val1,$val2,$val3,$val4,$visite)");
+                $sql = mysqli_query($connection, "INSERT INTO tbltherapiesvisitesystrecommended (Therapie,Dosierung,Masseinheit,VerabreichungTyp,Visite) VALUES ($val1,$val2,$val3,$val4,$visite)");
             } else {
-                $sql = mysql_query("INSERT INTO tbltherapiesvisitesystrecommended (Therapie,Masseinheit,VerabreichungTyp,Visite) VALUES ($val1,$val3,$val4,$visite)");
+                $sql = mysqli_query($connection, "INSERT INTO tbltherapiesvisitesystrecommended (Therapie,Masseinheit,VerabreichungTyp,Visite) VALUES ($val1,$val3,$val4,$visite)");
             }
-            $retval = mysql_query($sql, $connection);
+            $retval = mysqli_query($connection, $sql);
         }
     }
 
@@ -29,8 +29,8 @@ function show_therapien_empfohlen($disabled, $connection) {
     if (isset($_POST['loesche_therapieempfohlen'])) {
         $val = $_POST['loesche_therapieempfohlen'];
 
-        $sql = mysql_query("DELETE FROM tbltherapiesvisitesystrecommended WHERE IDTherapie=$val");
-        $retval = mysql_query($sql, $connection);
+        $sql = mysqli_query($connection, "DELETE FROM tbltherapiesvisitesystrecommended WHERE IDTherapie=$val");
+        $retval = mysqli_query($connection, $sql);
     }
     ?>
 
@@ -62,15 +62,15 @@ function show_therapien_empfohlen($disabled, $connection) {
                 <tbody>
 
                     <?php
-                    $therapie = mysql_query("SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $visite");
-                    while ($row = mysql_fetch_array($therapie)) {
+                    $therapie = mysqli_query($connection, "SELECT * FROM tbltherapiesvisitesystrecommended WHERE Visite = $visite");
+                    while ($row = mysqli_fetch_array($therapie)) {
                         echo "<tr>";
                         $val = '';
                         if (isset($row['Therapie'])) {
                             $valDelete = $row['IDTherapie'];
                             $tmp = $row['Therapie'];
-                            $results = mysql_query("SELECT * FROM tbltherapiename WHERE IDTherapie = $tmp");
-                            $rowTmp = mysql_fetch_array($results);
+                            $results = mysqli_query($connection, "SELECT * FROM tbltherapiename WHERE IDTherapie = $tmp");
+                            $rowTmp = mysqli_fetch_array($results);
                             $val = $rowTmp['Name'];
                             $typ = $rowTmp['Typ'];
                         }
@@ -80,8 +80,8 @@ function show_therapien_empfohlen($disabled, $connection) {
                     <?php
                     $val = '';
                     if (isset($typ)) {
-                        $results = mysql_query("SELECT * FROM tbltherapietyp WHERE IDTherapieTyp = $typ");
-                        $rowTmp = mysql_fetch_array($results);
+                        $results = mysqli_query($connection, "SELECT * FROM tbltherapietyp WHERE IDTherapieTyp = $typ");
+                        $rowTmp = mysqli_fetch_array($results);
                         $val = $rowTmp['Typ'];
                     }
                     ?>                
@@ -96,8 +96,8 @@ function show_therapien_empfohlen($disabled, $connection) {
                     $val = '';
                     if (isset($row['Masseinheit'])) {
                         $tmp = $row['Masseinheit'];
-                        $results = mysql_query("SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
-                        $rowTmp = mysql_fetch_array($results);
+                        $results = mysqli_query($connection, "SELECT * FROM tbltherapiemasseinheit WHERE IDMaßeinheit = $tmp");
+                        $rowTmp = mysqli_fetch_array($results);
                         $val = $rowTmp['Maßeinheit'];
                     }
                     ?>
@@ -107,8 +107,8 @@ function show_therapien_empfohlen($disabled, $connection) {
                     $val = '';
                     if (isset($row['VerabreichungTyp'])) {
                         $tmp = $row['VerabreichungTyp'];
-                        $results = mysql_query("SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
-                        $rowTmp = mysql_fetch_array($results);
+                        $results = mysqli_query($connection, "SELECT * FROM tbltherapieverabreichung WHERE IDTherapieVerabreichung = $tmp");
+                        $rowTmp = mysqli_fetch_array($results);
                         $val = $rowTmp['TherapieVerabreichung'];
                     }
                     ?>
@@ -157,9 +157,9 @@ function show_therapien_empfohlen($disabled, $connection) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tbltherapiename WHERE Typ = 2");
+                                                $results = mysqli_query($connection, "SELECT * FROM tbltherapiename WHERE Typ = 2");
                                                 echo "<option selected value=NULL></option>";
-                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDTherapie'];
                                                     $nameTmp = $rowTmp['Name'];
                                                     echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
@@ -190,9 +190,9 @@ function show_therapien_empfohlen($disabled, $connection) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tbltherapiemasseinheit");
+                                                $results = mysqli_query($connection, "SELECT * FROM tbltherapiemasseinheit");
                                                 echo "<option selected value=NULL></option>";
-                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDMaßeinheit'];
                                                     $nameTmp = $rowTmp['Maßeinheit'];
                                                     echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
@@ -211,9 +211,9 @@ function show_therapien_empfohlen($disabled, $connection) {
                                                 <option selected></option>
                                                 <?php
                                                 $selected = '';
-                                                $results = mysql_query("SELECT * FROM tbltherapieverabreichung");
+                                                $results = mysqli_query($connection, "SELECT * FROM tbltherapieverabreichung");
                                                 echo "<option selected value=NULL></option>";
-                                                while ($rowTmp = mysql_fetch_array($results)) { // while Antworten ausgeben
+                                                while ($rowTmp = mysqli_fetch_array($results)) { // while Antworten ausgeben
                                                     $valTmp = $rowTmp['IDTherapieVerabreichung'];
                                                     $nameTmp = $rowTmp['TherapieVerabreichung'];
                                                     echo "<option $selected value=$valTmp>" . $nameTmp . "</option>";
